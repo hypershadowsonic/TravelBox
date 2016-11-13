@@ -1,13 +1,322 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.edge.work.travelbox.InfoFragment">
+    tools:context="com.edge.work.travelbox.InfoFragment"
+    android:padding="8dp">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="2dp"
+                app:cardBackgroundColor="#ffffff"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        app:srcCompat="@drawable/pic_02"
+                        android:id="@+id/imageView5"
+                        android:layout_weight="1"
+                        android:layout_height="194dp" />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:paddingLeft="24dp"
+                        android:paddingRight="24dp"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="24dp"
+                        android:divider="@drawable/divider"
+                        android:showDividers="middle"
+                        android:dividerPadding="8dp">
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:layout_marginBottom="16dp">
+
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_height="wrap_content"
+                                    android:layout_width="wrap_content"
+                                    android:text="123"
+
+                                    android:id="@+id/place_name"
+                                android:layout_weight="1"
+                                android:textSize="16sp"
+                                android:textColor="#606060" />
+
+                                <TextView
+                                    android:layout_height="wrap_content"
+                                    android:layout_width="wrap_content"
+                                    android:text="123"
+                                    android:id="@+id/place_address"
+                                android:layout_weight="1"
+                                android:textColor="#A0A0A0" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:text="213"
+                                android:id="@+id/place_description"
+                            android:layout_weight="1"
+                            android:layout_marginTop="16dp"
+                            android:textColor="#606060" />
+                        </LinearLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="16dp">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:srcCompat="@mipmap/info_idea"
+                                android:id="@+id/imageView4"
+                                android:layout_marginLeft="3dp" />
+
+                            <TextView
+                                android:text="靘?孵嚗??????雿??貊隞暻潸??怠?詨?? "
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="24dp"
+                                android:id="@+id/textView4"
+                                android:textColor="#606060" />
+
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:layout_marginTop="16dp"
+                            android:divider="@drawable/divider_vert"
+                            android:showDividers="middle"
+                            android:dividerPadding="8dp">
+
+                            <RelativeLayout
+                                android:layout_width="149dp"
+                                android:layout_height="match_parent">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/place_area_time"
+                                    android:layout_marginBottom="8dp">
+
+                                    <ImageView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        app:srcCompat="@mipmap/info_time"
+                                        android:id="@+id/imageView6" />
+
+                                    <TextView
+                                        android:text="撟單11:30 ??23:00\n?10:30 ??23:00\n?其??砌?"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerVertical="true"
+                                        android:id="@+id/textView5"
+                                        android:textColor="#606060"
+                                        android:layout_marginLeft="24dp"
+                                        android:lineSpacingMultiplier="1.5"/>
+
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/place_area_time"
+                                    android:id="@+id/place_area_phone"
+                                    android:layout_marginTop="8dp"
+                                    android:layout_marginBottom="8dp">
+
+                                    <ImageView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        app:srcCompat="@mipmap/info_phone"
+                                        android:id="@+id/imageView8"
+                                        android:layout_marginLeft="2dp" />
+
+                                    <TextView
+                                        android:text="05-533 9610"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:id="@+id/textView8"
+                                        android:textColor="#606060"
+                                        android:layout_marginLeft="24dp" />
+
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/place_area_price"
+                                    android:layout_below="@+id/place_area_phone"
+                                    android:layout_marginTop="8dp">
+
+                                    <ImageView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        app:srcCompat="@mipmap/info_money"
+                                        android:id="@+id/imageView9"
+                                        android:layout_marginLeft="3dp" />
+
+                                    <TextView
+                                        android:text="80 - 200"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:id="@+id/textView9"
+                                        android:textColor="#606060"
+                                        android:layout_marginLeft="24dp" />
+                                </RelativeLayout>
+
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    app:srcCompat="@mipmap/info_popular"
+                                    android:id="@+id/imageView10"
+                                    android:layout_marginLeft="8dp" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    app:srcCompat="@mipmap/info_facebook"
+                                    android:id="@+id/imageView11"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_alignParentRight="true"
+                                    android:layout_alignParentEnd="true" />
+
+                                <TextView
+                                    android:text="30"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/textView10"
+                                    android:textColor="#606060"
+                                    android:textSize="60sp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_centerHorizontal="true" />
+                            </RelativeLayout>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                app:cardBackgroundColor="#ffffff">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RelativeLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_width="108dp"
+                            android:layout_height="72dp"
+                            app:srcCompat="@drawable/pic_05"
+                            android:id="@+id/imageView14"
+                            android:scaleType="fitXY" />
+
+                        <TextView
+                            android:text="123"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@+id/imageView14"
+                            android:layout_toEndOf="@+id/imageView14"
+                            android:layout_marginLeft="16dp"
+                            android:id="@+id/textView12"
+                            android:textColor="#606060"
+                            android:lineSpacingMultiplier="1.5"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_width="108dp"
+                            android:layout_height="72dp"
+                            app:srcCompat="@drawable/pic_03"
+                            android:id="@+id/imageView15"
+                            android:scaleType="fitXY" />
+
+                        <TextView
+                            android:text="123"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/textView13"
+                            android:textColor="#606060"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@+id/imageView15"
+                            android:layout_toEndOf="@+id/imageView15"
+                            android:layout_marginLeft="16dp" />
+
+                    </RelativeLayout>
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="180dp">
+
+                <com.google.android.gms.maps.MapView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/mapView" />
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+
 
 </FrameLayout>

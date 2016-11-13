@@ -1,13 +1,69 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.edge.work.travelbox.ListNewFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="330dp"
+        android:id="@+id/frame_new_01">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            app:srcCompat="@mipmap/list_new_01"
+            android:scaleType="matrix"
+            android:layout_height="330dp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="93dp"
+            android:layout_marginStart="93dp"
+            android:id="@+id/btn_new_blankbox1"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="200dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@mipmap/list_new_blankbox" />
+
+            <TextView
+                android:text="店家一號"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="49dp"
+            android:layout_marginStart="49dp"
+            android:id="@+id/btn_new_blankbox2"
+            android:layout_toRightOf="@id/btn_new_blankbox1"
+            android:layout_alignTop="@id/btn_new_blankbox1">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@mipmap/list_new_blankbox" />
+
+            <TextView
+                android:text="店家二號"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+    </RelativeLayout>
+
 
 </FrameLayout>

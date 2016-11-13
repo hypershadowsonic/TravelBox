@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,9 +9,8 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="185dp"
-
         android:id="@+id/imageView18"
-        android:srcCompat="@drawable/pic_02" />
+        app:srcCompat="@drawable/pic_02" />
 
     <LinearLayout
         android:orientation="vertical"
@@ -25,7 +25,7 @@
             android:layout_marginBottom="16dp">
 
             <TextView
-                android:text="?孵?擗?"
+                android:text="凹凸咖啡館"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView15"
@@ -33,7 +33,7 @@
                 android:layout_marginBottom="8dp" />
 
             <TextView
-                android:text="?虜???其??亦??嚗????銝暺?擖?霈????釭?游???嚗葆蝯行?渲??拍?蝛粹???"
+                android:text="非常感謝您今日的蒞臨，希望能留下一點回饋，讓我們的品質更加提升，帶給您更舒適的空間。 "
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView16"
@@ -48,7 +48,7 @@
             android:layout_marginTop="16dp">
 
             <TextView
-                android:text="???隞?擗遛?漲?"
+                android:text="請問您今日的用餐滿意度?"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView17"
@@ -105,10 +105,10 @@
                 android:ems="10"
                 android:id="@+id/survey_feedback"
                 android:bufferType="editable"
-                android:hint="蝯行???鈭?閬?" />
+                android:hint="有什麼想說的？" />
 
             <Button
-                android:text="123"
+                android:text="Submit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/survey_send" />

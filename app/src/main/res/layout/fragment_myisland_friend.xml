@@ -1,13 +1,131 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.edge.work.travelbox.MyislandFriendFragment">
+    android:orientation="vertical"
+    tools:context="com.edge.work.travelbox.MyislandFriendFragment"
+    android:divider="@drawable/divider"
+    android:showDividers="middle">
+    >
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="72dp"
+        android:background="#ffffff"
+        android:padding="8dp">
 
-</FrameLayout>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/nav_myisland"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/imageView22" />
+
+        <ImageView
+            app:srcCompat="@mipmap/ic_face_black_24dp"
+            android:id="@+id/imageView24"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/status_score"
+            android:id="@+id/imageView25"
+            android:layout_alignBottom="@+id/imageView24"
+            android:layout_alignLeft="@+id/textView23"
+            android:layout_alignStart="@+id/textView23" />
+
+        <TextView
+            android:text="4700"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:id="@+id/textView21"
+            android:textColor="#28BCAD"
+            android:layout_alignTop="@+id/imageView25"
+            android:layout_toRightOf="@+id/imageView25"
+            android:layout_toEndOf="@+id/imageView25" />
+
+        <TextView
+            android:text="Loren Hu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp"
+            android:id="@+id/textView23"
+            android:textColor="#606060"
+            android:textSize="16sp"
+            android:layout_alignTop="@+id/imageView24"
+            android:layout_toRightOf="@+id/imageView24"
+            android:layout_toEndOf="@+id/imageView24" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:background="#ffffff"
+        android:padding="8dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/nav_myisland"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/imageView23" />
+
+        <ImageView
+            app:srcCompat="@mipmap/ic_face_black_24dp"
+            android:id="@+id/imageView26"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/status_score"
+            android:id="@+id/imageView27"
+            android:layout_alignBottom="@+id/imageView26"
+            android:layout_alignLeft="@+id/textView24"
+            android:layout_alignStart="@+id/textView24" />
+
+        <TextView
+            android:text="4700"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:id="@+id/textView22"
+            android:textColor="#28BCAD"
+            android:layout_alignTop="@+id/imageView27"
+            android:layout_toRightOf="@+id/imageView27"
+            android:layout_toEndOf="@+id/imageView27" />
+
+        <TextView
+            android:text="Christine Chang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp"
+            android:id="@+id/textView24"
+            android:textColor="#606060"
+            android:textSize="16sp"
+            android:layout_alignTop="@+id/imageView26"
+            android:layout_toRightOf="@+id/imageView26"
+            android:layout_toEndOf="@+id/imageView26" />
+    </RelativeLayout>
+
+
+</LinearLayout>
