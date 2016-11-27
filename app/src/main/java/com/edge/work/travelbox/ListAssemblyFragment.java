@@ -1,6 +1,7 @@
 package com.edge.work.travelbox;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -15,29 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MyislandAssemblyFragment extends Fragment {
+public class ListAssemblyFragment extends Fragment {
 
-    private int[] myislandNavIconId={
-            R.mipmap.myisland_nav_myisland,
-            R.mipmap.myisland_nav_friend,
-            R.mipmap.myisland_nav_shop
-    };
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     public static int lastPosition = 0;
 
-
-    //private OnFragmentInteractionListener mListener;
-
-    public MyislandAssemblyFragment() {
+    public ListAssemblyFragment() {
         // Required empty public constructor
     }
 
-    @Override
-    public void onAttach(Context context) {
-        StatusFragment.myIslandStatus.setMyislandStatus(true);
-        super.onAttach(context);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,9 +53,8 @@ public class MyislandAssemblyFragment extends Fragment {
 
     private void setupViewPager(ViewPager viewPager){
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-        adapter.addFragment(new MyislandIslandFragment(), "MyIsland");
-        adapter.addFragment(new MyislandFriendFragment(), "Friends");
-        adapter.addFragment(new ComingSoonFragment(), "Shop");
+        adapter.addFragment(new ListListFragment(), "Location");
+        adapter.addFragment(new ListNewFragment(), "New");
 
         viewPager.setAdapter(adapter);
     }
@@ -101,9 +88,4 @@ public class MyislandAssemblyFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onDetach() {
-        StatusFragment.myIslandStatus.setMyislandStatus(false);
-        super.onDetach();
-    }
 }

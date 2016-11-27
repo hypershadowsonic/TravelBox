@@ -9,10 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
+public class ComingSoonFragment extends Fragment {
 
-public class ListNewFragment extends Fragment {
-
-    public ListNewFragment() {
+    public ComingSoonFragment() {
         // Required empty public constructor
     }
 
@@ -21,7 +20,8 @@ public class ListNewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list_new, container, false);
+        return inflater.inflate(R.layout.fragment_coming_soon, container, false);
     }
+
 
 }

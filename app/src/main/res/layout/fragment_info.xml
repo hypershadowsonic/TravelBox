@@ -8,7 +8,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        style="@android:style/Widget.ScrollView">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,7 +31,7 @@
 
                     <ImageView
                         android:layout_width="match_parent"
-                        app:srcCompat="@drawable/pic_02"
+                        app:srcCompat="@drawable/p03_0"
                         android:id="@+id/imageView5"
                         android:layout_weight="1"
                         android:layout_height="194dp" />
@@ -64,7 +65,7 @@
                                 <TextView
                                     android:layout_height="wrap_content"
                                     android:layout_width="wrap_content"
-                                    android:text="123"
+                                    android:text="凹凸咖啡館"
 
                                     android:id="@+id/place_name"
                                 android:layout_weight="1"
@@ -74,16 +75,17 @@
                                 <TextView
                                     android:layout_height="wrap_content"
                                     android:layout_width="wrap_content"
-                                    android:text="123"
+                                    android:text="雲林縣斗六市雲中街9巷12號"
                                     android:id="@+id/place_address"
                                 android:layout_weight="1"
-                                android:textColor="#A0A0A0" />
+                                android:textColor="#A0A0A0"
+                                    android:textSize="12sp" />
                             </LinearLayout>
 
                             <TextView
                                 android:layout_height="wrap_content"
                                 android:layout_width="wrap_content"
-                                android:text="213"
+                                android:text="和諧、互補、平衡，一個放鬆「身、心、靈」的咖啡館"
                                 android:id="@+id/place_description"
                             android:layout_weight="1"
                             android:layout_marginTop="16dp"
@@ -101,17 +103,17 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 app:srcCompat="@mipmap/info_idea"
-                                android:id="@+id/imageView4"
-                                android:layout_marginLeft="3dp" />
+                                android:id="@+id/imageView4" />
 
                             <TextView
-                                android:text="靘?孵嚗??????雿??貊隞暻潸??怠?詨?? "
+                                android:text="來到凹凸，請先打招呼。\n你知道凹凸為什麼要叫凹凸嗎?"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
-                                android:layout_marginLeft="24dp"
                                 android:id="@+id/textView4"
-                                android:textColor="#606060" />
+                                android:textColor="#606060"
+                                android:layout_toRightOf="@+id/imageView4"
+                                android:layout_marginLeft="4dp" />
 
                         </RelativeLayout>
 
@@ -142,14 +144,15 @@
                                         android:id="@+id/imageView6" />
 
                                     <TextView
-                                        android:text="撟單11:30 ??23:00\n?10:30 ??23:00\n?其??砌?"
+                                        android:text="平日11:30 – 23:00\n假日10:30 – 23:00\n周二公休"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_centerVertical="true"
                                         android:id="@+id/textView5"
                                         android:textColor="#606060"
-                                        android:layout_marginLeft="24dp"
-                                        android:lineSpacingMultiplier="1.5"/>
+                                        android:lineSpacingMultiplier="1.5"
+                                        android:layout_toRightOf="@+id/imageView6"
+                                        android:layout_marginLeft="4dp" />
 
                                 </RelativeLayout>
 
@@ -165,8 +168,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         app:srcCompat="@mipmap/info_phone"
-                                        android:id="@+id/imageView8"
-                                        android:layout_marginLeft="2dp" />
+                                        android:id="@+id/imageView8" />
 
                                     <TextView
                                         android:text="05-533 9610"
@@ -174,7 +176,8 @@
                                         android:layout_height="wrap_content"
                                         android:id="@+id/textView8"
                                         android:textColor="#606060"
-                                        android:layout_marginLeft="24dp" />
+                                        android:layout_toRightOf="@+id/imageView8"
+                                        android:layout_marginLeft="4dp" />
 
                                 </RelativeLayout>
 
@@ -189,8 +192,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         app:srcCompat="@mipmap/info_money"
-                                        android:id="@+id/imageView9"
-                                        android:layout_marginLeft="3dp" />
+                                        android:id="@+id/imageView9" />
 
                                     <TextView
                                         android:text="80 - 200"
@@ -198,7 +200,8 @@
                                         android:layout_height="wrap_content"
                                         android:id="@+id/textView9"
                                         android:textColor="#606060"
-                                        android:layout_marginLeft="24dp" />
+                                        android:layout_toRightOf="@+id/imageView9"
+                                        android:layout_marginLeft="4dp" />
                                 </RelativeLayout>
 
                             </RelativeLayout>
@@ -243,6 +246,70 @@
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:rowCount="2"
+                    android:columnCount="3"
+                    android:layout_margin="4dp"
+                    app:alignmentMode="alignMargins">
+
+                    <ImageView
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        app:srcCompat="@drawable/p01_g_4"
+                        android:id="@+id/imageView16"
+                        android:layout_marginBottom="2dp"
+                        android:layout_marginRight="2dp" />
+
+                    <ImageView
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        app:srcCompat="@drawable/p01_g_3"
+                        android:id="@+id/imageView13"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginRight="2dp"
+                        android:layout_marginBottom="2dp" />
+
+                    <ImageView
+                        app:srcCompat="@drawable/p01_g_2"
+                        android:id="@+id/imageView12"
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        android:layout_marginBottom="2dp"
+                        android:layout_marginLeft="2dp" />
+
+                    <ImageView
+                        app:srcCompat="@drawable/p01_g_1"
+                        android:id="@+id/imageView7"
+                        android:layout_height="96dp"
+                        android:layout_width="96dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginRight="2dp" />
+
+                    <ImageView
+                        app:srcCompat="@drawable/p01_g_0"
+                        android:id="@+id/imageView3"
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginRight="2dp"
+                        android:layout_marginLeft="2dp" />
+
+                    <ImageView
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        app:srcCompat="@drawable/p01_g_5"
+                        android:id="@+id/imageView17"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginTop="2dp" />
+                </GridLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
@@ -259,14 +326,14 @@
                         android:layout_height="wrap_content">
 
                         <ImageView
-                            android:layout_width="108dp"
-                            android:layout_height="72dp"
-                            app:srcCompat="@drawable/pic_05"
+                            app:srcCompat="@drawable/p03_1"
                             android:id="@+id/imageView14"
-                            android:scaleType="fitXY" />
+                            android:scaleType="fitXY"
+                            android:layout_height="64dp"
+                            android:layout_width="96dp" />
 
                         <TextView
-                            android:text="123"
+                            android:text="雲中街文創聚落 凹凸咖啡館\n有如漫步京都小巷"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
@@ -284,14 +351,14 @@
                         android:layout_height="wrap_content">
 
                         <ImageView
-                            android:layout_width="108dp"
-                            android:layout_height="72dp"
-                            app:srcCompat="@drawable/pic_03"
+                            app:srcCompat="@drawable/p03_2"
                             android:id="@+id/imageView15"
-                            android:scaleType="fitXY" />
+                            android:scaleType="fitXY"
+                            android:layout_height="64dp"
+                            android:layout_width="96dp" />
 
                         <TextView
-                            android:text="123"
+                            android:text="凹凸咖啡館-日式宿舍老屋餐廳"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/textView13"
@@ -308,7 +375,8 @@
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="180dp">
+                android:layout_height="180dp"
+                android:layout_marginTop="4dp">
 
                 <com.google.android.gms.maps.MapView
                     android:layout_width="match_parent"

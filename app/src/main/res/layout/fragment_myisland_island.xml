@@ -1,410 +1,88 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.edge.work.travelbox.MyislandIslandFragment">
+    tools:context="com.edge.work.travelbox.MyislandIslandFragment"
+    android:background="#B5F4EA">
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/background_cloud"
+        android:layout_marginLeft="280dp"
+        android:layout_marginTop="142dp" />
+
+    <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="@mipmap/background_1">
+        android:layout_height="wrap_content"
+        android:src="@mipmap/background_cloud"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="72dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="126dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_height="250dp">
 
         <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_6_6"
-            android:layout_gravity="center"
-            android:layout_marginRight="310dp"
-            android:layout_marginBottom="180dp"
-            android:layout_marginLeft="310dp"
-            android:layout_width="62dp"
-            android:layout_marginTop="100dp"/>
+            android:src="@mipmap/land"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/myisland_share"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/btn_myisland_share"
+        android:layout_margin="16dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/myisland_build"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/btn_myisland_build"
+        android:layout_margin="16dp" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="28dp">
+
+        <com.github.lzyzsd.circleprogress.DonutProgress
+            android:id="@+id/progress_countdown"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:donut_unfinished_stroke_width="2dp"
+            app:donut_finished_stroke_width="2dp"
+            app:donut_text_color="#00000000"
+            app:donut_finished_color="#024A5B"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            app:donut_progress="35"
+            android:rotation="-90"
+            app:donut_unfinished_color="#19221814" />
 
         <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_6_5"
-            android:layout_gravity="center"
-            android:layout_marginRight="279dp"
-            android:layout_marginBottom="162dp"
-            android:layout_marginLeft="310dp"
-            android:layout_width="62dp"
-            android:layout_marginTop="100dp"/>
+            android:src="@mipmap/myisland_countdown"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
 
-        <ImageView
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_6_4"
-            android:layout_gravity="center"
-            android:layout_marginRight="248dp"
-            android:layout_marginBottom="144dp"
-            android:layout_marginLeft="310dp"
-            android:layout_width="62dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_6_3"
-            android:layout_gravity="center"
-            android:layout_marginRight="217dp"
-            android:layout_marginBottom="126dp"
-            android:layout_marginLeft="310dp"
-            android:layout_width="62dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_6_2"
-            android:layout_gravity="center"
-            android:layout_marginRight="186dp"
-            android:layout_marginBottom="108dp"
-            android:layout_marginLeft="310dp"
-            android:layout_width="62dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_6_1"
-            android:layout_gravity="center"
-            android:layout_marginRight="155dp"
-            android:layout_marginBottom="90dp"
-            android:layout_marginLeft="310dp"
-            android:layout_marginTop="100dp"/>
-
-
-        <ImageView
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_5_6"
-            android:layout_gravity="center"
-            android:layout_marginRight="279dp"
-            android:layout_marginBottom="162dp"
-            android:layout_marginLeft="248dp"
-            android:layout_width="62dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_5_5"
-            android:layout_gravity="center"
-            android:layout_marginRight="248dp"
-            android:layout_marginBottom="144dp"
-            android:layout_marginLeft="248dp"
-            android:layout_width="62dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_5_4"
-            android:layout_gravity="center"
-            android:layout_marginRight="217dp"
-            android:layout_marginBottom="126dp"
-            android:layout_marginLeft="248dp"
-            android:layout_width="62dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_5_3"
-            android:layout_gravity="center"
-            android:layout_marginRight="186dp"
-            android:layout_marginBottom="108dp"
-            android:layout_marginLeft="248dp"
-            android:layout_width="62dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_5_2"
-            android:layout_gravity="center"
-            android:layout_marginRight="155dp"
-            android:layout_marginBottom="90dp"
-            android:layout_marginLeft="248dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_5_1"
-            android:layout_gravity="center"
-            android:layout_marginRight="124dp"
-            android:layout_marginBottom="72dp"
-            android:layout_marginLeft="248dp"
-            android:layout_marginTop="100dp"/>
-
-
-        <ImageView
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_4_6"
-            android:layout_gravity="center"
-            android:layout_marginRight="248dp"
-            android:layout_marginBottom="144dp"
-            android:layout_marginLeft="186dp"
-            android:layout_width="62dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_4_5"
-            android:layout_gravity="center"
-            android:layout_marginRight="217dp"
-            android:layout_marginBottom="126dp"
-            android:layout_marginLeft="186dp"
-            android:layout_width="62dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_4_4"
-            android:layout_gravity="center"
-            android:layout_marginRight="186dp"
-            android:layout_marginBottom="108dp"
-            android:layout_marginLeft="186dp"
-            android:layout_width="62dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_4_3"
-            android:layout_gravity="center"
-            android:layout_marginRight="155dp"
-            android:layout_marginBottom="90dp"
-            android:layout_marginLeft="186dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_4_2"
-            android:layout_gravity="center"
-            android:layout_marginRight="124dp"
-            android:layout_marginBottom="72dp"
-            android:layout_marginLeft="186dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_4_1"
-            android:layout_gravity="center"
-            android:layout_marginRight="93dp"
-            android:layout_marginBottom="54dp"
-            android:layout_marginLeft="186dp"
-            android:layout_marginTop="100dp"/>
-
-
-        <ImageView
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_3_6"
-            android:layout_gravity="center"
-            android:layout_marginRight="217dp"
-            android:layout_marginBottom="126dp"
-            android:layout_marginLeft="124dp"
-            android:layout_width="62dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_3_5"
-            android:layout_gravity="center"
-            android:layout_marginRight="186dp"
-            android:layout_marginBottom="108dp"
-            android:layout_marginLeft="124dp"
-            android:layout_width="62dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_3_4"
-            android:layout_gravity="center"
-            android:layout_marginRight="155dp"
-            android:layout_marginBottom="90dp"
-            android:layout_marginLeft="124dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_3_3"
-            android:layout_gravity="center"
-            android:layout_marginRight="124dp"
-            android:layout_marginBottom="72dp"
-            android:layout_marginLeft="124dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_3_2"
-            android:layout_gravity="center"
-            android:layout_marginRight="93dp"
-            android:layout_marginBottom="54dp"
-            android:layout_marginLeft="124dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_3_1"
-            android:layout_gravity="center"
-            android:layout_marginRight="62dp"
-            android:layout_marginBottom="36dp"
-            android:layout_marginLeft="124dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_2_6"
-            android:layout_gravity="center"
-            android:layout_marginRight="186dp"
-            android:layout_marginBottom="108dp"
-            android:layout_marginLeft="62dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_2_5"
-            android:layout_gravity="center"
-            android:layout_marginRight="155dp"
-            android:layout_marginBottom="90dp"
-            android:layout_marginLeft="62dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_2_4"
-            android:layout_gravity="center"
-            android:layout_marginRight="124dp"
-            android:layout_marginBottom="72dp"
-            android:layout_marginLeft="62dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_2_3"
-            android:layout_gravity="center"
-            android:layout_marginRight="93dp"
-            android:layout_marginBottom="54dp"
-            android:layout_marginLeft="62dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_2_2"
-            android:layout_gravity="center"
-            android:layout_marginRight="62dp"
-            android:layout_marginBottom="36dp"
-            android:layout_marginLeft="62dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_2_1"
-            android:layout_gravity="center"
-            android:layout_marginRight="31dp"
-            android:layout_marginBottom="18dp"
-            android:layout_marginLeft="62dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_1_6"
-            android:layout_gravity="center"
-            android:layout_marginRight="155dp"
-            android:layout_marginBottom="90dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_1_5"
-            android:layout_gravity="center"
-            android:layout_marginRight="124dp"
-            android:layout_marginBottom="72dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_1_4"
-            android:layout_gravity="center"
-            android:layout_marginRight="93dp"
-            android:layout_marginBottom="54dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_1_3"
-            android:layout_gravity="center"
-            android:layout_marginRight="62dp"
-            android:layout_marginBottom="36dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_1_2"
-            android:layout_gravity="center"
-            android:layout_marginRight="31dp"
-            android:layout_marginBottom="18dp"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/land_element"
-            android:id="@+id/land_1_1"
-            android:layout_gravity="center"
-            android:layout_width="62dp"
-            android:layout_marginTop="100dp" />
-
-    </FrameLayout>
-
-
-
-</LinearLayout>
+</RelativeLayout>

@@ -28,8 +28,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        tools:context="com.example.hyper.myapplication.MyIslandFragment"
-        android:background="@mipmap/background_1">
+        tools:context="com.example.hyper.myapplication.MyIslandFragment" >
 
         <ImageView
             android:layout_height="wrap_content"

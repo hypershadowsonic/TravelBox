@@ -8,112 +8,182 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="185dp"
-        android:id="@+id/imageView18"
-        app:srcCompat="@drawable/pic_02" />
+        android:layout_height="wrap_content"
+        app:srcCompat="@mipmap/survey_top"
+        android:scaleType="center" />
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp">
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:divider="@drawable/divider"
+        android:showDividers="middle">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp">
 
             <TextView
-                android:text="凹凸咖啡館"
+                android:text="今天幾個人來？"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView15"
-                android:textSize="16sp"
-                android:layout_marginBottom="8dp" />
-
-            <TextView
-                android:text="非常感謝您今日的蒞臨，希望能留下一點回饋，讓我們的品質更加提升，帶給您更舒適的空間。 "
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView16"
-                android:layout_marginTop="8dp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
-
-            <TextView
-                android:text="請問您今日的用餐滿意度?"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView17"
                 android:layout_marginBottom="4dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:layout_marginTop="4dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@mipmap/survey_1_1"
+                    android:layout_marginLeft="16dp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@mipmap/survey_1_2"
+                    android:layout_centerHorizontal="true" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@mipmap/survey_1_3"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true" />
+
+            </RelativeLayout>
 
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="8dp"
-                android:id="@+id/survey_score">
+                android:paddingLeft="16dp">
 
                 <RadioButton
-                    android:text="1"
+                    android:text="1人"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/radioButton"
+                    android:id="@+id/rbtn_1_1"
                     android:layout_weight="1" />
 
                 <RadioButton
-                    android:text="2"
+                    android:text="2-3人"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/radioButton2"
+                    android:id="@+id/rbtn_1_2"
                     android:layout_weight="1" />
 
                 <RadioButton
-                    android:text="3"
+                    android:text="多人"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/radioButton3"
-                    android:layout_weight="1" />
-
-                <RadioButton
-                    android:text="4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/radioButton4"
-                    android:layout_weight="1" />
-
-                <RadioButton
-                    android:text="5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/radioButton5"
+                    android:id="@+id/rbtn_1_3"
                     android:layout_weight="1" />
             </RadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:text="體驗後心情如何？"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginTop="4dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@mipmap/survey_2_3"
+                    android:id="@+id/imageView30"
+                    android:layout_alignParentRight="true" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@mipmap/survey_2_2"
+                    android:id="@+id/imageView29"
+                    android:layout_centerHorizontal="true" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@mipmap/survey_2_1"
+                    android:id="@+id/imageView28" />
+            </RelativeLayout>
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginLeft="16dp">
+
+                <RadioButton
+                    android:text="開心"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rbtn_2_1"
+                    android:layout_weight="1" />
+
+                <RadioButton
+                    android:text="難過"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rbtn_2_2"
+                    android:layout_weight="1" />
+
+                <RadioButton
+                    android:text="生氣"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/RBTN_2_3"
+                    android:layout_weight="1" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:text="為什麼會來這裡消費呢？"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textMultiLine"
+                android:inputType="textPersonName"
                 android:ems="10"
-                android:id="@+id/survey_feedback"
-                android:bufferType="editable"
-                android:hint="有什麼想說的？" />
-
-            <Button
-                android:text="Submit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/survey_send" />
-
+                android:id="@+id/editText"
+                android:hint="字數以十字為限" />
         </LinearLayout>
+
+        <Button
+            android:text="送出"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/button2" />
 
     </LinearLayout>
 

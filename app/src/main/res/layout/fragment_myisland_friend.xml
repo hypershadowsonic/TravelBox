@@ -11,36 +11,44 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="72dp"
         android:background="#ffffff"
-        android:padding="8dp">
+        android:layout_height="64dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
 
+        <View
+            android:layout_height="28dp"
+            android:background="@android:color/darker_gray"
+            android:layout_toLeftOf="@+id/fnd_btn_goto"
+            android:layout_centerVertical="true"
+            android:layout_width="2px" />
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/nav_myisland"
+            android:src="@mipmap/status_nav_myisland"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:id="@+id/imageView22" />
+            android:id="@+id/fnd_btn_goto"
+            android:layout_marginLeft="8dp" />
 
-        <ImageView
-            app:srcCompat="@mipmap/ic_face_black_24dp"
-            android:id="@+id/imageView24"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:src="@mipmap/ic_face_black_24dp"
+            android:id="@+id/fnd_img_profile"
+            android:layout_width="36dp"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:layout_height="36dp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/status_score"
-            android:id="@+id/imageView25"
-            android:layout_alignBottom="@+id/imageView24"
-            android:layout_alignLeft="@+id/textView23"
-            android:layout_alignStart="@+id/textView23" />
+            android:src="@mipmap/status_score"
+            android:id="@+id/fnd_img_score"
+            android:layout_alignBottom="@+id/fnd_img_profile"
+            android:layout_alignLeft="@+id/fnd_text_name"
+            android:layout_alignStart="@+id/fnd_text_name" />
 
         <TextView
             android:text="4700"
@@ -48,11 +56,12 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
-            android:id="@+id/textView21"
+            android:id="@+id/fnd_text_score"
             android:textColor="#28BCAD"
-            android:layout_alignTop="@+id/imageView25"
-            android:layout_toRightOf="@+id/imageView25"
-            android:layout_toEndOf="@+id/imageView25" />
+            android:layout_toRightOf="@+id/fnd_img_score"
+            android:layout_toEndOf="@+id/fnd_img_score"
+            android:layout_alignBottom="@+id/fnd_img_score"
+            android:textSize="12sp" />
 
         <TextView
             android:text="Loren Hu"
@@ -60,71 +69,33 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
             android:layout_marginStart="12dp"
-            android:id="@+id/textView23"
+            android:id="@+id/fnd_text_name"
             android:textColor="#606060"
-            android:textSize="16sp"
-            android:layout_alignTop="@+id/imageView24"
-            android:layout_toRightOf="@+id/imageView24"
-            android:layout_toEndOf="@+id/imageView24" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:background="#ffffff"
-        android:padding="8dp">
+            android:layout_alignTop="@+id/fnd_img_profile"
+            android:layout_toRightOf="@+id/fnd_img_profile"
+            android:layout_toEndOf="@+id/fnd_img_profile" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/nav_myisland"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:id="@+id/imageView23" />
-
-        <ImageView
-            app:srcCompat="@mipmap/ic_face_black_24dp"
-            android:id="@+id/imageView26"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/status_score"
-            android:id="@+id/imageView27"
-            android:layout_alignBottom="@+id/imageView26"
-            android:layout_alignLeft="@+id/textView24"
-            android:layout_alignStart="@+id/textView24" />
+            android:src="@mipmap/status_coin"
+            android:id="@+id/fnd_img_coin"
+            android:layout_toRightOf="@+id/fnd_text_name"
+            android:layout_toEndOf="@+id/fnd_text_name"
+            android:layout_alignBottom="@+id/fnd_img_score" />
 
         <TextView
-            android:text="4700"
+            android:text="300"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:id="@+id/textView22"
-            android:textColor="#28BCAD"
-            android:layout_alignTop="@+id/imageView27"
-            android:layout_toRightOf="@+id/imageView27"
-            android:layout_toEndOf="@+id/imageView27" />
-
-        <TextView
-            android:text="Christine Chang"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:layout_marginStart="12dp"
-            android:id="@+id/textView24"
-            android:textColor="#606060"
-            android:textSize="16sp"
-            android:layout_alignTop="@+id/imageView26"
-            android:layout_toRightOf="@+id/imageView26"
-            android:layout_toEndOf="@+id/imageView26" />
+            android:layout_alignBottom="@+id/fnd_img_score"
+            android:layout_toRightOf="@+id/fnd_img_coin"
+            android:layout_toEndOf="@+id/fnd_img_coin"
+            android:layout_marginLeft="6dp"
+            android:layout_marginStart="6dp"
+            android:id="@+id/fnd_text_coin"
+            android:textSize="12sp"
+            android:textColor="#FFCF4A" />
     </RelativeLayout>
 
 

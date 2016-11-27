@@ -2,77 +2,111 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
-    android:paddingBottom="8dp"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp"
-    android:paddingTop="8dp"
+    android:layout_height="64dp"
     tools:context="com.edge.work.travelbox.StatusFragment"
     android:background="#FFFFFF"
-    android:elevation="6dp">
+    android:elevation="6dp"
+    android:padding="8dp">
 
 <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@mipmap/status_score"
-        android:layout_alignBottom="@+id/image_Profile"
-        android:layout_alignLeft="@+id/text_UserName"
-        android:layout_alignStart="@+id/text_UserName"
-        android:id="@+id/imageView2" />
+        android:src="@mipmap/status_score"
+        android:layout_alignBottom="@+id/status_img_profile"
+        android:layout_alignLeft="@+id/status_text_username"
+        android:layout_alignStart="@+id/status_text_username"
+        android:id="@+id/status_img_score"
+    android:layout_marginBottom="2dp" />
 
     <TextView
         android:text="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imageView2"
-        android:layout_toRightOf="@+id/imageView2"
-        android:layout_toEndOf="@+id/imageView2"
+        android:layout_alignBottom="@+id/status_img_score"
+        android:layout_toRightOf="@+id/status_img_score"
+        android:layout_toEndOf="@+id/status_img_score"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:id="@+id/text_HouseCount"
-        android:textColor="#EFBF6C" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@mipmap/profile"
-        android:id="@+id/image_Profile"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:id="@+id/status_text_score"
+        android:textColor="#28BCAD"
+        android:textSize="12sp" />
 
     <TextView
-        android:text="UserName"
+        android:text="Jason Chang"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:id="@+id/text_UserName"
+        android:id="@+id/status_text_username"
         android:textSize="16sp"
-        android:layout_alignTop="@+id/image_Profile"
-        android:layout_toRightOf="@+id/image_Profile"
-        android:layout_toEndOf="@+id/image_Profile"
+        android:layout_alignTop="@+id/status_img_profile"
+        android:layout_toRightOf="@+id/status_img_profile"
+        android:layout_toEndOf="@+id/status_img_profile"
         android:textColor="#606060" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@mipmap/nav_qr"
+        android:src="@mipmap/status_nav_qr"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:id="@+id/btn_QRScan" />
+        android:id="@+id/status_btn_QRScan"
+        android:layout_marginLeft="8dp"
+        android:clickable="true" />
+
+    <View
+        android:layout_height="32dp"
+        android:background="#D6D6D6"
+        android:layout_toRightOf="@+id/status_btn_MyIsland"
+        android:layout_width="1dp"
+        android:layout_centerVertical="true" />
+
+    <ImageView
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@mipmap/ic_face_black_24dp"
+        android:id="@+id/status_img_profile"
+        android:scaleType="centerCrop"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="8dp" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@mipmap/nav_myisland"
-        android:layout_marginRight="16dp"
-        android:layout_marginEnd="16dp"
-        android:id="@+id/btn_MyIsland"
-        android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/btn_QRScan"
-        android:layout_toStartOf="@+id/btn_QRScan" />
+        android:src="@mipmap/status_coin"
+        android:layout_marginLeft="9dp"
+        android:layout_marginStart="9dp"
+        android:id="@+id/status_img_coin"
+        android:layout_alignBottom="@+id/status_text_score"
+        android:layout_toRightOf="@+id/status_text_score"
+        android:layout_toEndOf="@+id/status_text_score" />
+
+    <TextView
+        android:text="300"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/status_text_coin"
+        android:textSize="12sp"
+        android:textColor="#FFCF4A"
+        android:layout_alignBottom="@+id/status_img_coin"
+        android:layout_toRightOf="@+id/status_img_coin"
+        android:layout_toEndOf="@+id/status_img_coin"
+        android:layout_marginLeft="8dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/status_nav_myisland"
+        android:layout_marginRight="8dp"
+        android:id="@+id/status_btn_MyIsland"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/status_btn_QRScan"
+        android:layout_toStartOf="@+id/status_btn_QRScan"
+        android:layout_marginEnd="8dp"
+        android:clickable="true" />
 
 
 </RelativeLayout>
