@@ -22,6 +22,7 @@ public class ListAssemblyFragment extends Fragment {
     private TabLayout mTabLayout;
     public static int lastPosition = 0;
 
+
     public ListAssemblyFragment() {
         // Required empty public constructor
     }
@@ -48,6 +49,8 @@ public class ListAssemblyFragment extends Fragment {
 
         mTabLayout=(TabLayout)rootview.findViewById(R.id.asm_tabs);
         mTabLayout.setupWithViewPager(mViewPager);
+
+
         return rootview;
     }
 
@@ -57,6 +60,7 @@ public class ListAssemblyFragment extends Fragment {
         adapter.addFragment(new ListNewFragment(), "New");
 
         viewPager.setAdapter(adapter);
+        viewPager.setId(R.id.main_container);
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
