@@ -10,10 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
 
-public class InfoFragment extends Fragment {
+import java.util.Map;
+
+
+public class InfoFragment extends Fragment implements OnMapReadyCallback{
 
     private ImageView btn_fb;
+    private MapView mapView;
+    private GoogleMap gMap;
 
     public InfoFragment() {
         // Required empty public constructor
@@ -32,6 +40,25 @@ public class InfoFragment extends Fragment {
                 startActivity(browserIntent);
             }
         });
+
+        mapView=(MapView)rootview.findViewById(R.id.info_mapView);
+        mapView.onCreate(savedInstanceState);
+
+        mapView.getMapAsync(this);
+
         return rootview;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        gMap=googleMap;
+        setUpMap();
+    }
+
+    public void setUpMap(){
+        gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        gMap.setMyLocationEnabled(true);
+        gMap.setIndoorEnabled(true);
+        gMap.getUiSettings().setZoomControlsEnabled(true);
     }
 }
