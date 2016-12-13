@@ -10,9 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Map;
 
@@ -56,9 +61,15 @@ public class InfoFragment extends Fragment implements OnMapReadyCallback{
     }
 
     public void setUpMap(){
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(new LatLng(23.7082459, 120.5374783));
+        markerOptions.title("凹凸咖啡館");
+        markerOptions.visible(true);
+        markerOptions.anchor(0.5f,0.5f);
+
         gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        gMap.setMyLocationEnabled(true);
-        gMap.setIndoorEnabled(true);
-        gMap.getUiSettings().setZoomControlsEnabled(true);
+        gMap.addMarker(markerOptions);
+        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(23.7082459, 120.5374783), 17.0f));
+        //gMap.;
     }
 }
