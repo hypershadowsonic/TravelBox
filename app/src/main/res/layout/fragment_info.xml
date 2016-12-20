@@ -80,7 +80,8 @@
                                     android:id="@+id/info_text_address"
                                 android:layout_weight="1"
                                 android:textColor="#A0A0A0"
-                                    android:textSize="12sp" />
+                                    android:textSize="12sp"
+                                    android:gravity="right" />
                             </LinearLayout>
 
                             <TextView

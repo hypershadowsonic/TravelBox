@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,6 +22,9 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import org.w3c.dom.Text;
+
+import java.io.InputStream;
+import java.net.URL;
 
 import static com.google.android.gms.internal.zzs.TAG;
 
@@ -73,7 +77,7 @@ public class StatusFragment extends Fragment{
             //name = query.getString(1);
             //picurl = query.getString(2);
             name.setText(query.getString(1));
-            pic.setImageURI(Uri.parse(query.getString(2)));
+            pic.setImageDrawable(LoadImageFromWebOperations(query.getString(2)));
         }
 
         btnMyIsland.setOnClickListener(new View.OnClickListener() {
@@ -100,5 +104,14 @@ public class StatusFragment extends Fragment{
         return rootview;
     }
 
+    public static Drawable LoadImageFromWebOperations(String url) {
+        try {
+            InputStream is = (InputStream) new URL(url).getContent();
+            Drawable d = Drawable.createFromStream(is, "src name");
+            return d;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
 }
