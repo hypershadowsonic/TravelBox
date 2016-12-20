@@ -2,6 +2,8 @@ package com.edge.work.travelbox;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,11 +13,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
+import org.w3c.dom.Text;
 
 import static com.google.android.gms.internal.zzs.TAG;
 
@@ -27,10 +32,17 @@ public class StatusFragment extends Fragment{
     private IntentIntegrator integrator;
     private FragmentManager fm;
     private static boolean myislandIsAlive=false;
+    //private String name,picurl;
+    private int count_coin, count_trophy;
+    private TextView name,coin,trophy;
+    private ImageView pic;
+
 
     public StatusFragment() {
         // Required empty public constructor
     }
+
+
 
     public static class myIslandStatus{
 
@@ -51,7 +63,18 @@ public class StatusFragment extends Fragment{
         View rootview = inflater.inflate(R.layout.fragment_status, container, false);
         btnMyIsland = (ImageView)rootview.findViewById(R.id.status_btn_MyIsland);
         btnQR = (ImageView)rootview.findViewById(R.id.status_btn_QRScan);
+        name = (TextView)rootview.findViewById(R.id.status_text_username);
+        pic = (ImageView)rootview.findViewById(R.id.status_img_profile);
         integrator = new IntentIntegrator(getActivity());
+
+        SQLiteDatabase sqLiteDB = getActivity().getBaseContext().openOrCreateDatabase("local-user.db", Context.MODE_PRIVATE, null);
+        Cursor query = sqLiteDB.rawQuery("SELECT * FROM user", null);
+        if (query.moveToFirst()){
+            //name = query.getString(1);
+            //picurl = query.getString(2);
+            name.setText(query.getString(1));
+            pic.setImageURI(Uri.parse(query.getString(2)));
+        }
 
         btnMyIsland.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,6 +86,7 @@ public class StatusFragment extends Fragment{
                         .replace(R.id.main_container, new MyislandAssemblyFragment())
                         .addToBackStack(null)
                         .commit();} else {
+                    fm.popBackStack();
                 }
             }
         });

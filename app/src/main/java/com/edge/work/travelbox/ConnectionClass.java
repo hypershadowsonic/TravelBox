@@ -36,4 +36,7 @@ public class ConnectionClass {
             Log.e("ERRO", e.getMessage());
         }
         return conn;
-    }}
+    }
+
+}
+

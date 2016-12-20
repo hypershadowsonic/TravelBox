@@ -2,4 +2,9 @@
     <string name="app_name">TravelBox</string>
     <string name="facebook_app_id">196148520789328</string>
     <string name="fb_login_protocol_scheme">fb196148520789328</string>
+
+    <string name="loading_server_sync">Syncing data with server...</string>
+    <string name="loading_facebook_fetching">Fetching data from Facebook...</string>
+    <string name="loading_facebook_cancel">Login process cancelled, please try again.</string>
+    <string name="loading_error">Something went wrong, please try again.</string>
 </resources>
