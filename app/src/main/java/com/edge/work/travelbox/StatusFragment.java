@@ -77,7 +77,7 @@ public class StatusFragment extends Fragment{
             //name = query.getString(1);
             //picurl = query.getString(2);
             name.setText(query.getString(1));
-            pic.setImageDrawable(LoadImageFromWebOperations(query.getString(2)));
+            //pic.setImageDrawable(LoadImageFromWebOperations(query.getString(2)));
         }
 
         btnMyIsland.setOnClickListener(new View.OnClickListener() {

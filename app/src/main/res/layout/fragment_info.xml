@@ -104,8 +104,7 @@
                             <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:src="@mipmap/info_idea"
-                                android:id="@+id/imageView4" />
+                                android:src="@mipmap/info_idea" />
 
                             <TextView
                                 android:text="來到凹凸，請先打招呼。\n你知道凹凸為什麼要叫凹凸嗎?"
@@ -114,8 +113,7 @@
                                 android:layout_centerVertical="true"
                                 android:id="@+id/info_text_idea"
                                 android:textColor="#606060"
-                                android:layout_toRightOf="@+id/imageView4"
-                                android:layout_marginLeft="4dp" />
+                                android:layout_marginLeft="20dp" />
 
                         </RelativeLayout>
 
@@ -142,8 +140,7 @@
                                     <ImageView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:src="@mipmap/info_time"
-                                        android:id="@+id/imageView6" />
+                                        android:src="@mipmap/info_time" />
 
                                     <TextView
                                         android:text="平日11:30 – 23:00\n假日10:30 – 23:00\n周二公休"
@@ -153,8 +150,7 @@
                                         android:id="@+id/info_text_time"
                                         android:textColor="#606060"
                                         android:lineSpacingMultiplier="1.5"
-                                        android:layout_toRightOf="@+id/imageView6"
-                                        android:layout_marginLeft="4dp" />
+                                        android:layout_marginLeft="20dp" />
 
                                 </RelativeLayout>
 
@@ -169,8 +165,7 @@
                                     <ImageView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:src="@mipmap/info_phone"
-                                        android:id="@+id/imageView8" />
+                                        android:src="@mipmap/info_phone" />
 
                                     <TextView
                                         android:text="05-533 9610"
@@ -178,8 +173,7 @@
                                         android:layout_height="wrap_content"
                                         android:id="@+id/info_text_phone"
                                         android:textColor="#606060"
-                                        android:layout_toRightOf="@+id/imageView8"
-                                        android:layout_marginLeft="4dp" />
+                                        android:layout_marginLeft="20dp" />
 
                                 </RelativeLayout>
 
@@ -193,8 +187,7 @@
                                     <ImageView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:src="@mipmap/info_money"
-                                        android:id="@+id/imageView9" />
+                                        android:src="@mipmap/info_money" />
 
                                     <TextView
                                         android:text="80 - 200"
@@ -202,8 +195,7 @@
                                         android:layout_height="wrap_content"
                                         android:id="@+id/info_text_price"
                                         android:textColor="#606060"
-                                        android:layout_toRightOf="@+id/imageView9"
-                                        android:layout_marginLeft="4dp" />
+                                        android:layout_marginLeft="20dp" />
                                 </RelativeLayout>
 
                             </RelativeLayout>
@@ -216,7 +208,6 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:src="@mipmap/info_popular"
-                                    android:id="@+id/imageView10"
                                     android:layout_marginLeft="8dp" />
 
                                 <ImageView
