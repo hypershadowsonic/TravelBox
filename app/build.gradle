@@ -37,5 +37,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.journeyapps:zxing-android-embedded:3.4.0'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 
 }
