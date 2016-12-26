@@ -41,21 +41,10 @@ public class UserIslandListData {
                 Statement stmt = con.createStatement();
                 ResultSet rs = stmt.executeQuery("SELECT * FROM UserArch WHERE ownerid='"+userID+"';");
                 Boolean first=true;
-                if (rs.next()) {
-                    int lv = rs.getInt("archlv");
-                    String exe = "SELECT archtype, thumblv" + lv + " FROM ShopInfo WHERE shopid='" + rs.getString("arch") + "';";
-                    Log.d("UserIslandList", exe);
-                    ResultSet cur = stmt.executeQuery(exe);
-                    Log.d("UserIslandList", "Row: " + cur.getRow());
-                    UserIslandListInfo current = new UserIslandListInfo();
-                    current.type = cur.getString("archtype");
-                    current.url = cur.getString("thumblv"+lv);
 
-                    data.add(current);
-                }
                 while(rs.next()){
                     int lv = rs.getInt("archlv");
-                    String exe = "SELECT archtype, thumblv"+lv+" FROM ShopInfo WHERE shopid='"+rs.getString("arch")+"';";
+                    String exe = "SELECT thumblv"+lv+",archtype FROM ShopInfo WHERE shopid='"+rs.getString("arch")+"';";
                     Log.d("UserIslandList", exe);
                     ResultSet cur = stmt.executeQuery(exe);
 
