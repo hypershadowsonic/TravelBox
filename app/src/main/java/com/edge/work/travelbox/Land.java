@@ -22,6 +22,8 @@ public class Land{
     private String id;
     private String[] arch;
     private int[] archposx,archposy;
+    private Boolean isOpen=false;
+
 
 
     public void initLands(View rootview){
@@ -44,19 +46,23 @@ public class Land{
                 if (query.moveToFirst()){
                     id = query.getString(0);
                 }
+                //Get arch count from server
                 Statement stmt = con.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT archcount FROM Island WHERE ownerid="+id+";");
+                ResultSet rs = stmt.executeQuery("SELECT archcount FROM Island WHERE ownerid='"+id+"';");
                 if (rs.getInt(0) == 0){
-                   //Do nothing
+                   //User don't have any arch, do nothing
                 } else {
+                    //User has arches
                     for(int i=0; i<rs.getInt(0); i++){
-                        //Get arch info from server
-                        ResultSet rs1 = stmt.executeQuery("SELECT arch"+i+", archposx"+i+", archposy"+i+" FROM Island WHERE ownerid="+id+";");
+                        //Get arch info from server (Island table)
+                        ResultSet rs1 = stmt.executeQuery("SELECT arch"+i+", archposx"+i+", archposy"+i+" FROM Island WHERE ownerid='"+id+"';");
                         arch[i] = rs1.getString(i);
                         archposx[i] = rs1.getInt(i);
                         archposy[i] = rs1.getInt(i);
-                        //Get arch type from server
-                        ResultSet rs2 = stmt.executeQuery("SELECT archtype FROM ShopInfo WHERE id="+arch+";");
+                        landElements[archposx[i]][archposy[i]].isHead = true;
+                        landElements[archposx[i]][archposy[i]].content = arch[i];
+                        //Get arch type from server (ShopInfo table)
+                        ResultSet rs2 = stmt.executeQuery("SELECT archtype FROM ShopInfo WHERE id='"+arch[i]+"';");
                         if (rs2.getString(0) == "S" || rs2.getString(0) == "s"){
                             //Mark 2*2 area
                             availableArray[archposx[i]][archposy[i]] = false;
@@ -80,55 +86,57 @@ public class Land{
         }
     }
 
-    public Boolean[][] getAvailableLand(Boolean isBig){
+    public Boolean[][] getAvailableArray(){
+        return availableArray;
+    }
+
+    public Boolean getAvailableArray(int x, int y){
+        return availableArray[x][y];
+    }
+
+    public Boolean[][] scanAvailableLand(Boolean isBig){
 
         //Search for available lands.
         if(isBig){
             //Search for 2*3 area
-        for(int i=0; i<5; i++){
-            for(int j=2; j<6; j++){
-                if(landElements[i][j].getContent() != null){
-                    availableArray[i][j] = false;
+            for(int i=0; i<5; i++){
+                for(int j=2; j<6; j++){
+                    if(availableArray[i][j] == false || availableArray[i+1][j] == false || availableArray[i+1][j-1] == false || availableArray[i][j-1] == false || availableArray[i][j-2] == false || availableArray[i+1][j-2] == false){
+                        availableArray[i][j] = false;
+                    }
                 }
             }
-        }
         } else {
             //Search for 2*2 area
             for(int i=0; i<5; i++){
                 for(int j=1; j<6; j++){
-                    if(landElements[i][j].getContent() != null){
+                    if(availableArray[i][j] == false || availableArray[i+1][j] == false || availableArray[i+1][j-1] == false || availableArray[i][j-1] == false){
                         availableArray[i][j] = false;
                     }
                 }
             }
         }
+
         return availableArray;
     }
 
+    public void setIsOpen(Boolean setValue){
+        isOpen = setValue;
+    }
 
-
+    public Boolean getIsOpen(){
+        return isOpen;
+    }
 
     public class LandElement {
         private String content=null;
         private Boolean isHead=false;
-        private int width=2;
-        //public ImageView landImg;
 
-        public void initContent(String con, int wid){
-            content = con;
-            width = wid;
-        }
         public String getContent(){
             return content;
         }
-        public int getWidth(){
-            return width;
+        public Boolean getIsHead(){
+            return isHead;
         }
-
-        /*public void setViewId(View rootview, int idAddress){
-            Log.d("Land Class", "setViewId: "+idAddress);
-            //landImg = new ImageView(rootview.getContext());
-            ImageView landImg = (ImageView)rootview.findViewById(idAddress);
-        }*/
     }
 }

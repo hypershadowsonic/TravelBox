@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,9 @@ import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.w3c.dom.Text;
 
@@ -74,10 +78,18 @@ public class StatusFragment extends Fragment{
         SQLiteDatabase sqLiteDB = getActivity().getBaseContext().openOrCreateDatabase("local-user.db", Context.MODE_PRIVATE, null);
         Cursor query = sqLiteDB.rawQuery("SELECT * FROM user", null);
         if (query.moveToFirst()){
-            //name = query.getString(1);
-            //picurl = query.getString(2);
+            //Set name and profile pic
             name.setText(query.getString(1));
-            //pic.setImageDrawable(LoadImageFromWebOperations(query.getString(2)));
+            DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                    .cacheInMemory(true)
+                    .cacheOnDisc(true)
+                    .build();
+            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext())
+                    .defaultDisplayImageOptions(defaultOptions)
+                    .build();
+            ImageLoader.getInstance().init(config);
+            ImageLoader.getInstance().displayImage(query.getString(2),pic);
+
         }
 
         btnMyIsland.setOnClickListener(new View.OnClickListener() {

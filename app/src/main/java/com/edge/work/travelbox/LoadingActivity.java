@@ -242,7 +242,8 @@ public class LoadingActivity extends Activity {
                         {
                             //User not found, create new user
                             try {
-                                stmt.executeQuery("INSERT INTO Users (id, name, profileimg_url, email, birthday, gender) VALUES('"+userID+"','"+userName+"','"+userPicurl+"','"+userEmail+"','"+userBday+"','"+userGender+"');");
+                                stmt.executeUpdate("INSERT INTO Users (id, name, profileimg_url, email, birthday, gender) VALUES('"+userID+"','"+userName+"','"+userPicurl+"','"+userEmail+"','"+userBday+"','"+userGender+"');");
+                                stmt.executeUpdate("INSERT INTO Island (ownerid, archcount) VALUES('"+userID+"', 0)");
                                 //sqLiteDB.execSQL("DROP TABLE IF EXISTS user");
                                 sqLiteDB.execSQL("CREATE TABLE IF NOT EXISTS user(id TEXT, name TEXT, profileimg_url TEXT);");
                                 sqLiteDB.execSQL("INSERT INTO user (id, name, profileimg_url) VALUES('"+userID+"','"+userName+"','"+userPicurl+"');");

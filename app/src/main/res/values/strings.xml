@@ -7,4 +7,5 @@
     <string name="loading_facebook_fetching">Fetching data from Facebook...</string>
     <string name="loading_facebook_cancel">Login process cancelled, please try again.</string>
     <string name="loading_error">Something went wrong, please try again.</string>
+
 </resources>
