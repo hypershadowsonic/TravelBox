@@ -7,4 +7,5 @@ package com.edge.work.travelbox;
 public class UserIslandListInfo {
     public String type;
     public String url;
+    public String arch;
 }

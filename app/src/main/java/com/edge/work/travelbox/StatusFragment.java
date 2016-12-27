@@ -76,20 +76,11 @@ public class StatusFragment extends Fragment{
         integrator = new IntentIntegrator(getActivity());
 
         SQLiteDatabase sqLiteDB = getActivity().getBaseContext().openOrCreateDatabase("local-user.db", Context.MODE_PRIVATE, null);
-        Cursor query = sqLiteDB.rawQuery("SELECT * FROM user", null);
+        Cursor query = sqLiteDB.rawQuery("SELECT * FROM user WHERE id='"+TravelBox.userId+"';", null);
         if (query.moveToFirst()){
             //Set name and profile pic
             name.setText(query.getString(1));
-            DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                    .cacheInMemory(true)
-                    .cacheOnDisc(true)
-                    .build();
-            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext())
-                    .defaultDisplayImageOptions(defaultOptions)
-                    .build();
-            ImageLoader.getInstance().init(config);
             ImageLoader.getInstance().displayImage(query.getString(2),pic);
-
         }
 
         btnMyIsland.setOnClickListener(new View.OnClickListener() {

@@ -450,4 +450,90 @@
             android:id="@+id/arch_recyclerview" />
     </LinearLayout>
 
+    <RelativeLayout
+        android:layout_width="264dp"
+        android:layout_height="322dp"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/myisland_detail"
+        android:layout_centerVertical="true"
+        android:background="#5D5D5D"
+        android:padding="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:id="@+id/myisland_detail_name"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="16dp" />
+
+        <ImageView
+            android:layout_width="62dp"
+            android:layout_height="62dp"
+            android:src="@mipmap/main_box_yunlin"
+            android:id="@+id/myisland_detail_lv1"
+            android:layout_below="@+id/myisland_detail_name" />
+
+        <ImageView
+            android:layout_width="62dp"
+            android:layout_height="62dp"
+            android:src="@mipmap/main_box_yunlin"
+            android:layout_alignBottom="@+id/myisland_detail_lv1"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/myisland_detail_lv2" />
+
+        <ImageView
+            android:layout_width="62dp"
+            android:layout_height="62dp"
+            android:src="@mipmap/loading_logo"
+            android:id="@+id/myisland_detail_lv3"
+            android:layout_alignTop="@+id/myisland_detail_lv2"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <ImageView
+            android:layout_width="86dp"
+            android:layout_height="86dp"
+            android:src="@mipmap/list_box_01"
+            android:id="@+id/myisland_detail_lv4"
+            android:layout_below="@+id/myisland_detail_lv2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/houseinfo_locked"
+            android:id="@+id/myisland_detail_lock"
+            android:layout_below="@+id/myisland_detail_lv4"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/houseinfo_delete"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/myisland_detail_delete" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/houseinfo_info"
+            android:id="@+id/myisland_detail_info"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true" />
+
+        <ImageView
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="false"
+            android:id="@+id/myisland_detail_close"
+            android:layout_width="24dp"
+            android:layout_height="24dp" />
+    </RelativeLayout>
+
 </RelativeLayout>

@@ -1,14 +1,8 @@
 package com.edge.work.travelbox;
 
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,13 +10,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -31,15 +24,21 @@ import java.sql.Statement;
 
 public class MyislandIslandFragment extends Fragment {
 
-    private ImageView[][] land = new ImageView[6][6];
-    private Land landProp = new Land();
+    private static ImageView[][] land = new ImageView[6][6];
+    private static Land landProp = new Land();
     private View.OnClickListener mListener;
     private ConnectionClass connectionClass = new ConnectionClass();
-    private String userID;
-    private ImageView[] iv;
+    private ImageView[] iv=new ImageView[66];
     private FrameLayout fl;
     private RecyclerView recyclerView;
     private UserIslandListAdapter adapter;
+    private LinearLayoutManager llm;
+    private static String currentShopId;
+    private RelativeLayout archDetail;
+    private ImageView[] archDetailImg = new ImageView[4];
+    private TextView archDetailName;
+    private ImageView archDetailClose, archDetailInfo, archDetailDelete, activeDetailArch;
+    private ArchBundle activebundle;
 
 
     public MyislandIslandFragment() {
@@ -50,24 +49,7 @@ public class MyislandIslandFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootview = inflater.inflate(R.layout.fragment_myisland_island, container, false);
-        landProp.initLands(rootview);
-        //Initialize Universal Image Loader
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisc(true)
-                .build();
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext())
-                .defaultDisplayImageOptions(defaultOptions)
-                .build();
-        ImageLoader.getInstance().init(config);
-        //Get user ID
-        SQLiteDatabase sqLiteDB = getActivity().getBaseContext().openOrCreateDatabase("local-user.db", Context.MODE_PRIVATE, null);
-        Cursor query = sqLiteDB.rawQuery("SELECT * FROM user", null);
-        if (query.moveToFirst()){
-            userID = query.getString(0);
-        }
-
+        final View rootview = inflater.inflate(R.layout.fragment_myisland_island, container, false);
         //Need to figure a better way of these
         land[0][0]=(ImageView) rootview.findViewById(R.id.land1_1);
         land[0][1]=(ImageView) rootview.findViewById(R.id.land1_2);
@@ -111,19 +93,61 @@ public class MyislandIslandFragment extends Fragment {
         land[5][4]=(ImageView) rootview.findViewById(R.id.land6_5);
         land[5][5]=(ImageView) rootview.findViewById(R.id.land6_6);
 
+        archDetail = (RelativeLayout)rootview.findViewById(R.id.myisland_detail);
+        archDetailClose = (ImageView) rootview.findViewById(R.id.myisland_detail_close);
+        archDetailClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                archDetail.setVisibility(View.GONE);
+            }
+        });
+        archDetailInfo = (ImageView) rootview.findViewById(R.id.myisland_detail_info);
+        archDetailInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Go to info page
+            }
+        });
+        archDetailDelete = (ImageView) rootview.findViewById(R.id.myisland_detail_delete);
+        archDetailDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activeDetailArch.setImageDrawable(null);
+                archDetail.setVisibility(View.GONE);
+                deleteArch(activebundle,rootview);
+
+            }
+        });
+        archDetailImg[0] = (ImageView) rootview.findViewById(R.id.myisland_detail_lv1);
+        archDetailImg[1] = (ImageView) rootview.findViewById(R.id.myisland_detail_lv2);
+        archDetailImg[2] = (ImageView) rootview.findViewById(R.id.myisland_detail_lv3);
+        archDetailImg[3] = (ImageView) rootview.findViewById(R.id.myisland_detail_lv4);
+        archDetailName = (TextView) rootview.findViewById(R.id.myisland_detail_name);
+
         fl = (FrameLayout)rootview.findViewById(R.id.island_container);
+        Boolean[][] isHead = landProp.initLands(rootview);
+        initShowAllArch(isHead);
 
         recyclerView = (RecyclerView)rootview.findViewById(R.id.arch_recyclerview);
-        adapter = new UserIslandListAdapter(getContext(), UserIslandListData.getData(getContext()));
+        adapter = new UserIslandListAdapter(this.getActivity().getBaseContext(), UserIslandListData.getData(getContext()));
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        llm = new LinearLayoutManager(getContext());
+        llm.setOrientation(LinearLayoutManager.HORIZONTAL);
+
+        recyclerView.setLayoutManager(llm);
+
 
         mListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(landProp.getIsOpen()) {
-                    if (landProp.getAvailableArray(view.getTag().toString().charAt(0), view.getTag().toString().charAt(1))){
+                int x = Character.getNumericValue(view.getTag().toString().charAt(0));
+                int y = Character.getNumericValue(view.getTag().toString().charAt(1));
 
+                Log.d("Land", "onClick: "+x+","+y);
+                if(landProp.getIsOpen()) {
+                    if (landProp.getAvailableArray(x,y)){
+                        //showThisArch(x,y, getArchBundle(currentShopId));
+                        pickStatusClose(rootview,x,y);
                     }
                 }
             }
@@ -140,11 +164,15 @@ public class MyislandIslandFragment extends Fragment {
         return rootview;
     }
 
-    public void setPickOpen(Boolean isBig){
+    public static void setCurrentShopID(String value){
+        currentShopId = value;
+    }
+    public static void pickStatusOpen(Boolean isBig){
 
-        landProp.scanAvailableLand(isBig);
+        Boolean[][] table = landProp.scanAvailableLand(isBig);
         landProp.setIsOpen(true);
-        Boolean[][] table = landProp.getAvailableArray();
+
+        //Highlight pickable blocks
         for(int i=0; i<6; i++){
             for(int j=0; j<6; j++){
                 if (table[i][j]){
@@ -154,44 +182,168 @@ public class MyislandIslandFragment extends Fragment {
         }
     }
 
-    public void setPickClose(View rootview){
+    public void pickStatusClose(View rootview, int x, int y){
+        int archcount=0;
+        int emptyslot=0;
+
         landProp.setIsOpen(false);
 
+        for(int i=0; i<6; i++){
+            for(int j=0; j<6; j++){
+                    land[i][j].clearColorFilter();
+            }
+        }
         //Sync with server
+        try{
+            Connection con = connectionClass.CONN();
+            if (con == null){
+                //Failed to connect to server
+                Log.e("SQL", "Failed connecting to server");
+            } else {
 
-        //Update land status
-        landProp.initLands(rootview);
+                Statement stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery("SELECT * FROM Island WHERE ownerid='"+ TravelBox.userId +"';");
+                if(rs.next()){
+                    //Get archcount
+                    archcount = rs.getInt("archcount");
+
+                    //find a empty slot
+                    for(int i=0;i<9;i++){
+                        if(rs.getString("arch"+i)==null){
+                            emptyslot=i;
+                            i=9;
+                        }
+                    }
+                    //Execute update
+                    String query = "UPDATE Island SET archcount="+(archcount+1)+", arch"+emptyslot+"='"+currentShopId+"', archposx"+emptyslot+"="+x+", archposy"+emptyslot+"="+y+" WHERE ownerid="+TravelBox.userId+";";
+                    Log.d("SQL", query);
+                    stmt.executeUpdate(query);
+                }
+            }
+        } catch (Exception ex){
+            Log.e("SQL", "pickStatusClose: "+ex.toString());
+        }
+
+        //Reload land status
+        Boolean[][] isHead = landProp.initLands(rootview);
+        initShowAllArch(isHead);
     }
 
-    public void initShowAllArch(){
-        for (int i=0; i<6; i++){
-            for (int j=0; j<6; j++){
-                if (landProp.landElements[i][j].getIsHead()){
-                    try {
-                        //Get arch image url from server
-                        Connection con = connectionClass.CONN();
-                        Statement stmt = con.createStatement();
-                        //Determine what level does the user have
-                        ResultSet rs = stmt.executeQuery("SELECT archlv FROM UserArch WHERE ownerid='"+userID+"' AND arch='"+ landProp.landElements[i][j].getContent() +"';");
-                        int lv = rs.getInt(0);
-                        //Fetch the target level image url of arch
-                        rs = stmt.executeQuery("SELECT archlv"+lv+" FROM ShopInfo WHERE shopid='"+landProp.landElements[i][j].getContent()+"';");
-                        String url = rs.getString(0);
-                        //New ImageView
-                        double marginleft=28.5*j-28.5*i;
-                        double marginbottom=16.5*j+16.5*i;
-                        iv[i*10+j]=new ImageView(getContext());
-                        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                        lp.gravity=0x01|0x50; //Gravity= Center Horizontal + Bottom
-                        lp.leftMargin= ((int) marginleft);
-                        lp.bottomMargin= ((int) marginbottom);
-                        fl.addView(iv[i*10+j],lp);
-                    } catch (Exception ex){
-                        Log.e("SQL", "initShowAllArch: " + ex.toString());
-                    }
+    public void initShowAllArch(Boolean[][] isHead){
+        for (int i=5; i>=0; i--){
+            for (int j=5; j>=0; j--){
+                if (isHead[i][j]){
+                    showThisArch(i, j, getArchBundle(landProp.getContent(i, j)));
                 }
             }
         }
+    }
+
+    private void deleteArch(ArchBundle archBundle, View rootview){
+        try{
+            Connection con = connectionClass.CONN();
+            if (con == null){
+                //Failed to connect to server
+                Log.e("SQL", "Unable to connect to server");
+            } else {
+                //Get arch data from server
+                Statement stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery("SELECT arch0, arch1, arch2, arch3, arch4, arch5, arch6, arch7, arch8 FROM Island WHERE ownerid='" + TravelBox.userId + "';");
+                if (rs.next()) {
+                    for(int i=0; i<9; i++){
+                        if(rs.getString("arch"+i).equals(archBundle.shopid)){
+                            //Wipe arch data
+                            stmt.executeUpdate("UPDATE Island SET arch"+i+"=null, archposx"+i+"=null, archposy"+i+"=null;");
+                            i=9;
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex){
+            Log.e("SQL", "deleteArch: "+ex.toString());
+        }
+        Boolean[][] isHead= landProp.initLands(rootview);
+        initShowAllArch(isHead);
+    }
+
+    private ArchBundle getArchBundle(String shopid) {
+        ArchBundle archbundle = new ArchBundle();
+        String url="";
+        try {
+            //Get arch image url from server
+            Connection con = connectionClass.CONN();
+            Statement stmt = con.createStatement();
+            //Determine what level does the user have
+            int lv=0;
+            ResultSet rs = stmt.executeQuery("SELECT archlv FROM UserArch WHERE ownerid='"+ TravelBox.userId +"' AND arch='"+ shopid +"';");
+            if(rs.next()){
+            lv = rs.getInt("archlv");
+            }
+            //Fetch the target level image url and name of arch
+            ResultSet rs2 = stmt.executeQuery("SELECT archlv"+lv+",name FROM ShopInfo WHERE shopid='"+ shopid +"';");
+            if(rs2.next()){
+                archbundle.url = rs2.getString("archlv"+lv);
+                archbundle.name = rs2.getString("name");
+            }
+
+        } catch (Exception ex){
+            Log.e("SQL", "getArchBundle: " + ex.toString());
+        }
+        archbundle.shopid = shopid;
+        return archbundle;
+    }
+
+    private String getThumbURL(String shopid,int level) {
+        String url="";
+        try {
+            //Get arch image url from server
+            Connection con = connectionClass.CONN();
+            Statement stmt = con.createStatement();
+
+            //Fetch the target level image url of arch
+            ResultSet rs2 = stmt.executeQuery("SELECT thumblv"+level+" FROM ShopInfo WHERE shopid='"+ shopid +"';");
+            if(rs2.next()){
+                url = rs2.getString("thumblv"+level);
+            }
+        } catch (Exception ex){
+            Log.e("SQL", "getThumbURL: " + ex.toString());
+        }
+        return url;
+    }
+
+    private void showThisArch(int x, int y, final ArchBundle arch) {
+        x++;y++;
+        //New ImageView
+        iv[x*10+y]=new ImageView(getContext());
+        //margin data in dp
+        double marginleft=28.5*y-28.5*x-28.5;
+        double marginbottom=16.5*y+16.5*x+16-16.5*3;
+        //convert dp to pixel
+        final float scale = getContext().getResources().getDisplayMetrics().density;
+        int mleftpixels = (int) (marginleft * scale + 0.5f);
+        int mbottompixels = (int) (marginbottom * scale + 0.5f);
+        int wh = (int) (115 * scale + 0.5f);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(wh, wh);
+        lp.gravity=0x01|0x50; //Gravity= Center Horizontal + Bottom
+        lp.leftMargin= mleftpixels;
+        lp.bottomMargin= mbottompixels;
+        Log.d("Myisland", "New ImageView: "+marginleft+","+marginbottom);
+        fl.addView(iv[x*10+y],lp);
+        iv[x*10+y].setScaleType(ImageView.ScaleType.FIT_END);
+        ImageLoader.getInstance().displayImage(arch.url,iv[x*10+y]);
+        iv[x*10+y].setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                archDetail.setVisibility(View.VISIBLE);
+                activeDetailArch = (ImageView)view;
+                for(int i=1;i<5;i++){
+                    ImageLoader.getInstance().displayImage(getThumbURL(arch.shopid,i), archDetailImg[i-1]);
+                }
+                archDetailName.setText(arch.name);
+                activebundle = arch;
+                return true;
+            }
+        });
     }
 
     public static ColorMatrixColorFilter brightIt(int fb) {
@@ -212,4 +364,9 @@ public class MyislandIslandFragment extends Fragment {
         return f;
     }
 
+    public final class ArchBundle {
+        public String name;
+        public String url;
+        public String shopid;
+    }
 }

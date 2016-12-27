@@ -1,16 +1,16 @@
 package com.edge.work.travelbox;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.ArrayList;
 
@@ -31,14 +31,7 @@ public class UserIslandListAdapter extends RecyclerView.Adapter<UserIslandListAd
         this.context = context;
         this.data = data;
         inflater = LayoutInflater.from(context);
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisc(true)
-                .build();
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
-                .defaultDisplayImageOptions(defaultOptions)
-                .build();
-        ImageLoader.getInstance().init(config);
+
     }
 
     @Override
@@ -52,11 +45,25 @@ public class UserIslandListAdapter extends RecyclerView.Adapter<UserIslandListAd
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
-
-        holder.textView.setText(data.get(position).type);
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
+        if(data.get(position).type.endsWith("S")||data.get(position).type.endsWith("s")){
+            holder.textView.setText("2X2");
+        } else if(data.get(position).type.endsWith("B")||data.get(position).type.endsWith("b")){
+            holder.textView.setText("2X3");
+        }
         ImageLoader.getInstance().displayImage(data.get(position).url,holder.imageView);
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MyislandIslandFragment.setCurrentShopID(data.get(position).arch);
+                if (data.get(position).type.endsWith("S")){
+                    MyislandIslandFragment.pickStatusOpen(false);
+                } else {
+                    MyislandIslandFragment.pickStatusOpen(true);
+                }
 
+            }
+        });
     }
 
     @Override
@@ -71,7 +78,6 @@ public class UserIslandListAdapter extends RecyclerView.Adapter<UserIslandListAd
 
         public MyViewHolder(View itemView) {
             super(itemView);
-
             textView = (TextView)itemView.findViewById(R.id.text_row);
             imageView = (ImageView)itemView.findViewById(R.id.img_row);
         }

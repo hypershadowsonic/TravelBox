@@ -225,6 +225,7 @@ public class LoadingActivity extends Activity {
                         String query = "select * from Users where id='" + userID + "'";
                         Statement stmt = con.createStatement();
                         ResultSet rs = stmt.executeQuery(query);
+                        TravelBox.userId=userID;
                         SQLiteDatabase sqLiteDB = getBaseContext().openOrCreateDatabase("local-user.db", MODE_PRIVATE, null);
 
                         if(rs.next())
