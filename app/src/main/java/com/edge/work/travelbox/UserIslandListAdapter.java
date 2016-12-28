@@ -1,9 +1,7 @@
 package com.edge.work.travelbox;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +35,7 @@ public class UserIslandListAdapter extends RecyclerView.Adapter<UserIslandListAd
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = inflater.inflate(R.layout.userarchlist_item, parent, false);
+        View view = inflater.inflate(R.layout.item_userarchlist, parent, false);
 
         MyViewHolder holder = new MyViewHolder(view);
 
