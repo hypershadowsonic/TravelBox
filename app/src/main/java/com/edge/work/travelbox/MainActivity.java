@@ -22,21 +22,11 @@ import java.sql.Statement;
 
 public class MainActivity extends FragmentActivity {
 
-    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        SQLiteDatabase sqLiteDB = this.getBaseContext().openOrCreateDatabase("local-user.db", Context.MODE_PRIVATE, null);
-        Cursor query = sqLiteDB.rawQuery("SELECT id FROM user", null);
-        if (query.moveToFirst()){
-            //Get ID from SQLite
-            userID = query.getString(0);
-            Log.d("SQLite", "Got user ID");
-            sqLiteDB.close();
-        }
 
         FragmentManager fm = getSupportFragmentManager();
         StatusFragment statusF=(StatusFragment) fm.findFragmentById(R.id.status_bar);
@@ -79,7 +69,7 @@ public class MainActivity extends FragmentActivity {
                         FragmentTransaction ft = fm.beginTransaction();
                         String shopID = rs.getString("shopid");
                         Log.d("QrScan", "In Rs Result"+shopID);
-                        ResultSet rs2 = stmt.executeQuery("SELECT archlv FROM UserArch WHERE ownerid='"+userID+"' AND arch='"+shopID+"';");
+                        ResultSet rs2 = stmt.executeQuery("SELECT archlv FROM UserArch WHERE ownerid='"+TravelBox.userId+"' AND arch='"+shopID+"';");
                         if(rs2.next()){
                             //User has it, check if it's under lv5
                             int lv = rs2.getInt("archlv");

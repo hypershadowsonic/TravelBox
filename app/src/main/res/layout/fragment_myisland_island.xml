@@ -421,16 +421,18 @@
             app:donut_finished_color="#024A5B"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            app:donut_progress="35"
+            app:donut_progress="1638"
             android:rotation="-90"
-            app:donut_unfinished_color="#19221814" />
+            app:donut_unfinished_color="#19221814"
+            app:donut_max="3600" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/myisland_countdown"
             android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:id="@+id/myisland_btn_harvest" />
     </RelativeLayout>
 
     <LinearLayout
@@ -441,8 +443,9 @@
         android:layout_height="86dp"
         android:background="#ffffff"
         android:elevation="2dp"
-        android:visibility="visible"
-        android:padding="8dp">
+        android:visibility="gone"
+        android:padding="8dp"
+        android:id="@+id/build_container">
 
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"

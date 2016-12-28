@@ -36,8 +36,8 @@ public class MainFragment extends Fragment {
             public void onClick(View v){
                 Log.i(TAG, "onClick: Yunlin");
                 fm.beginTransaction()
-                .replace(R.id.main_container, new ListAssemblyFragment())
                         .addToBackStack(null)
+                        .replace(R.id.main_container, new ListAssemblyFragment())
                         .commit();
             }
         });

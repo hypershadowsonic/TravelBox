@@ -4,17 +4,23 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.sql.Connection;
@@ -37,8 +43,15 @@ public class MyislandIslandFragment extends Fragment {
     private RelativeLayout archDetail;
     private ImageView[] archDetailImg = new ImageView[4];
     private TextView archDetailName;
-    private ImageView archDetailClose, archDetailInfo, archDetailDelete, activeDetailArch;
+    private ImageView archDetailClose, archDetailInfo, archDetailDelete, activeDetailArch, btnBuild, btnShare, btnHarvest;
     private ArchBundle activebundle;
+    private FragmentManager fm;
+    private Boolean buildOn=false;
+    private Animation fadein, fadeout;
+    private LinearLayout buildContainer;
+    private long lastHarvest;
+    private DonutProgress harvestProgress;
+    private long harvestSeconds;
 
 
     public MyislandIslandFragment() {
@@ -50,6 +63,8 @@ public class MyislandIslandFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootview = inflater.inflate(R.layout.fragment_myisland_island, container, false);
+        fm=getParentFragment().getFragmentManager();
+
         //Need to figure a better way of these
         land[0][0]=(ImageView) rootview.findViewById(R.id.land1_1);
         land[0][1]=(ImageView) rootview.findViewById(R.id.land1_2);
@@ -93,6 +108,44 @@ public class MyislandIslandFragment extends Fragment {
         land[5][4]=(ImageView) rootview.findViewById(R.id.land6_5);
         land[5][5]=(ImageView) rootview.findViewById(R.id.land6_6);
 
+        harvestProgress = (DonutProgress)rootview.findViewById(R.id.progress_countdown);
+
+        fadein = new AlphaAnimation(0.0f, 1.0f);
+        fadein.setDuration(500);
+        fadein.setFillAfter(true);
+        fadeout = new AlphaAnimation(1.0f, 0.0f);
+        fadeout.setDuration(500);
+        fadeout.setFillAfter(true);
+
+        buildContainer = (LinearLayout) rootview.findViewById(R.id.build_container);
+        btnBuild = (ImageView) rootview.findViewById(R.id.btn_myisland_build);
+        btnBuild.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(buildOn){
+                    buildContainer.startAnimation(fadeout);
+                    buildContainer.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.GONE);
+                    buildOn=false;
+                } else {
+                    buildContainer.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                    buildContainer.startAnimation(fadein);
+                    buildOn=true;
+                }
+            }
+        });
+        btnShare = (ImageView) rootview.findViewById(R.id.btn_myisland_share);
+
+
+        btnHarvest = (ImageView) rootview.findViewById(R.id.myisland_btn_harvest);
+        btnHarvest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
         archDetail = (RelativeLayout)rootview.findViewById(R.id.myisland_detail);
         archDetailClose = (ImageView) rootview.findViewById(R.id.myisland_detail_close);
         archDetailClose.setOnClickListener(new View.OnClickListener() {
@@ -106,6 +159,16 @@ public class MyislandIslandFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //Go to info page
+                Bundle bundle = new Bundle();
+                bundle.putString("shopid",activebundle.shopid);
+                InfoFragment infoFragment = new InfoFragment();
+                infoFragment.setArguments(bundle);
+
+                fm.beginTransaction()
+                        .addToBackStack(null)
+                        .replace(R.id.main_container, infoFragment)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                        .commit();
             }
         });
         archDetailDelete = (ImageView) rootview.findViewById(R.id.myisland_detail_delete);
@@ -227,6 +290,7 @@ public class MyislandIslandFragment extends Fragment {
         //Reload land status
         Boolean[][] isHead = landProp.initLands(rootview);
         initShowAllArch(isHead);
+
     }
 
     public void initShowAllArch(Boolean[][] isHead){
@@ -237,6 +301,29 @@ public class MyislandIslandFragment extends Fragment {
                 }
             }
         }
+        //Update Harvest Time
+        try {
+            Connection con = connectionClass.CONN();
+            if (con == null) {
+                //Failed to connect to server
+                Log.e("SQL", "Unable to connect to server");
+            } else {
+                //Get arch data from server
+                Statement stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery("SELECT lastharvest FROM Island WHERE ownerid='" + TravelBox.userId + "';");
+                if (rs.next()) {
+                    lastHarvest = rs.getLong("lastharvest");
+                }
+            }
+        }catch (Exception ex){
+            Log.e("SQL", "Update harvest time: "+ex.toString());
+        }
+        if (System.currentTimeMillis()-lastHarvest>3600){
+            harvestSeconds = 3600;
+        } else {
+            harvestSeconds = System.currentTimeMillis() - lastHarvest;
+        }
+        harvestProgress.setProgress(((int) harvestSeconds));
     }
 
     private void deleteArch(ArchBundle archBundle, View rootview){
@@ -248,12 +335,12 @@ public class MyislandIslandFragment extends Fragment {
             } else {
                 //Get arch data from server
                 Statement stmt = con.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT arch0, arch1, arch2, arch3, arch4, arch5, arch6, arch7, arch8 FROM Island WHERE ownerid='" + TravelBox.userId + "';");
+                ResultSet rs = stmt.executeQuery("SELECT arch0, arch1, arch2, arch3, arch4, arch5, arch6, arch7, arch8,archcount FROM Island WHERE ownerid='" + TravelBox.userId + "';");
                 if (rs.next()) {
                     for(int i=0; i<9; i++){
                         if(rs.getString("arch"+i).equals(archBundle.shopid)){
                             //Wipe arch data
-                            stmt.executeUpdate("UPDATE Island SET arch"+i+"=null, archposx"+i+"=null, archposy"+i+"=null;");
+                            stmt.executeUpdate("UPDATE Island SET arch"+i+"=null, archposx"+i+"=null, archposy"+i+"=null, archcount="+(rs.getInt("archcount")-1)+";");
                             i=9;
                         }
                     }
@@ -268,7 +355,6 @@ public class MyislandIslandFragment extends Fragment {
 
     private ArchBundle getArchBundle(String shopid) {
         ArchBundle archbundle = new ArchBundle();
-        String url="";
         try {
             //Get arch image url from server
             Connection con = connectionClass.CONN();
@@ -334,6 +420,7 @@ public class MyislandIslandFragment extends Fragment {
         iv[x*10+y].setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+                Log.d("MyislandIsland", "onLongClick: "+arch.shopid);
                 archDetail.setVisibility(View.VISIBLE);
                 activeDetailArch = (ImageView)view;
                 for(int i=1;i<5;i++){

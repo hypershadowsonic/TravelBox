@@ -24,7 +24,6 @@ public class Land{
     private Boolean[] filltrue = new Boolean[]{true,true,true,true,true,true};
     public String[][] content = new String[6][6];
     private ConnectionClass connectionClass = new ConnectionClass();
-    private String userID = TravelBox.userId;
     private String[] arch = new String[9];
     private static int[] archposx = new int[9];
     private static int[] archposy = new int[9];
@@ -47,20 +46,19 @@ public class Land{
             } else {
                 //Get arch count from server
                 Statement stmt = con.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT archcount FROM Island WHERE ownerid='"+ userID +"';");
+                ResultSet rs = stmt.executeQuery("SELECT archcount FROM Island WHERE ownerid='"+ TravelBox.userId +"';");
                 if(rs.next()){
                     int archcount = rs.getInt("archcount");
+                    int processedarch=0;
                     if (archcount == 0){
                        //User don't have any arch, do nothing
                     } else {
                         //User has arches
                         for(int cur=0; cur<9; cur++){
-
                             //Get arch info from server (Island table)
-                            ResultSet rs1 = stmt.executeQuery("SELECT arch"+cur+", archposx"+cur+", archposy"+cur+" FROM Island WHERE ownerid='"+ userID +"';");
+                            ResultSet rs1 = stmt.executeQuery("SELECT arch"+cur+", archposx"+cur+", archposy"+cur+" FROM Island WHERE ownerid='"+ TravelBox.userId +"';");
 
                             if(rs1.next()){
-
                                 arch[cur] = rs1.getString("arch"+cur);
                                 archposx[cur] = rs1.getInt("archposx"+cur);
                                 archposy[cur] = rs1.getInt("archposy"+cur);
@@ -94,8 +92,11 @@ public class Land{
                                 rs2.close();
                                 Log.d("Land", "initLands: rs2 completed");
                             }
+                            processedarch++;
+                            if(processedarch==archcount){
+                                cur=9;
+                            }
                         }
-
                     }
                 }
             }
