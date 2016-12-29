@@ -15,19 +15,19 @@
         android:layout_alignBottom="@+id/status_img_profile"
         android:layout_alignLeft="@+id/status_text_username"
         android:layout_alignStart="@+id/status_text_username"
-        android:id="@+id/status_img_score"
+        android:id="@+id/status_img_trophy"
     android:layout_marginBottom="2dp" />
 
     <TextView
         android:text="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/status_img_score"
-        android:layout_toRightOf="@+id/status_img_score"
-        android:layout_toEndOf="@+id/status_img_score"
+        android:layout_alignBottom="@+id/status_img_trophy"
+        android:layout_toRightOf="@+id/status_img_trophy"
+        android:layout_toEndOf="@+id/status_img_trophy"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:id="@+id/status_text_score"
+        android:id="@+id/status_text_trophy"
         android:textColor="#28BCAD"
         android:textSize="12sp" />
 
@@ -80,9 +80,9 @@
         android:layout_marginLeft="9dp"
         android:layout_marginStart="9dp"
         android:id="@+id/status_img_coin"
-        android:layout_alignBottom="@+id/status_text_score"
-        android:layout_toRightOf="@+id/status_text_score"
-        android:layout_toEndOf="@+id/status_text_score" />
+        android:layout_alignBottom="@+id/status_text_trophy"
+        android:layout_toRightOf="@+id/status_text_trophy"
+        android:layout_toEndOf="@+id/status_text_trophy" />
 
     <TextView
         android:text="300"

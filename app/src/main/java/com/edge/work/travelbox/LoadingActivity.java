@@ -190,7 +190,7 @@ public class LoadingActivity extends Activity {
     }
 
 
-    public class DoSync extends AsyncTask<String,String,String>
+    private class DoSync extends AsyncTask<String,String,String>
     {
         String z = "";
         Boolean isSuccess = false;
@@ -231,8 +231,10 @@ public class LoadingActivity extends Activity {
                         if(rs.next())
                         {
                             //User found, update info
-                            //sqLiteDB.execSQL("DROP TABLE IF EXISTS user");
-                            sqLiteDB.execSQL("CREATE TABLE IF NOT EXISTS user(id TEXT, name TEXT, profileimg_url TEXT);");
+                            TravelBox.coin = rs.getInt("amount_coin");
+                            TravelBox.trophy = rs.getInt("amount_trophy");
+                            sqLiteDB.execSQL("DROP TABLE IF EXISTS user");
+                            sqLiteDB.execSQL("CREATE TABLE user(id TEXT, name TEXT, profileimg_url TEXT);");
                             sqLiteDB.execSQL("INSERT INTO user (id, name, profileimg_url) VALUES('"+userID+"','"+userName+"','"+userPicurl+"');");
                             stmt.executeUpdate("UPDATE Users SET name=N'"+userName+"', profileimg_url='"+userPicurl+"', email='"+userEmail+"', birthday='"+userBday+"', gender='"+userGender+"' WHERE id='"+userID+"';");
                             sqLiteDB.close();
@@ -243,16 +245,16 @@ public class LoadingActivity extends Activity {
                         {
                             //User not found, create new user
                             try {
-                                stmt.executeUpdate("INSERT INTO Users (id, name, profileimg_url, email, birthday, gender) VALUES('"+userID+"','"+userName+"','"+userPicurl+"','"+userEmail+"','"+userBday+"','"+userGender+"');");
+                                stmt.executeUpdate("INSERT INTO Users (id, name, profileimg_url, email, birthday, gender) VALUES('"+userID+"',N'"+userName+"','"+userPicurl+"','"+userEmail+"','"+userBday+"','"+userGender+"');");
                                 stmt.executeUpdate("INSERT INTO Island (ownerid, archcount) VALUES('"+userID+"', 0)");
-                                //sqLiteDB.execSQL("DROP TABLE IF EXISTS user");
-                                sqLiteDB.execSQL("CREATE TABLE IF NOT EXISTS user(id TEXT, name TEXT, profileimg_url TEXT);");
+                                sqLiteDB.execSQL("DROP TABLE IF EXISTS user");
+                                sqLiteDB.execSQL("CREATE TABLE user(id TEXT, name TEXT, profileimg_url TEXT);");
                                 sqLiteDB.execSQL("INSERT INTO user (id, name, profileimg_url) VALUES('"+userID+"','"+userName+"','"+userPicurl+"');");
                                 sqLiteDB.close();
                                 Log.d("DoSync", "INSERT Successful");
                             } catch (Exception ex) {
                                 isSuccess = false;
-                                z = "Exceptions"+ex.toString();
+                                z = "Creating user: "+ex.toString();
                             }
 
                             z = "New user created";

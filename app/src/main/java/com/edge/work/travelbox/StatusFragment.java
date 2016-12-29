@@ -1,34 +1,29 @@
 package com.edge.work.travelbox;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-
-import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.Statement;
 
 import static com.google.android.gms.internal.zzs.TAG;
 
@@ -41,9 +36,10 @@ public class StatusFragment extends Fragment{
     private FragmentManager fm;
     private static boolean myislandIsAlive=false;
     //private String name,picurl;
-    private int count_coin, count_trophy;
-    private TextView name,coin,trophy;
+    private TextView name;
+    private static TextView coin,trophy;
     private ImageView pic;
+    private static ConnectionClass connectionClass = new ConnectionClass();
 
 
     public StatusFragment() {
@@ -53,7 +49,6 @@ public class StatusFragment extends Fragment{
 
 
     public static class myIslandStatus{
-
         public static void setMyislandStatus(boolean setSt){
             if(setSt==true){
                 btnMyIsland.setImageResource(R.mipmap.status_nav_myisland_triggered);
@@ -73,6 +68,10 @@ public class StatusFragment extends Fragment{
         btnQR = (ImageView)rootview.findViewById(R.id.status_btn_QRScan);
         name = (TextView)rootview.findViewById(R.id.status_text_username);
         pic = (ImageView)rootview.findViewById(R.id.status_img_profile);
+        coin = (TextView)rootview.findViewById(R.id.status_text_coin);
+        coin.setText(""+TravelBox.coin);
+        trophy = (TextView)rootview.findViewById(R.id.status_text_trophy);
+        trophy.setText(""+TravelBox.trophy);
         integrator = new IntentIntegrator(getActivity());
 
         SQLiteDatabase sqLiteDB = getActivity().getBaseContext().openOrCreateDatabase("local-user.db", Context.MODE_PRIVATE, null);
@@ -117,4 +116,51 @@ public class StatusFragment extends Fragment{
         }
     }
 
+    public static void coinPaySave(Boolean isSave, int amount){
+        if (isSave){
+            startCountAnimation(coin, amount);
+            TravelBox.coin += amount;
+            DoSync doSync = new DoSync();
+            doSync.execute("");
+        } else {
+            startCountAnimation(coin, -amount);
+            TravelBox.coin -= amount;
+            DoSync doSync = new DoSync();
+            doSync.execute("");
+        }
+
+
+    }
+
+    private static class DoSync extends AsyncTask<String,String,String>{
+
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                Connection con = connectionClass.CONN();
+                if (con == null) {
+                    Log.e("SQL", "Unable to connect to server");
+                } else {
+                    String query = "UPDATE Users SET amount_coin="+TravelBox.coin+" where id='" + TravelBox.userId + "';";
+                    Statement stmt = con.createStatement();
+                    stmt.executeUpdate(query);
+                }
+            } catch (Exception ex){
+                Log.e(TAG, "doInBackground: "+ex.toString());
+            }
+            return null;
+        }
+    }
+
+    private static void startCountAnimation(final TextView textView, int amount) {
+        ValueAnimator animator = new ValueAnimator();
+        animator.setObjectValues(TravelBox.coin, TravelBox.coin+amount);
+        animator.setDuration(2000);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                textView.setText("" + (int) animation.getAnimatedValue());
+            }
+        });
+        animator.start();
+    }
 }

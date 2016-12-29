@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="567dp">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/collection_title_img"
+        android:layout_height="133dp" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/collection_title_img"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="16dp"
+        android:id="@+id/collection_title_name"
+        android:layout_marginTop="8dp"
+        android:textSize="16sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="168dp"
+        android:layout_below="@+id/collection_title_name"
+        android:layout_marginTop="8dp"
+        android:id="@+id/collection_title_shop"
+        android:layout_marginLeft="8dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#C9C9C9"
+        android:layout_below="@+id/collection_title_shop"
+        android:layout_margin="16dp"
+        android:id="@+id/collection_divider" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="168dp"
+        android:id="@+id/collection_title_place"
+        android:layout_below="@+id/collection_divider"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="8dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@mipmap/expend"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/collection_title_btn_expend"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="4dp"
+        android:clickable="true" />
+</RelativeLayout>

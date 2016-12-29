@@ -1,8 +1,12 @@
 package com.edge.work.travelbox;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -12,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.FrameLayout;
@@ -23,9 +28,12 @@ import android.widget.TextView;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Date;
 
 
 public class MyislandIslandFragment extends Fragment {
@@ -43,15 +51,15 @@ public class MyislandIslandFragment extends Fragment {
     private RelativeLayout archDetail;
     private ImageView[] archDetailImg = new ImageView[4];
     private TextView archDetailName;
-    private ImageView archDetailClose, archDetailInfo, archDetailDelete, activeDetailArch, btnBuild, btnShare, btnHarvest;
+    private ImageView archDetailClose, archDetailInfo, archDetailDelete, activeDetailArch, btnBuild, btnShare, btnHarvest, harvest_glow;
     private ArchBundle activebundle;
     private FragmentManager fm;
     private Boolean buildOn=false;
-    private Animation fadein, fadeout;
+    private Animation fadein, fadeout, glow;
     private LinearLayout buildContainer;
-    private long lastHarvest;
+    private long lastHarvest, harvestSeconds;
     private DonutProgress harvestProgress;
-    private long harvestSeconds;
+    private int harvestAmount=0;
 
 
     public MyislandIslandFragment() {
@@ -109,6 +117,18 @@ public class MyislandIslandFragment extends Fragment {
         land[5][5]=(ImageView) rootview.findViewById(R.id.land6_6);
 
         harvestProgress = (DonutProgress)rootview.findViewById(R.id.progress_countdown);
+        harvest_glow = (ImageView) rootview.findViewById(R.id.myisland_harvest_glow);
+        harvest_glow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        glow = new AlphaAnimation(0.0f,1.0f);
+        glow.setDuration(1500);
+        glow.setInterpolator(new AccelerateDecelerateInterpolator());
+        glow.setRepeatMode(Animation.REVERSE);
+        glow.setRepeatCount(Animation.INFINITE);
 
         fadein = new AlphaAnimation(0.0f, 1.0f);
         fadein.setDuration(500);
@@ -136,13 +156,18 @@ public class MyislandIslandFragment extends Fragment {
             }
         });
         btnShare = (ImageView) rootview.findViewById(R.id.btn_myisland_share);
-
+        btnShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                takeScreenshot();
+            }
+        });
 
         btnHarvest = (ImageView) rootview.findViewById(R.id.myisland_btn_harvest);
         btnHarvest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                doHarvest();
             }
         });
 
@@ -294,6 +319,7 @@ public class MyislandIslandFragment extends Fragment {
     }
 
     public void initShowAllArch(Boolean[][] isHead){
+        harvestAmount = 0;
         for (int i=5; i>=0; i--){
             for (int j=5; j>=0; j--){
                 if (isHead[i][j]){
@@ -318,12 +344,8 @@ public class MyislandIslandFragment extends Fragment {
         }catch (Exception ex){
             Log.e("SQL", "Update harvest time: "+ex.toString());
         }
-        if (System.currentTimeMillis()-lastHarvest>3600){
-            harvestSeconds = 3600;
-        } else {
-            harvestSeconds = System.currentTimeMillis() - lastHarvest;
-        }
-        harvestProgress.setProgress(((int) harvestSeconds));
+
+        updateHarvestStatus();
     }
 
     private void deleteArch(ArchBundle archBundle, View rootview){
@@ -360,15 +382,14 @@ public class MyislandIslandFragment extends Fragment {
             Connection con = connectionClass.CONN();
             Statement stmt = con.createStatement();
             //Determine what level does the user have
-            int lv=0;
             ResultSet rs = stmt.executeQuery("SELECT archlv FROM UserArch WHERE ownerid='"+ TravelBox.userId +"' AND arch='"+ shopid +"';");
             if(rs.next()){
-            lv = rs.getInt("archlv");
+            archbundle.level = rs.getInt("archlv");
             }
             //Fetch the target level image url and name of arch
-            ResultSet rs2 = stmt.executeQuery("SELECT archlv"+lv+",name FROM ShopInfo WHERE shopid='"+ shopid +"';");
+            ResultSet rs2 = stmt.executeQuery("SELECT archlv"+archbundle.level+",name FROM ShopInfo WHERE shopid='"+ shopid +"';");
             if(rs2.next()){
-                archbundle.url = rs2.getString("archlv"+lv);
+                archbundle.url = rs2.getString("archlv"+archbundle.level);
                 archbundle.name = rs2.getString("name");
             }
 
@@ -401,19 +422,25 @@ public class MyislandIslandFragment extends Fragment {
         x++;y++;
         //New ImageView
         iv[x*10+y]=new ImageView(getContext());
+
         //margin data in dp
         double marginleft=28.5*y-28.5*x-28.5;
         double marginbottom=16.5*y+16.5*x+16-16.5*3;
+
         //convert dp to pixel
         final float scale = getContext().getResources().getDisplayMetrics().density;
         int mleftpixels = (int) (marginleft * scale + 0.5f);
         int mbottompixels = (int) (marginbottom * scale + 0.5f);
         int wh = (int) (115 * scale + 0.5f);
+
+        //Add layout roles
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(wh, wh);
         lp.gravity=0x01|0x50; //Gravity= Center Horizontal + Bottom
         lp.leftMargin= mleftpixels;
         lp.bottomMargin= mbottompixels;
         Log.d("Myisland", "New ImageView: "+marginleft+","+marginbottom);
+
+        //Add view
         fl.addView(iv[x*10+y],lp);
         iv[x*10+y].setScaleType(ImageView.ScaleType.FIT_END);
         ImageLoader.getInstance().displayImage(arch.url,iv[x*10+y]);
@@ -421,16 +448,30 @@ public class MyislandIslandFragment extends Fragment {
             @Override
             public boolean onLongClick(View view) {
                 Log.d("MyislandIsland", "onLongClick: "+arch.shopid);
-                archDetail.setVisibility(View.VISIBLE);
-                activeDetailArch = (ImageView)view;
-                for(int i=1;i<5;i++){
-                    ImageLoader.getInstance().displayImage(getThumbURL(arch.shopid,i), archDetailImg[i-1]);
-                }
-                archDetailName.setText(arch.name);
-                activebundle = arch;
+                showArchDetail(arch, view);
                 return true;
             }
         });
+
+        //Add to harvestAmount
+        harvestAmount += (15 + (arch.level*5));
+        //Level 5 bonus
+        if (arch.level == 5){
+            harvestAmount += 10;
+        }
+    }
+
+    private void showArchDetail(ArchBundle arch,View view){
+        archDetail.setVisibility(View.VISIBLE);
+        activeDetailArch = (ImageView)view;
+        for(int i=1;i<5;i++){
+            ImageLoader.getInstance().displayImage(getThumbURL(arch.shopid,i), archDetailImg[i-1]);
+            if(i<arch.level){
+                archDetailImg[i-1].setColorFilter(brightIt(255));
+            }
+        }
+        archDetailName.setText(arch.name);
+        activebundle = arch;
     }
 
     public static ColorMatrixColorFilter brightIt(int fb) {
@@ -455,5 +496,90 @@ public class MyislandIslandFragment extends Fragment {
         public String name;
         public String url;
         public String shopid;
+        public int level;
+    }
+
+    private void takeScreenshot() {
+        Date now = new Date();
+        android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
+
+        try {
+            // image naming and path  to include sd card  appending name you choose for file
+            String mPath = Environment.getExternalStorageDirectory().toString() + "/" + now + ".jpg";
+
+            // create bitmap screen capture
+            View v1 = getActivity().getWindow().getDecorView().getRootView();
+            v1.setDrawingCacheEnabled(true);
+            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+            v1.setDrawingCacheEnabled(false);
+
+            File imageFile = new File(mPath);
+
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            int quality = 100;
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+            outputStream.flush();
+            outputStream.close();
+
+            shareScreenshot(imageFile);
+        } catch (Throwable e) {
+            // Several error may come out with file handling or OOM
+            e.printStackTrace();
+        }
+    }
+
+    private void shareScreenshot(File imageFile) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        Uri uri = Uri.fromFile(imageFile);
+        intent.putExtra(Intent.EXTRA_STREAM,uri);
+        //intent.setDataAndType(uri, "image/*");
+        intent.setType("image/*");
+        //startActivity(intent);
+        startActivity(Intent.createChooser(intent, "Share Image to:"));
+    }
+
+    private void updateHarvestStatus(){
+        //Update harvest status
+        if (System.currentTimeMillis()-lastHarvest>21600){
+            harvestSeconds = 21600;
+            setHarvestStatus(true);
+        } else {
+            harvestSeconds = System.currentTimeMillis() - lastHarvest;
+            setHarvestStatus(false);
+        }
+        harvestProgress.setProgress(((int) harvestSeconds));
+    }
+
+    private void setHarvestStatus(Boolean isOpen){
+        if (isOpen){
+            harvest_glow.setVisibility(View.VISIBLE);
+            harvest_glow.startAnimation(glow);
+        } else {
+            harvest_glow.setVisibility(View.GONE);
+            harvest_glow.clearAnimation();
+        }
+    }
+
+    private void doHarvest(){
+
+        StatusFragment.coinPaySave(true,harvestAmount);
+
+        //Update lastHarvest
+        try{
+            Connection con = connectionClass.CONN();
+            if (con == null) {
+                //Failed to connect to server
+                Log.e("SQL", "Unable to connect to server");
+            } else {
+                //TODO: Uncommand in release version
+                /*Statement stmt = con.createStatement();
+                lastHarvest = System.currentTimeMillis();
+                stmt.executeUpdate("UPDATE Island SET lastharvest="+lastHarvest+" WHERE ownerid='" + TravelBox.userId + "';");*/
+            }
+        } catch (Exception ex){
+            Log.e("Myisland", "doHarvest: "+ex.toString());
+        }
+        updateHarvestStatus();
     }
 }

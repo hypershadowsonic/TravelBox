@@ -71,17 +71,17 @@ public class MainActivity extends FragmentActivity {
                         Log.d("QrScan", "In Rs Result"+shopID);
                         ResultSet rs2 = stmt.executeQuery("SELECT archlv FROM UserArch WHERE ownerid='"+TravelBox.userId+"' AND arch='"+shopID+"';");
                         if(rs2.next()){
-                            //User has it, check if it's under lv5
+                            //User has it, check if it's under lv4
                             int lv = rs2.getInt("archlv");
                             Log.d("QrScan", "In Rs2 Result");
-                            if(lv<5){
+                            if(lv<4){
                                 ft.replace(R.id.main_container, awardF)
                                         .addToBackStack(null)
                                         .commitAllowingStateLoss();
                                 Log.d("QrScan", "Committed");
                             } else {
                                 //User doesn't have it, pass through directly
-                                Toast.makeText(this, "You already have the highest level Arch.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(this, "You already have level 4 Arch.", Toast.LENGTH_LONG).show();
                             }
                         } else {
                             ft.replace(R.id.main_container, awardF)

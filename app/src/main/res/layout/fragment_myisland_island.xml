@@ -411,6 +411,15 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="28dp">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/myisland_harvest_glow"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/myisland_countdown_glow"
+            android:visibility="gone" />
+
         <com.github.lzyzsd.circleprogress.DonutProgress
             android:id="@+id/progress_countdown"
             android:layout_width="80dp"
@@ -424,7 +433,7 @@
             app:donut_progress="1638"
             android:rotation="-90"
             app:donut_unfinished_color="#19221814"
-            app:donut_max="3600" />
+            app:donut_max="21600" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -432,7 +441,9 @@
             android:src="@mipmap/myisland_countdown"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
-            android:id="@+id/myisland_btn_harvest" />
+            android:id="@+id/myisland_btn_harvest"
+            android:clickable="true" />
+
     </RelativeLayout>
 
     <LinearLayout
@@ -460,8 +471,7 @@
         android:id="@+id/myisland_detail"
         android:layout_centerVertical="true"
         android:background="#5D5D5D"
-        android:padding="16dp"
-        android:visibility="gone">
+        android:padding="16dp">
 
         <TextView
             android:text="TextView"

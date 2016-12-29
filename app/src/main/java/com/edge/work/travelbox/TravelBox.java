@@ -15,6 +15,8 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 public class TravelBox extends Application {
 
     public static String userId;
+    public static int coin=0;
+    public static int trophy=0;
 
     @Override
     public void onCreate() {
