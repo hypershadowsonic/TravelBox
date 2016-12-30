@@ -43,9 +43,24 @@ public class MyislandAssemblyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootview = inflater.inflate(R.layout.fragment_tab_assembly, container, false);
-        mViewPager=(ViewPager)rootview.findViewById(R.id.asm_viewpager);
 
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener(){
+        mViewPager=(ViewPager)rootview.findViewById(R.id.asm_viewpager);
+        mTabLayout=(TabLayout)rootview.findViewById(R.id.asm_tabs);
+
+        mTabLayout.addTab(mTabLayout.newTab().setIcon(R.mipmap.myisland_nav_myisland));
+        mTabLayout.addTab(mTabLayout.newTab().setIcon(R.mipmap.myisland_nav_friend));
+        mTabLayout.addTab(mTabLayout.newTab().setIcon(R.mipmap.myisland_nav_shop));
+
+        PagerAdapter adapter = new PagerAdapter(getChildFragmentManager());
+        adapter.addFragment(new MyislandIslandFragment());
+        adapter.addFragment(new MyislandFriendFragment());
+        adapter.addFragment(new ComingSoonFragment());
+
+        mViewPager.setAdapter(adapter);
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
+        mTabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+
+        /*mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener(){
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
             @Override
@@ -58,12 +73,35 @@ public class MyislandAssemblyFragment extends Fragment {
 
         setupViewPager(mViewPager);
 
-        mTabLayout=(TabLayout)rootview.findViewById(R.id.asm_tabs);
-        mTabLayout.setupWithViewPager(mViewPager);
+
+        mTabLayout.setupWithViewPager(mViewPager);*/
         return rootview;
     }
 
-    private void setupViewPager(ViewPager viewPager){
+    class PagerAdapter extends FragmentPagerAdapter {
+
+        private final List<Fragment> mFragments = new ArrayList<>();
+
+        public PagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        public void addFragment(Fragment fragment) {
+            mFragments.add(fragment);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragments.size();
+        }
+    }
+
+    /*private void setupViewPager(ViewPager viewPager){
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFragment(new MyislandIslandFragment(), "MyIsland");
         adapter.addFragment(new MyislandFriendFragment(), "Friends");
@@ -105,5 +143,5 @@ public class MyislandAssemblyFragment extends Fragment {
     public void onDetach() {
         StatusFragment.myIslandStatus.setMyislandStatus(false);
         super.onDetach();
-    }
+    }*/
 }

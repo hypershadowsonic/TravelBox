@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="567dp">
+    android:layout_height="160dp"
+    android:id="@+id/collection_container">
 
     <ImageView
         android:layout_width="match_parent"
@@ -25,11 +26,11 @@
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="168dp"
         android:layout_below="@+id/collection_title_name"
         android:layout_marginTop="8dp"
         android:id="@+id/collection_title_shop"
-        android:layout_marginLeft="8dp" />
+        android:layout_marginLeft="8dp"
+        android:layout_height="172dp" />
 
     <View
         android:layout_width="match_parent"
@@ -41,20 +42,21 @@
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="168dp"
         android:id="@+id/collection_title_place"
         android:layout_below="@+id/collection_divider"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="8dp" />
+        android:layout_marginLeft="8dp"
+        android:layout_height="172dp" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@mipmap/expend"
         android:layout_centerHorizontal="true"
-        android:id="@+id/collection_title_btn_expend"
+        android:id="@+id/collection_title_btn_expand"
         android:layout_alignParentBottom="true"
         android:layout_margin="4dp"
-        android:clickable="true" />
+        android:clickable="true"
+        android:src="@mipmap/expend"
+        android:rotation="180" />
 </RelativeLayout>

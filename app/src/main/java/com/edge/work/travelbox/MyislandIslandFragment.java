@@ -186,6 +186,7 @@ public class MyislandIslandFragment extends Fragment {
                 //Go to info page
                 Bundle bundle = new Bundle();
                 bundle.putString("shopid",activebundle.shopid);
+                bundle.putString("category","x");
                 InfoFragment infoFragment = new InfoFragment();
                 infoFragment.setArguments(bundle);
 
@@ -217,7 +218,7 @@ public class MyislandIslandFragment extends Fragment {
         initShowAllArch(isHead);
 
         recyclerView = (RecyclerView)rootview.findViewById(R.id.arch_recyclerview);
-        adapter = new UserIslandListAdapter(this.getActivity().getBaseContext(), UserIslandListData.getData(getContext()));
+        adapter = new UserIslandListAdapter(getContext(), UserIslandListData.getData(getContext()));
         recyclerView.setAdapter(adapter);
         llm = new LinearLayoutManager(getContext());
         llm.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -466,7 +467,7 @@ public class MyislandIslandFragment extends Fragment {
         activeDetailArch = (ImageView)view;
         for(int i=1;i<5;i++){
             ImageLoader.getInstance().displayImage(getThumbURL(arch.shopid,i), archDetailImg[i-1]);
-            if(i<arch.level){
+            if(i>arch.level){
                 archDetailImg[i-1].setColorFilter(brightIt(255));
             }
         }

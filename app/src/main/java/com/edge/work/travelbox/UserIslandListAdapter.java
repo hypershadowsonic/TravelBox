@@ -20,9 +20,7 @@ public class UserIslandListAdapter extends RecyclerView.Adapter<UserIslandListAd
 
     Context context;
     ArrayList<UserIslandListInfo> data;
-
     LayoutInflater inflater;
-
 
 
     public UserIslandListAdapter(Context context, ArrayList<UserIslandListInfo> data) {

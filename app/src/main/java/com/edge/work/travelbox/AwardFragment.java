@@ -1,12 +1,19 @@
 package com.edge.work.travelbox;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,9 +40,10 @@ public class AwardFragment extends Fragment {
     private ImageView box, property, light;
     private RelativeLayout layer1, layer2;
     private Animation boxmove,fadein,fadein2,fadeout,flyup;
-    private String shopID, userID;
+    private String shopID;
     private ConnectionClass connectionClass = new ConnectionClass();
     private FragmentManager fm;
+    private String findpush;
 
     public AwardFragment() {
         // Required empty public constructor
@@ -145,18 +153,10 @@ public class AwardFragment extends Fragment {
             }
         });
 
-        SQLiteDatabase sqLiteDB = getActivity().getBaseContext().openOrCreateDatabase("local-user.db", Context.MODE_PRIVATE, null);
-        Cursor query = sqLiteDB.rawQuery("SELECT id FROM user", null);
-        if (query.moveToFirst()){
-            //Get ID from SQLite
-            userID = query.getString(0);
-            Log.d("SQLite", "Got user ID");
-            sqLiteDB.close();
-        }
-
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             shopID = bundle.getString("id");
+            findpush = bundle.getString("query");
         }
         try {
             Connection con = connectionClass.CONN();
@@ -166,44 +166,26 @@ public class AwardFragment extends Fragment {
             } else {
                 Statement stmt = con.createStatement();
                 //See if user already have this arch
-                ResultSet rs = stmt.executeQuery("SELECT * FROM UserArch WHERE ownerid='"+userID+"' AND arch='"+shopID+"';");
+                ResultSet rs = stmt.executeQuery("SELECT * FROM UserArch WHERE ownerid='"+TravelBox.userId+"' AND arch='"+shopID+"';");
                 if (rs.next()){
                     //User has it, upgrade and get arch url
                     int lv = rs.getInt("archlv");
-                    stmt.executeUpdate("UPDATE UserArch SET archlv="+(lv+1)+" WHERE ownerid='"+userID+"' AND arch='"+shopID+"';");
+                    stmt.executeUpdate("UPDATE UserArch SET archlv="+(lv+1)+" WHERE ownerid='"+TravelBox.userId+"' AND arch='"+shopID+"';");
                     String query1 = "SELECT thumblv"+(lv+1)+" FROM ShopInfo WHERE shopid='"+shopID+"';";
                     ResultSet rs2 = stmt.executeQuery(query1);
                     if(rs2.next()){
                     String url=rs2.getString("thumblv"+(lv+1));
-
-                    DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                            .cacheInMemory(true)
-                            .cacheOnDisc(true)
-                            .build();
-                    ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext())
-                            .defaultDisplayImageOptions(defaultOptions)
-                            .build();
-                    ImageLoader.getInstance().init(config);
                     ImageLoader.getInstance().displayImage(url,property);}
 
                     box.startAnimation(boxmove);
                 } else {
                     //User doesn't have it, create a record and set to lv1
-                    stmt.executeUpdate("INSERT INTO UserArch VALUES('"+userID+"','"+shopID+"',1);");
+                    stmt.executeUpdate("INSERT INTO UserArch VALUES('"+TravelBox.userId+"','"+shopID+"',1);");
                     //Get lv1 arch url
                     String query1 = "SELECT thumblv1 FROM ShopInfo WHERE shopid='"+shopID+"';";
                     ResultSet rs2 = stmt.executeQuery(query1);
                     if(rs2.next()){
                     String url=rs2.getString("thumblv1");
-
-                    DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                            .cacheInMemory(true)
-                            .cacheOnDisc(true)
-                            .build();
-                    ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext())
-                            .defaultDisplayImageOptions(defaultOptions)
-                            .build();
-                    ImageLoader.getInstance().init(config);
                     ImageLoader.getInstance().displayImage(url,property);}
 
 
@@ -213,6 +195,52 @@ public class AwardFragment extends Fragment {
         } catch (Exception ex){
             Toast.makeText(getContext(), "Exection: "+ex.toString(), Toast.LENGTH_LONG).show();
             Log.e("SQL", ex.toString() );
+        }
+
+
+        try {
+            Connection con = connectionClass.CONN();
+            if (con == null) {
+                fm.popBackStack();
+            } else {
+                Statement stmt = con.createStatement();
+                //See if user already have this arch
+                ResultSet rs = stmt.executeQuery(findpush);
+                if (rs.next()) {
+                    //Build notification content
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity());
+                    builder.setContentTitle("Travel Box 旅行盒子");
+                    builder.setContentText("景點推薦："+rs.getString("name"));
+                    builder.setSmallIcon(R.mipmap.ic_launcher);
+                    builder.setTicker("你還可以看看這裡！");
+                    builder.setAutoCancel(true);
+
+                    //Intent
+                    Intent i = new Intent(getActivity(), DialogActivity.class);
+                    i.putExtra("name", rs.getString("name"))
+                            .putExtra("address", rs.getString("address"))
+                            .putExtra("description", rs.getString("description"))
+                            .putExtra("buisnesshour", rs.getString("buisnesshour"))
+                            .putExtra("titleimg", rs.getString("titleimg"))
+                            .putExtra("facebookurl", rs.getString("facebookurl"));
+
+
+                    //Back Stack
+                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(getActivity());
+                    stackBuilder.addParentStack(DialogActivity.class);
+                    stackBuilder.addNextIntent(i);
+                    PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                    builder.setContentIntent(pendingIntent);
+
+                    //Notify
+                    Notification notification = builder.build();
+                    NotificationManager manager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+                    manager.notify(1, notification);
+                }
+            }
+        } catch (Exception ex){
+            Log.e("SQL Push Notification", ex.toString() );
         }
 
         return rootview;

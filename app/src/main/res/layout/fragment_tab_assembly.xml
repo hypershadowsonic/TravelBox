@@ -10,9 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:id="@+id/asm_tabs"
-        app:tabMode="fixed"
-        app:tabGravity="fill"
-        app:tabBackground="?android:attr/selectableItemBackground" />
+        app:tabBackground="?android:attr/selectableItemBackground"
+        android:background="#58CCB9"
+        app:tabIndicatorColor="#98E2D4"
+        app:tabTextColor="#ffffff" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/asm_viewpager"

@@ -471,7 +471,8 @@
         android:id="@+id/myisland_detail"
         android:layout_centerVertical="true"
         android:background="#5D5D5D"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:visibility="gone">
 
         <TextView
             android:text="TextView"

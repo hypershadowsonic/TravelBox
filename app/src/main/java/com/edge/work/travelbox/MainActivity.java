@@ -61,8 +61,10 @@ public class MainActivity extends FragmentActivity {
                     Statement stmt = con.createStatement();
                     ResultSet rs = stmt.executeQuery("SELECT * FROM ShopInfo WHERE hash='"+ result.getContents()+"';");
                     if(rs.next()){
+                        int pop = rs.getInt("popularity");
                         Bundle bundle = new Bundle();
                         bundle.putString("id",rs.getString("shopid"));
+                        bundle.putString("query",getPushQuery(rs.getString("notificationzone")));
                         AwardFragment awardF = new AwardFragment();
                         awardF.setArguments(bundle);
                         FragmentManager fm = getSupportFragmentManager();
@@ -71,9 +73,11 @@ public class MainActivity extends FragmentActivity {
                         Log.d("QrScan", "In Rs Result"+shopID);
                         ResultSet rs2 = stmt.executeQuery("SELECT archlv FROM UserArch WHERE ownerid='"+TravelBox.userId+"' AND arch='"+shopID+"';");
                         if(rs2.next()){
-                            //User has it, check if it's under lv4
+                            //Popularity +1
                             int lv = rs2.getInt("archlv");
+                            stmt.executeUpdate("UPDATE ShopInfo SET popularity="+(pop+1)+" WHERE shopid='"+shopID+"';");
                             Log.d("QrScan", "In Rs2 Result");
+                            //User has it, check if it's under lv4
                             if(lv<4){
                                 ft.replace(R.id.main_container, awardF)
                                         .addToBackStack(null)
@@ -103,4 +107,27 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    private String getPushQuery(String zone){
+        String query="SELECT TOP 1 * FROM PlaceInfo WHERE";
+        if (zone.indexOf("A")!=-1){
+            query += " zone='A'";
+        }
+        if (zone.indexOf("B")!=-1){
+            query += " OR zone='B'";
+        }
+        if (zone.indexOf("C")!=-1){
+            query += " OR zone='C'";
+        }
+        if (zone.indexOf("D")!=-1){
+            query += " OR zone='D'";
+        }
+        if (zone.indexOf("E")!=-1){
+            query += " OR zone='E'";
+        }
+        query += " ORDER BY NEWID();";
+
+        Log.d("MainActivity", "getPushQuery: "+query);
+
+        return query;
+    }
 }

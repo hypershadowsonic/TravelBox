@@ -33,8 +33,20 @@ public class ListAssemblyFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootview = inflater.inflate(R.layout.fragment_tab_assembly, container, false);
         mViewPager=(ViewPager)rootview.findViewById(R.id.asm_viewpager);
+        mTabLayout=(TabLayout)rootview.findViewById(R.id.asm_tabs);
 
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener(){
+        mTabLayout.addTab(mTabLayout.newTab().setText("雲林縣"));
+        mTabLayout.addTab(mTabLayout.newTab().setIcon(R.mipmap.list_nav_new));
+
+        PagerAdapter adapter = new PagerAdapter(getChildFragmentManager());
+        adapter.addFragment(new ListListFragment());
+        adapter.addFragment(new ListNewFragment());
+
+
+        mViewPager.setAdapter(adapter);
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
+        mTabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+        /*mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener(){
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
             @Override
@@ -47,14 +59,36 @@ public class ListAssemblyFragment extends Fragment {
 
         setupViewPager(mViewPager);
 
-        mTabLayout=(TabLayout)rootview.findViewById(R.id.asm_tabs);
-        mTabLayout.setupWithViewPager(mViewPager);
+
+        mTabLayout.setupWithViewPager(mViewPager);*/
 
 
         return rootview;
     }
 
-    private void setupViewPager(ViewPager viewPager){
+    class PagerAdapter extends FragmentPagerAdapter {
+
+        private final List<Fragment> mFragments = new ArrayList<>();
+
+        public PagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        public void addFragment(Fragment fragment) {
+            mFragments.add(fragment);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragments.size();
+        }
+    }
+    /*private void setupViewPager(ViewPager viewPager){
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFragment(new ListListFragment(), "Location");
         adapter.addFragment(new ListNewFragment(), "New");
@@ -90,6 +124,6 @@ public class ListAssemblyFragment extends Fragment {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
-    }
+    }*/
 
 }

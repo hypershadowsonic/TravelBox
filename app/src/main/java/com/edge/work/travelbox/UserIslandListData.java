@@ -1,8 +1,6 @@
 package com.edge.work.travelbox;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.sql.Connection;
@@ -17,8 +15,6 @@ import java.util.ArrayList;
 public class UserIslandListData {
 
     private static ConnectionClass connectionClass = new ConnectionClass();
-    private static String userID=TravelBox.userId;
-
 
 
     public static ArrayList<UserIslandListInfo> getData(Context context){
@@ -32,7 +28,7 @@ public class UserIslandListData {
             } else{
                 //Check if user has any Arch from server
                 Statement stmt = con.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT * FROM UserArch WHERE ownerid='"+userID+"';");
+                ResultSet rs = stmt.executeQuery("SELECT * FROM UserArch WHERE ownerid='"+ TravelBox.userId +"';");
 
                 while(rs.next()){
                     String shopid = rs.getString("arch");
@@ -75,7 +71,7 @@ public class UserIslandListData {
             } else {
                 //Check if user has any Arch on Island from server
                 Statement stmt = con.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT archcount,arch0,arch1,arch2,arch3,arch4,arch5,arch6,arch7,arch8 FROM Island WHERE ownerid='" + userID + "';");
+                ResultSet rs = stmt.executeQuery("SELECT archcount,arch0,arch1,arch2,arch3,arch4,arch5,arch6,arch7,arch8 FROM Island WHERE ownerid='" + TravelBox.userId + "';");
                 if (rs.next()) {
                     for (int i=0;i<rs.getInt("archcount");i++){
                         existArch[i]=rs.getString("arch"+i);

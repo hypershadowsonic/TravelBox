@@ -17,7 +17,7 @@ public class TravelBox extends Application {
     public static String userId;
     public static int coin=0;
     public static int trophy=0;
-
+    public static String activeCounty="P";
     @Override
     public void onCreate() {
         super.onCreate();
