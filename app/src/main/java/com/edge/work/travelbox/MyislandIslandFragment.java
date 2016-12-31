@@ -1,5 +1,7 @@
 package com.edge.work.travelbox;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.ColorMatrix;
@@ -24,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -51,7 +54,7 @@ public class MyislandIslandFragment extends Fragment {
     private RelativeLayout archDetail;
     private ImageView[] archDetailImg = new ImageView[4];
     private TextView archDetailName;
-    private ImageView archDetailClose, archDetailInfo, archDetailDelete, activeDetailArch, btnBuild, btnShare, btnHarvest, harvest_glow;
+    private ImageView archDetailClose, archDetailInfo, archDetailDelete, activeDetailArch, btnBuild, btnShare, btnHarvest, harvest_glow, btnLock;
     private ArchBundle activebundle;
     private FragmentManager fm;
     private Boolean buildOn=false;
@@ -60,6 +63,7 @@ public class MyislandIslandFragment extends Fragment {
     private long lastHarvest, harvestSeconds;
     private DonutProgress harvestProgress;
     private int harvestAmount=0;
+
 
 
     public MyislandIslandFragment() {
@@ -168,6 +172,30 @@ public class MyislandIslandFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 doHarvest();
+            }
+        });
+
+        btnLock = (ImageView) rootview.findViewById(R.id.myisland_detail_lock);
+        btnLock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (activebundle.level == 4){
+                    //Level 4, Confirm upgrade
+                    new AlertDialog.Builder(getContext())
+                            //.setTitle("Title")
+                            .setMessage(getString(R.string.confirm_unlock))
+                            //.setIcon(android.R.drawable.ic_dialog_alert)
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    Toast.makeText(getActivity(), "Spending you money", Toast.LENGTH_SHORT).show();
+                                    float scale = getContext().getResources().getDisplayMetrics().density;
+                                    btnLock.getLayoutParams().height = (int) (86 * scale + 0.5f);
+                                    btnLock.getLayoutParams().width = (int) (86 * scale + 0.5f);
+                                    ImageLoader.getInstance().displayImage(getThumbURL(activebundle.shopid,5),btnLock);
+                                    unlockLvFive(activebundle.shopid);
+                                }})
+                            .setNegativeButton(android.R.string.no, null).show();
+                }
             }
         });
 
@@ -388,10 +416,11 @@ public class MyislandIslandFragment extends Fragment {
             archbundle.level = rs.getInt("archlv");
             }
             //Fetch the target level image url and name of arch
-            ResultSet rs2 = stmt.executeQuery("SELECT archlv"+archbundle.level+",name FROM ShopInfo WHERE shopid='"+ shopid +"';");
+            ResultSet rs2 = stmt.executeQuery("SELECT archlv"+archbundle.level+",name,archtype FROM ShopInfo WHERE shopid='"+ shopid +"';");
             if(rs2.next()){
                 archbundle.url = rs2.getString("archlv"+archbundle.level);
                 archbundle.name = rs2.getString("name");
+                archbundle.type = rs2.getString("archtype");
             }
 
         } catch (Exception ex){
@@ -425,16 +454,29 @@ public class MyislandIslandFragment extends Fragment {
         iv[x*10+y]=new ImageView(getContext());
 
         //margin data in dp
-        double marginleft=28.5*y-28.5*x-28.5;
-        double marginbottom=16.5*y+16.5*x+16-16.5*3;
+        double marginleft = 50;
+        double marginbottom = 50;
+        if (arch.type.endsWith("S")) {
+            marginleft = 28.5 * y - 28.5 * x - 28.5;
+            marginbottom = 16.5 * y + 16.5 * x + 16 - 16.5 * 3;
+        } else if (arch.type.endsWith("B")) {
+            marginleft = 28.5 * y - 28.5 * x - 28.5-14;
+            marginbottom = 16.5 * y + 16.5 * x + 16 - 16.5 * 4;
+        }
 
         //convert dp to pixel
         final float scale = getContext().getResources().getDisplayMetrics().density;
         int mleftpixels = (int) (marginleft * scale + 0.5f);
         int mbottompixels = (int) (marginbottom * scale + 0.5f);
-        int wh = (int) (115 * scale + 0.5f);
+        int wh=100;
+        if(arch.type.endsWith("S")) {
+            wh = (int) (115 * scale + 0.5f);
+        } else if (arch.type.endsWith("B")) {
+            wh = (int) (144 * scale + 0.5f);
+        }
 
         //Add layout roles
+
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(wh, wh);
         lp.gravity=0x01|0x50; //Gravity= Center Horizontal + Bottom
         lp.leftMargin= mleftpixels;
@@ -471,6 +513,16 @@ public class MyislandIslandFragment extends Fragment {
                 archDetailImg[i-1].setColorFilter(brightIt(255));
             }
         }
+        if (arch.level==5){
+            final float scale = getContext().getResources().getDisplayMetrics().density;
+            btnLock.getLayoutParams().height = (int) (86 * scale + 0.5f);
+            btnLock.getLayoutParams().width = (int) (86 * scale + 0.5f);
+            ImageLoader.getInstance().displayImage(getThumbURL(arch.shopid,5),btnLock);
+        } else {
+            btnLock.setImageResource(R.mipmap.houseinfo_locked);
+            ViewGroup.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            btnLock.setLayoutParams(lp);
+        }
         archDetailName.setText(arch.name);
         activebundle = arch;
     }
@@ -498,6 +550,7 @@ public class MyislandIslandFragment extends Fragment {
         public String url;
         public String shopid;
         public int level;
+        public String type;
     }
 
     private void takeScreenshot() {
@@ -582,5 +635,21 @@ public class MyislandIslandFragment extends Fragment {
             Log.e("Myisland", "doHarvest: "+ex.toString());
         }
         updateHarvestStatus();
+    }
+
+    private void unlockLvFive(String shopid){
+        try{
+            Connection con = connectionClass.CONN();
+            if (con == null) {
+                //Failed to connect to server
+                Log.e("SQL", "Unable to connect to server");
+            } else {
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate("UPDATE UserArch SET archlv=5 WHERE ownerid='" + TravelBox.userId + "' AND arch='"+shopid+"';");
+            }
+        } catch (Exception ex){
+            Log.e("Myisland", "unlockLvFive: "+ex.toString());
+        }
+        StatusFragment.coinPaySave(false,100);
     }
 }

@@ -466,13 +466,14 @@
 
     <RelativeLayout
         android:layout_width="264dp"
-        android:layout_height="322dp"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:id="@+id/myisland_detail"
         android:layout_centerVertical="true"
         android:background="#5D5D5D"
         android:padding="16dp"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:elevation="6dp">
 
         <TextView
             android:text="TextView"
@@ -523,23 +524,25 @@
             android:id="@+id/myisland_detail_lock"
             android:layout_below="@+id/myisland_detail_lv4"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            android:clickable="true" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/houseinfo_delete"
-            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:id="@+id/myisland_detail_delete" />
+            android:id="@+id/myisland_detail_delete"
+            android:layout_below="@+id/myisland_detail_lock"
+            android:layout_marginTop="8dp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/houseinfo_info"
             android:id="@+id/myisland_detail_info"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:layout_alignBottom="@+id/myisland_detail_delete" />
 
         <ImageView
             android:src="@android:drawable/ic_menu_close_clear_cancel"

@@ -11,6 +11,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Arrays;
 
+import bolts.Bolts;
+
 /**
  * Created by Super_000 on 12/22/2016.
  */
@@ -55,44 +57,51 @@ public class Land{
                     } else {
                         //User has arches
                         for(int cur=0; cur<9; cur++){
+                            Boolean archExists = false;
                             //Get arch info from server (Island table)
                             ResultSet rs1 = stmt.executeQuery("SELECT arch"+cur+", archposx"+cur+", archposy"+cur+" FROM Island WHERE ownerid='"+ TravelBox.userId +"';");
 
                             if(rs1.next()){
+
                                 arch[cur] = rs1.getString("arch"+cur);
                                 archposx[cur] = rs1.getInt("archposx"+cur);
                                 archposy[cur] = rs1.getInt("archposy"+cur);
-                                Log.d("ishead", "set true"+archposx[cur]+archposy[cur]);
 
-                                isHead[archposx[cur]][archposy[cur]]=true;
-                                content[archposx[cur]][archposy[cur]]=arch[cur];
 
+                                if (arch[cur]!=null) {
+                                    isHead[archposx[cur]][archposy[cur]] = true;
+                                    content[archposx[cur]][archposy[cur]] = arch[cur];
+                                    Log.d("ishead", "set true"+archposx[cur]+archposy[cur]);
+                                    archExists = true;
+                                    processedarch++;
+                                }
                                 rs1.close();
                                 Log.d("Land", "initLands: rs1 completed");
                             }
 
                             //Get arch type from server (ShopInfo table)
-                            ResultSet rs2 = stmt.executeQuery("SELECT archtype FROM ShopInfo WHERE shopid='"+arch[cur]+"';");
-                            if(rs2.next()){
-                                if (rs2.getString("archtype").endsWith("S") || rs2.getString("archtype").endsWith("s")){
-                                    //Mark 2*2 area
-                                    availableArray[archposx[cur]][archposy[cur]] = false;
-                                    availableArray[archposx[cur]+1][archposy[cur]] = false;
-                                    availableArray[archposx[cur]+1][archposy[cur]-1] = false;
-                                    availableArray[archposx[cur]][archposy[cur]-1] = false;
-                                } else if (rs2.getString("archtype").endsWith("B") || rs2.getString("archtype").endsWith("b")){
-                                    //Mark 2*3 area
-                                    availableArray[archposx[cur]][archposy[cur]] = false;
-                                    availableArray[archposx[cur]+1][archposy[cur]] = false;
-                                    availableArray[archposx[cur]+1][archposy[cur]-1] = false;
-                                    availableArray[archposx[cur]][archposy[cur]-1] = false;
-                                    availableArray[archposx[cur]][archposy[cur]-2] = false;
-                                    availableArray[archposx[cur]+1][archposy[cur]-2] = false;
+                            if (archExists) {
+                                ResultSet rs2 = stmt.executeQuery("SELECT archtype FROM ShopInfo WHERE shopid='" + arch[cur] + "';");
+                                if (rs2.next()) {
+                                    if (rs2.getString("archtype").endsWith("S") || rs2.getString("archtype").endsWith("s")) {
+                                        //Mark 2*2 area
+                                        availableArray[archposx[cur]][archposy[cur]] = false;
+                                        availableArray[archposx[cur] + 1][archposy[cur]] = false;
+                                        availableArray[archposx[cur] + 1][archposy[cur] - 1] = false;
+                                        availableArray[archposx[cur]][archposy[cur] - 1] = false;
+                                    } else if (rs2.getString("archtype").endsWith("B") || rs2.getString("archtype").endsWith("b")) {
+                                        //Mark 2*3 area
+                                        availableArray[archposx[cur]][archposy[cur]] = false;
+                                        availableArray[archposx[cur] + 1][archposy[cur]] = false;
+                                        availableArray[archposx[cur] + 1][archposy[cur] - 1] = false;
+                                        availableArray[archposx[cur]][archposy[cur] - 1] = false;
+                                        availableArray[archposx[cur]][archposy[cur] - 2] = false;
+                                        availableArray[archposx[cur] + 1][archposy[cur] - 2] = false;
+                                    }
+                                    rs2.close();
+                                    Log.d("Land", "initLands: rs2 completed");
                                 }
-                                rs2.close();
-                                Log.d("Land", "initLands: rs2 completed");
                             }
-                            processedarch++;
                             if(processedarch==archcount){
                                 cur=9;
                             }
@@ -133,7 +142,7 @@ public class Land{
             availableArray[5][i]=false;
         }
         for(int i=0;i<6;i++){
-                availableArray[i][0] = false;
+            availableArray[i][0] = false;
         }
 
         //Search for available lands.
@@ -145,6 +154,10 @@ public class Land{
                         availableArray[i][j] = false;
                     }
                 }
+            }
+            //Mark extra impossible area for big arch
+            for(int i=0; i<6; i++){
+                availableArray[i][1] = false;
             }
         } else {
             //Search for 2*2 area

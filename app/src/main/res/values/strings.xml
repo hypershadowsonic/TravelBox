@@ -7,5 +7,7 @@
     <string name="loading_facebook_fetching">Fetching data from Facebook...</string>
     <string name="loading_facebook_cancel">Login process cancelled, please try again.</string>
     <string name="loading_error">Something went wrong, please try again.</string>
-
+    <string name="confirm_unlock">Are you sure want to unlock lv5 Arch using 100 coins?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

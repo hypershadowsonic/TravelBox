@@ -2,9 +2,11 @@ package com.edge.work.travelbox;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,32 +16,31 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
- * Created by Super on 12/30/2016.
+ * Created by Super on 12/31/2016.
  */
 
-public class CollectionItemAdapter extends RecyclerView.Adapter<CollectionItemAdapter.MyViewHolder> {
+public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> {
 
     Context context;
-    ArrayList<PlaceCard> data;
+    ArrayList<PlaceCard> data,backup;
     LayoutInflater inflater;
     FragmentManager fm;
 
-
-    public CollectionItemAdapter(Context context, ArrayList<PlaceCard> data, FragmentManager fm) {
+    public ListAdapter(Context context, ArrayList<PlaceCard> data, FragmentManager fm) {
         this.context = context;
         this.data = data;
+        this.backup = new ArrayList<>(data);
         this.fm = fm;
         inflater = LayoutInflater.from(context);
     }
 
-
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.collection_item, parent, false);
+        View view = inflater.inflate(R.layout.list_item, parent, false);
         MyViewHolder holder = new MyViewHolder(view);
-
         return holder;
     }
 
@@ -47,9 +48,7 @@ public class CollectionItemAdapter extends RecyclerView.Adapter<CollectionItemAd
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         ImageLoader.getInstance().displayImage(data.get(position).imgUrl,holder.thumb);
         holder.name.setText(data.get(position).itemName);
-        if(data.get(position).price!=null) {
-            holder.price.setText("$ " + data.get(position).price);
-        }
+        holder.price.setText("$ " + data.get(position).price);
         holder.card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,7 +71,7 @@ public class CollectionItemAdapter extends RecyclerView.Adapter<CollectionItemAd
         return data.size();
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder{
+    class MyViewHolder extends RecyclerView.ViewHolder {
 
         ImageView thumb;
         TextView name,price;
@@ -84,7 +83,20 @@ public class CollectionItemAdapter extends RecyclerView.Adapter<CollectionItemAd
             name = (TextView) itemView.findViewById(R.id.collection_item_title);
             price = (TextView) itemView.findViewById(R.id.collection_item_price);
             card = (CardView) itemView.findViewById(R.id.collection_item);
+        }
+    }
 
+    public void swap(String district){
+
+        Log.d("Adapter", "swap: "+district);
+        if(district.indexOf("a")!=-1) {
+            data.clear();
+            data.addAll(backup);
+            notifyDataSetChanged();
+            Log.d("Adapter", "is a: "+district);
+        } else {
+            data.clear();
+            notifyDataSetChanged();
         }
     }
 }

@@ -17,8 +17,8 @@ public class CollectionItemData {
     private static ConnectionClass connectionClass = new ConnectionClass();
 
 
-    public static ArrayList<CollectionItemInfo> getData(Context context, String category, String parentID){
-        ArrayList<CollectionItemInfo> data = new ArrayList<>();
+    public static ArrayList<PlaceCard> getData(Context context, String category, String parentID){
+        ArrayList<PlaceCard> data = new ArrayList<>();
 
         try {
             Connection con = connectionClass.CONN();
@@ -32,7 +32,7 @@ public class CollectionItemData {
                             "FROM CollectionItem, ShopInfo " +
                             "WHERE CollectionItem.placeid=ShopInfo.shopid AND CollectionItem.parentid='"+parentID+"';");
                     while (rs.next()) {
-                        CollectionItemInfo current = new CollectionItemInfo();
+                        PlaceCard current = new PlaceCard();
                         current.category="x";
                         current.imgUrl=rs.getString("thumblv1");
                         current.placeID=rs.getString("placeid");
@@ -46,7 +46,7 @@ public class CollectionItemData {
                             "FROM CollectionItem, PlaceInfo " +
                             "WHERE CollectionItem.placeid=PlaceInfo.placeid AND CollectionItem.parentid='"+parentID+"';");
                     while (rs.next()) {
-                        CollectionItemInfo current = new CollectionItemInfo();
+                        PlaceCard current = new PlaceCard();
                         current.category="y";
                         current.imgUrl=rs.getString("thumb");
                         current.itemName=rs.getString("name");

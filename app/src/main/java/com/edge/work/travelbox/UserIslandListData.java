@@ -36,7 +36,7 @@ public class UserIslandListData {
                     for(int i=0;i<existArch.length;i++){
                         if(shopid.equals(existArch[i])){
                             notUsed = false;
-                        }Log.d("ListData", shopid+","+existArch[i]+","+notUsed);
+                        }Log.d("UserIslandListData", shopid+","+existArch[i]+","+notUsed);
                     }
                     if(notUsed){
                         int lv = rs.getInt("archlv");
@@ -73,8 +73,9 @@ public class UserIslandListData {
                 Statement stmt = con.createStatement();
                 ResultSet rs = stmt.executeQuery("SELECT archcount,arch0,arch1,arch2,arch3,arch4,arch5,arch6,arch7,arch8 FROM Island WHERE ownerid='" + TravelBox.userId + "';");
                 if (rs.next()) {
-                    for (int i=0;i<rs.getInt("archcount");i++){
+                    for (int i=0;i<9;i++){
                         existArch[i]=rs.getString("arch"+i);
+                        Log.d("UserIslandListDate", "getExistArch: "+existArch[i]);
                     }
                 }
             }

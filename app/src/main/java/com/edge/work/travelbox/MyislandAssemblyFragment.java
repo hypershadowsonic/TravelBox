@@ -137,11 +137,11 @@ public class MyislandAssemblyFragment extends Fragment {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
-    }
+    }*/
 
     @Override
     public void onDetach() {
         StatusFragment.myIslandStatus.setMyislandStatus(false);
         super.onDetach();
-    }*/
+    }
 }
