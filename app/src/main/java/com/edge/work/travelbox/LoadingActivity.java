@@ -1,5 +1,6 @@
 package com.edge.work.travelbox;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -7,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 //import android.telecom.Connection;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -78,6 +80,7 @@ public class LoadingActivity extends Activity {
         });
         jumpingHead.startAnimation(loadingJumpAnim);
         k = new Intent(this,MainActivity.class);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET},0);
 
         callbackManager = CallbackManager.Factory.create();
         loginButton = (LoginButton)findViewById(R.id.loading_btn_login);
