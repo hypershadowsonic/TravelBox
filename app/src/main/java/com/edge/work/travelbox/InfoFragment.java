@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -31,15 +33,17 @@ import java.util.Map;
 public class InfoFragment extends Fragment implements OnMapReadyCallback{
 
     private String shopid,category;
-    private ImageView btn_fb, title;
+    private ImageView btn_fb, title, artthumb1,artthumb2;
     private ImageView[] gallery = new ImageView[6];
-    private TextView shopname, address, description, idea, time, phone, price, popularity;
+    private TextView shopname, address, description, idea, time, phone, price, popularity, arttitle1,arttitle2;
+    private RelativeLayout art1,art2;
     private MapView mapView;
     private GoogleMap gMap;
     private ConnectionClass connectionClass = new ConnectionClass();
     private float lat,lng;
     private String name,url;
     private View rootview;
+    private CardView articles;
 
     public InfoFragment() {
         // Required empty public constructor
@@ -72,6 +76,13 @@ public class InfoFragment extends Fragment implements OnMapReadyCallback{
             phone = (TextView) rootview.findViewById(R.id.info_text_phone);
             price = (TextView) rootview.findViewById(R.id.info_text_price);
             popularity = (TextView) rootview.findViewById(R.id.info_text_popularity);
+            art1 = (RelativeLayout) rootview.findViewById(R.id.info_news1);
+            art2 = (RelativeLayout) rootview.findViewById(R.id.info_news2);
+            artthumb1 = (ImageView) rootview.findViewById(R.id.info_img_news1);
+            artthumb2 = (ImageView) rootview.findViewById(R.id.info_img_news2);
+            arttitle1 = (TextView) rootview.findViewById(R.id.info_text_news1);
+            arttitle2 = (TextView) rootview.findViewById(R.id.info_text_news2);
+            articles = (CardView) rootview.findViewById(R.id.info_news);
 
             try {
                 Connection con = connectionClass.CONN();
@@ -104,6 +115,40 @@ public class InfoFragment extends Fragment implements OnMapReadyCallback{
                         ImageLoader.getInstance().displayImage(rs.getString("gallery4"), gallery[3]);
                         ImageLoader.getInstance().displayImage(rs.getString("gallery5"), gallery[4]);
                         ImageLoader.getInstance().displayImage(rs.getString("gallery6"), gallery[5]);
+                    }
+
+                    Statement stmt2 = con.createStatement();
+                    String artQuery="SELECT * FROM Articles WHERE shopid='" + shopid + "';";
+                    ResultSet rs2 = stmt2.executeQuery(artQuery);
+                    Log.d("Articles", ""+artQuery);
+                    if (rs2.next()){
+                        ImageLoader.getInstance().displayImage(rs2.getString("thumb"),artthumb1);
+                        arttitle1.setText(rs2.getString("title"));
+                        final String arturl = rs2.getString("url");
+                        art1.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(arturl));
+                                startActivity(browserIntent);
+                            }
+                        });
+                    } else {
+                        articles.setVisibility(View.GONE);
+                        Log.d("Articles", "Set GONE");
+                    }
+                    if (rs2.next()){
+                        ImageLoader.getInstance().displayImage(rs2.getString("thumb"),artthumb2);
+                        arttitle2.setText(rs2.getString("title"));
+                        final String arturl = rs2.getString("url");
+                        art2.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(arturl));
+                                startActivity(browserIntent);
+                            }
+                        });
+                    } else {
+                        art2.setVisibility(View.GONE);
                     }
                 }
             } catch (Exception ex) {
