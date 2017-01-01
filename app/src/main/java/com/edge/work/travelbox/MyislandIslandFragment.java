@@ -524,7 +524,9 @@ public class MyislandIslandFragment extends Fragment {
             ImageLoader.getInstance().displayImage(getThumbURL(arch.shopid,5),btnLock);
         } else {
             btnLock.setImageResource(R.mipmap.houseinfo_locked);
-            ViewGroup.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+            lp.addRule(RelativeLayout.BELOW,R.id.myisland_detail_lv4);
             btnLock.setLayoutParams(lp);
         }
         archDetailName.setText(arch.name);
