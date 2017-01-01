@@ -28,7 +28,7 @@ public class CollectionTitleAdapter extends RecyclerView.Adapter<CollectionTitle
     ArrayList<CollectionTitleInfo> data;
     LayoutInflater inflater;
     private static RecyclerView shoplist, placelist;
-    Boolean isExpand = false;
+    Boolean[] isExpand = new Boolean[10];
     FragmentManager fm;
 
 
@@ -48,26 +48,26 @@ public class CollectionTitleAdapter extends RecyclerView.Adapter<CollectionTitle
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
         holder.name.setText(data.get(position).collectionName);
         ImageLoader.getInstance().displayImage(data.get(position).titleImg,holder.title);
-
+        isExpand[position]=false;
 
 
         final float scale = context.getResources().getDisplayMetrics().density;
         holder.expand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isExpand){
-                    startExpandAnimation(holder.colContainer, (int) (567 * scale + 0.5f), (int) (160 * scale + 0.5f));
+                if (isExpand[position]){
+                    startExpandAnimation(holder.colContainer, (int) (590 * scale + 0.5f), (int) (150 * scale + 0.5f));
                     startRotateAnimation(holder.expand, 0, 180);
                     Log.d("Collectiontitle", "Closing");
-                    isExpand=false;
+                    isExpand[position]=false;
                 } else {
-                    startExpandAnimation(holder.colContainer, (int) (160 * scale + 0.5f), (int) (567 * scale + 0.5f));
+                    startExpandAnimation(holder.colContainer, (int) (150 * scale + 0.5f), (int) (590 * scale + 0.5f));
                     startRotateAnimation(holder.expand, 180, 0);
                     Log.d("Collectiontitle", "Expanding");
-                    isExpand=true;
+                    isExpand[position]=true;
                 }
             }
         });

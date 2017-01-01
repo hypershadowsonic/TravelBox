@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
@@ -16,7 +15,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -68,7 +66,7 @@ public class MyislandIslandFragment extends Fragment {
     private LinearLayout buildContainer;
     private long lastHarvest, harvestSeconds;
     private DonutProgress harvestProgress;
-    private int harvestAmount=0;
+    private int scoreAmount =0;
 
 
 
@@ -362,7 +360,7 @@ public class MyislandIslandFragment extends Fragment {
                             }
                         }
                         //Execute update
-                        String query = "UPDATE Island SET archcount=" + (archcount + 1) + ", arch" + emptyslot + "='" + currentShopId + "', archposx" + emptyslot + "=" + x + ", archposy" + emptyslot + "=" + y + " WHERE ownerid=" + TravelBox.userId + ";";
+                        String query = "UPDATE Island SET archcount=" + (archcount + 1) + ", arch" + emptyslot + "='" + currentShopId + "', archposx" + emptyslot + "=" + x + ", archposy" + emptyslot + "=" + y + " WHERE ownerid='" + TravelBox.userId + "';";
                         Log.d("SQL", query);
                         stmt.executeUpdate(query);
                     }
@@ -379,7 +377,7 @@ public class MyislandIslandFragment extends Fragment {
     }
 
     public void initShowAllArch(Boolean[][] isHead){
-        harvestAmount = 0;
+        scoreAmount = 0;
         for (int i=5; i>=0; i--){
             for (int j=5; j>=0; j--){
                 if (isHead[i][j]){
@@ -404,7 +402,7 @@ public class MyislandIslandFragment extends Fragment {
         }catch (Exception ex){
             Log.e("SQL", "Update harvest time: "+ex.toString());
         }
-
+        StatusFragment.setScore(scoreAmount);
         updateHarvestStatus();
     }
 
@@ -417,13 +415,20 @@ public class MyislandIslandFragment extends Fragment {
             } else {
                 //Get arch data from server
                 Statement stmt = con.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT arch0, arch1, arch2, arch3, arch4, arch5, arch6, arch7, arch8,archcount FROM Island WHERE ownerid='" + TravelBox.userId + "';");
+                ResultSet rs = stmt.executeQuery("SELECT * FROM Island WHERE ownerid='" + TravelBox.userId + "';");
                 if (rs.next()) {
                     for(int i=0; i<9; i++){
-                        if(rs.getString("arch"+i).equals(archBundle.shopid)){
-                            //Wipe arch data
-                            stmt.executeUpdate("UPDATE Island SET arch"+i+"=null, archposx"+i+"=null, archposy"+i+"=null, archcount="+(rs.getInt("archcount")-1)+";");
-                            i=9;
+                        if (rs.getString("arch" + i)!=null) {
+                            if (rs.getString("arch" + i).endsWith(archBundle.shopid)) {
+                                //Wipe arch drawable
+                                Log.d("MyIsland", "WipeArch: "+((rs.getInt("archposx"+i)+1)*10+rs.getInt("archposy"+i)+1));
+                                iv[(rs.getInt("archposx"+i)+1)*10+rs.getInt("archposy"+i)+1].setImageDrawable(null);
+                                //Wipe arch data
+                                String query = "UPDATE Island SET arch" + i + "=null, archposx" + i + "=null, archposy" + i + "=null, archcount=" + (rs.getInt("archcount") - 1) + " WHERE ownerid='" + TravelBox.userId + "';";
+                                stmt.executeUpdate(query);
+                                Log.d("MyIsland", "deleteArch: " + query);
+                                i = 9;
+                            }
                         }
                     }
                 }
@@ -484,6 +489,7 @@ public class MyislandIslandFragment extends Fragment {
         x++;y++;
         //New ImageView
         iv[x*10+y]=new ImageView(getContext());
+        Log.d("MyIsland", "showThisArch: "+(x*10+y));
 
         //margin data in dp
         double marginleft = 50;
@@ -544,12 +550,13 @@ public class MyislandIslandFragment extends Fragment {
             }
         });
 
-        //Add to harvestAmount
-        harvestAmount += (15 + (arch.level*5));
+        //Add to scoreAmount
+        scoreAmount += (15 + (arch.level*5));
         //Level 5 bonus
         if (arch.level == 5){
-            harvestAmount += 10;
+            scoreAmount += 10;
         }
+
     }
 
     private void showArchDetail(ArchBundle arch,View view){
@@ -670,7 +677,8 @@ public class MyislandIslandFragment extends Fragment {
 
     private void doHarvest(){
 
-        StatusFragment.coinPaySave(true,harvestAmount);
+        int harvestAmount = (int) (scoreAmount*scoreAmount)/(scoreAmount*20);
+        StatusFragment.coinPaySave(true, harvestAmount);
 
         //Update lastHarvest
         try{

@@ -106,30 +106,35 @@ public class StatusFragment extends Fragment{
         return rootview;
     }
 
-    public static Drawable LoadImageFromWebOperations(String url) {
-        try {
-            InputStream is = (InputStream) new URL(url).getContent();
-            Drawable d = Drawable.createFromStream(is, "src name");
-            return d;
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
     public static void coinPaySave(Boolean isSave, int amount){
         if (isSave){
-            startCountAnimation(coin, amount);
+            startCountAnimation(coin, TravelBox.coin, TravelBox.coin+amount);
             TravelBox.coin += amount;
             DoSync doSync = new DoSync();
             doSync.execute("");
         } else {
-            startCountAnimation(coin, -amount);
+            startCountAnimation(coin, TravelBox.coin, TravelBox.coin-amount);
             TravelBox.coin -= amount;
             DoSync doSync = new DoSync();
             doSync.execute("");
         }
+    }
 
-
+    public static void setScore(int amount){
+        startCountAnimation(trophy,0,amount);
+        try {
+            Connection con = connectionClass.CONN();
+            if (con == null) {
+                //Failed to connect to server
+                Log.e("SQL", "Unable to connect to server");
+            } else {
+                //Get arch data from server
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate("UPDATE Users SET amount_trophy="+amount+" WHERE id='"+TravelBox.userId+"';");
+            }
+        } catch (Exception ex){
+            Log.e("SQL", "Update acore: "+ex.toString());
+        }
     }
 
     private static class DoSync extends AsyncTask<String,String,String>{
@@ -152,9 +157,9 @@ public class StatusFragment extends Fragment{
         }
     }
 
-    private static void startCountAnimation(final TextView textView, int amount) {
+    private static void startCountAnimation(final TextView textView, int start, int end) {
         ValueAnimator animator = new ValueAnimator();
-        animator.setObjectValues(TravelBox.coin, TravelBox.coin+amount);
+        animator.setObjectValues(start, end);
         animator.setDuration(2000);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
