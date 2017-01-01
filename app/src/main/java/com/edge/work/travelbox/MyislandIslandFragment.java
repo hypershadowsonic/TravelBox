@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.net.Uri;
@@ -20,6 +21,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -47,7 +49,7 @@ public class MyislandIslandFragment extends Fragment {
 
     private static ImageView[][] land = new ImageView[6][6];
     private static Land landProp = new Land();
-    private View.OnClickListener mListener;
+//    private View.OnClickListener mListener;
     private ConnectionClass connectionClass = new ConnectionClass();
     private ImageView[] iv=new ImageView[66];
     private FrameLayout fl;
@@ -257,8 +259,31 @@ public class MyislandIslandFragment extends Fragment {
 
         recyclerView.setLayoutManager(llm);
 
+        View.OnTouchListener changeColorListener = new View.OnTouchListener() {
 
-        mListener = new View.OnClickListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                Bitmap bmp = Bitmap.createBitmap(view.getDrawingCache());
+                int color = bmp.getPixel((int) event.getX(), (int) event.getY());
+                if (color == Color.TRANSPARENT)
+                    return false;
+                else {
+                    int x = Character.getNumericValue(view.getTag().toString().charAt(0));
+                    int y = Character.getNumericValue(view.getTag().toString().charAt(1));
+
+                    Log.d("Land", "onClick: "+x+","+y);
+                    if(landProp.getIsOpen()) {
+                        if (landProp.getAvailableArray(x,y)){
+                            pickStatusClose(rootview,x,y,true);
+                        } else {
+                            pickStatusClose(rootview,x,y,false);
+                        }
+                    }
+                    return true;
+                }
+            }
+        };
+        /*mListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int x = Character.getNumericValue(view.getTag().toString().charAt(0));
@@ -267,16 +292,16 @@ public class MyislandIslandFragment extends Fragment {
                 Log.d("Land", "onClick: "+x+","+y);
                 if(landProp.getIsOpen()) {
                     if (landProp.getAvailableArray(x,y)){
-                        //showThisArch(x,y, getArchBundle(currentShopId));
                         pickStatusClose(rootview,x,y);
                     }
                 }
             }
-        };
+        };*/
 
         for(int i=0;i<6;i++){
             for (int j=0;j<6;j++){
-                land[i][j].setOnClickListener(mListener);
+                land[i][j].setDrawingCacheEnabled(true);
+                land[i][j].setOnTouchListener(changeColorListener);
             }
         }
 
@@ -303,7 +328,7 @@ public class MyislandIslandFragment extends Fragment {
         }
     }
 
-    public void pickStatusClose(View rootview, int x, int y){
+    public void pickStatusClose(View rootview, int x, int y, Boolean placed){
         int archcount=0;
         int emptyslot=0;
 
@@ -314,41 +339,43 @@ public class MyislandIslandFragment extends Fragment {
                     land[i][j].clearColorFilter();
             }
         }
-        //Sync with server
-        try{
-            Connection con = connectionClass.CONN();
-            if (con == null){
-                //Failed to connect to server
-                Log.e("SQL", "Failed connecting to server");
-            } else {
+        if(placed) {
+            //Sync with server
+            try {
+                Connection con = connectionClass.CONN();
+                if (con == null) {
+                    //Failed to connect to server
+                    Log.e("SQL", "Failed connecting to server");
+                } else {
 
-                Statement stmt = con.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT * FROM Island WHERE ownerid='"+ TravelBox.userId +"';");
-                if(rs.next()){
-                    //Get archcount
-                    archcount = rs.getInt("archcount");
+                    Statement stmt = con.createStatement();
+                    ResultSet rs = stmt.executeQuery("SELECT * FROM Island WHERE ownerid='" + TravelBox.userId + "';");
+                    if (rs.next()) {
+                        //Get archcount
+                        archcount = rs.getInt("archcount");
 
-                    //find a empty slot
-                    for(int i=0;i<9;i++){
-                        if(rs.getString("arch"+i)==null){
-                            emptyslot=i;
-                            i=9;
+                        //find a empty slot
+                        for (int i = 0; i < 9; i++) {
+                            if (rs.getString("arch" + i) == null) {
+                                emptyslot = i;
+                                i = 9;
+                            }
                         }
+                        //Execute update
+                        String query = "UPDATE Island SET archcount=" + (archcount + 1) + ", arch" + emptyslot + "='" + currentShopId + "', archposx" + emptyslot + "=" + x + ", archposy" + emptyslot + "=" + y + " WHERE ownerid=" + TravelBox.userId + ";";
+                        Log.d("SQL", query);
+                        stmt.executeUpdate(query);
                     }
-                    //Execute update
-                    String query = "UPDATE Island SET archcount="+(archcount+1)+", arch"+emptyslot+"='"+currentShopId+"', archposx"+emptyslot+"="+x+", archposy"+emptyslot+"="+y+" WHERE ownerid="+TravelBox.userId+";";
-                    Log.d("SQL", query);
-                    stmt.executeUpdate(query);
                 }
+            } catch (Exception ex) {
+                Log.e("SQL", "pickStatusClose: " + ex.toString());
             }
-        } catch (Exception ex){
-            Log.e("SQL", "pickStatusClose: "+ex.toString());
+
+            //Reload land status
+            Boolean[][] isHead = landProp.initLands(rootview);
+            initShowAllArch(isHead);
+            adapter.updateData(UserIslandListData.getData(getContext()));
         }
-
-        //Reload land status
-        Boolean[][] isHead = landProp.initLands(rootview);
-        initShowAllArch(isHead);
-
     }
 
     public void initShowAllArch(Boolean[][] isHead){
@@ -406,6 +433,7 @@ public class MyislandIslandFragment extends Fragment {
         }
         Boolean[][] isHead= landProp.initLands(rootview);
         initShowAllArch(isHead);
+        adapter.updateData(UserIslandListData.getData(getContext()));
     }
 
     private ArchBundle getArchBundle(String shopid) {
@@ -490,13 +518,29 @@ public class MyislandIslandFragment extends Fragment {
         //Add view
         fl.addView(iv[x*10+y],lp);
         iv[x*10+y].setScaleType(ImageView.ScaleType.FIT_END);
+        iv[x*10+y].setDrawingCacheEnabled(true);
         ImageLoader.getInstance().displayImage(arch.url,iv[x*10+y]);
-        iv[x*10+y].setOnLongClickListener(new View.OnLongClickListener() {
+        /*iv[x*10+y].setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 Log.d("MyislandIsland", "onLongClick: "+arch.shopid);
                 showArchDetail(arch, view);
                 return true;
+            }
+        });*/
+        iv[x*10+y].setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                Bitmap bmp = Bitmap.createBitmap(view.getDrawingCache());
+                int color = bmp.getPixel((int) motionEvent.getX(), (int) motionEvent.getY());
+                if (color == Color.TRANSPARENT)
+                    return false;
+                else {
+                    if (landProp.getIsOpen()==false){
+                        showArchDetail(arch, view);
+                    }
+                    return true;
+                }
             }
         });
 
@@ -513,6 +557,7 @@ public class MyislandIslandFragment extends Fragment {
         activeDetailArch = (ImageView)view;
         for(int i=1;i<5;i++){
             ImageLoader.getInstance().displayImage(getThumbURL(arch.shopid,i), archDetailImg[i-1]);
+            archDetailImg[i-1].clearColorFilter();
             if(i>arch.level){
                 archDetailImg[i-1].setColorFilter(brightIt(255));
             }
@@ -659,5 +704,9 @@ public class MyislandIslandFragment extends Fragment {
             Log.e("Myisland", "unlockLvFive: "+ex.toString());
         }
         StatusFragment.coinPaySave(false,100);
+    }
+
+    public static Boolean getLandPropIsOpen(){
+        return landProp.getIsOpen();
     }
 }

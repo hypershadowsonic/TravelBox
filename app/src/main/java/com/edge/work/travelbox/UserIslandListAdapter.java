@@ -51,13 +51,16 @@ public class UserIslandListAdapter extends RecyclerView.Adapter<UserIslandListAd
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MyislandIslandFragment.setCurrentShopID(data.get(position).arch);
-                if (data.get(position).type.endsWith("S")){
-                    MyislandIslandFragment.pickStatusOpen(false);
-                } else {
-                    MyislandIslandFragment.pickStatusOpen(true);
-                }
+                if (MyislandIslandFragment.getLandPropIsOpen()){
 
+                } else {
+                    MyislandIslandFragment.setCurrentShopID(data.get(position).arch);
+                    if (data.get(position).type.endsWith("S")) {
+                        MyislandIslandFragment.pickStatusOpen(false);
+                    } else {
+                        MyislandIslandFragment.pickStatusOpen(true);
+                    }
+                }
             }
         });
     }
@@ -77,5 +80,11 @@ public class UserIslandListAdapter extends RecyclerView.Adapter<UserIslandListAd
             textView = (TextView)itemView.findViewById(R.id.text_row);
             imageView = (ImageView)itemView.findViewById(R.id.img_row);
         }
+    }
+
+    public void updateData(ArrayList<UserIslandListInfo> newData){
+        data.clear();
+        data.addAll(newData);
+        notifyDataSetChanged();
     }
 }
