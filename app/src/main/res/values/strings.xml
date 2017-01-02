@@ -9,12 +9,12 @@
     <string name="loading_error">Something went wrong, please try again.</string>
     <string name="loading_wait">Please wait…</string>
 
-    <string name="confirm_unlock">Are you sure want to unlock lv5 Arch using 100 coins?</string>
+    <string name="confirm_unlock">Are you sure want to unlock lv5 Arch using 50 coins?</string>
     <string name="award_level4">You already have level 4 Arch.</string>
     <string name="award_invalid">Invalid QR Code.</string>
     <string name="award_cancelled">Scan cancelled.</string>
 
-    <string name="survey_person">What's the size of your group?</string>
+    <string name="survey_person">What\'s the size of your group?</string>
     <string name="survey_person_1">Single</string>
     <string name="survey_person_2">Duo/Trio</string>
     <string name="survey_person_3">Many</string>
@@ -25,7 +25,7 @@
     <string name="survey_mad">Mad</string>
 
     <string name="survey_why">Why did you came here at first place?</string>
-    <string name="survey_limit">10 character's max</string>
+    <string name="survey_limit">10 character\'s max</string>
     <string name="survey_submit">Submit</string>
 
     <string name="unable_connect">Failed connecting to server.</string>

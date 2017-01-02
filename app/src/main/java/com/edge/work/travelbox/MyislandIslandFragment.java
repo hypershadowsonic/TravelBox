@@ -262,23 +262,27 @@ public class MyislandIslandFragment extends Fragment {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
                 Bitmap bmp = Bitmap.createBitmap(view.getDrawingCache());
-                int color = bmp.getPixel((int) event.getX(), (int) event.getY());
-                if (color == Color.TRANSPARENT)
-                    return false;
-                else {
-                    int x = Character.getNumericValue(view.getTag().toString().charAt(0));
-                    int y = Character.getNumericValue(view.getTag().toString().charAt(1));
+                if (event.getX() < bmp.getWidth() && event.getY() < bmp.getHeight() && event.getX() >= 0 && event.getY() >= 0) {
+                    int color = bmp.getPixel((int) event.getX(), (int) event.getY());
+                    if (color == Color.TRANSPARENT)
+                        return false;
+                    else {
+                        int x = Character.getNumericValue(view.getTag().toString().charAt(0));
+                        int y = Character.getNumericValue(view.getTag().toString().charAt(1));
 
-                    Log.d("Land", "onClick: "+x+","+y);
-                    if(landProp.getIsOpen()) {
-                        if (landProp.getAvailableArray(x,y)){
-                            pickStatusClose(rootview,x,y,true);
-                        } else {
-                            pickStatusClose(rootview,x,y,false);
+                        Log.d("Land", "onClick: " + x + "," + y);
+                        if (landProp.getIsOpen()) {
+                            if (landProp.getAvailableArray(x, y)) {
+                                pickStatusClose(rootview, x, y, true);
+                            } else {
+                                pickStatusClose(rootview, x, y, false);
+                            }
                         }
+
+                        return true;
                     }
-                    return true;
                 }
+                return false;
             }
         };
         /*mListener = new View.OnClickListener() {
@@ -538,15 +542,19 @@ public class MyislandIslandFragment extends Fragment {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 Bitmap bmp = Bitmap.createBitmap(view.getDrawingCache());
-                int color = bmp.getPixel((int) motionEvent.getX(), (int) motionEvent.getY());
-                if (color == Color.TRANSPARENT)
-                    return false;
-                else {
-                    if (landProp.getIsOpen()==false){
-                        showArchDetail(arch, view);
-                    }
-                    return true;
+                    if (motionEvent.getX() < bmp.getWidth() && motionEvent.getY() < bmp.getHeight() && motionEvent.getX() >= 0 && motionEvent.getY() >= 0) {
+                        int color = bmp.getPixel((int) motionEvent.getX(), (int) motionEvent.getY());
+                        if (color == Color.TRANSPARENT)
+                            return false;
+                        else {
+                            if (landProp.getIsOpen() == false) {
+                                showArchDetail(arch, view);
+                            }
+                        }
+                        return true;
+
                 }
+                return false;
             }
         });
 
@@ -711,7 +719,7 @@ public class MyislandIslandFragment extends Fragment {
         } catch (Exception ex){
             Log.e("Myisland", "unlockLvFive: "+ex.toString());
         }
-        StatusFragment.coinPaySave(false,100);
+        StatusFragment.coinPaySave(false,50);
     }
 
     public static Boolean getLandPropIsOpen(){
