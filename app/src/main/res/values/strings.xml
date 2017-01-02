@@ -10,6 +10,9 @@
     <string name="loading_wait">Please wait…</string>
 
     <string name="confirm_unlock">Are you sure want to unlock lv5 Arch using 50 coins?</string>
+    <string name="unlock">Spending you money</string>
+
+
     <string name="award_level4">You already have level 4 Arch.</string>
     <string name="award_invalid">Invalid QR Code.</string>
     <string name="award_cancelled">Scan cancelled.</string>

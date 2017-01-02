@@ -24,4 +24,5 @@
     <string name="survey_submit">送出</string>
     <string name="survey_why">今天為什麼會來這裡呢？</string>
     <string name="unable_connect">無法連線到伺服器</string>
+    <string name="unlock">正在花錢</string>
 </resources>
