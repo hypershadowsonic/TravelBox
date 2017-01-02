@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">旅行盒子 Travel Box</string>
+    <string name="award_cancelled">掃描已取消</string>
+    <string name="award_invalid">無效的 QR Code</string>
+    <string name="award_level4">你已經擁有等級4的地標了</string>
+    <string name="confirm_unlock">確定要使用 50金幣 來解鎖等級5的地標嗎？</string>
+    <string name="loading_error">哪裡出錯了，請再試一次</string>
+    <string name="loading_facebook_cancel">登入取消</string>
+    <string name="loading_facebook_fetching">正在從Facebook取得資料…</string>
+    <string name="loading_server_sync">正在與伺服器同步…</string>
+    <string name="loading_wait">請稍等…</string>
+    <string name="no">不要</string>
+    <string name="yes">好的</string>
+    <string name="survey_feeling">今天的體驗如何？</string>
+    <string name="survey_happy">開心</string>
+    <string name="survey_limit">最多10字</string>
+    <string name="survey_mad">生氣</string>
+    <string name="survey_person">有幾個人呢？</string>
+    <string name="survey_person_1">一人</string>
+    <string name="survey_person_2">二/三人</string>
+    <string name="survey_person_3">多人</string>
+    <string name="survey_sad">難過</string>
+    <string name="survey_submit">送出</string>
+    <string name="survey_why">今天為什麼會來這裡呢？</string>
+    <string name="unable_connect">無法連線到伺服器</string>
+</resources>

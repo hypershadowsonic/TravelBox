@@ -1,5 +1,4 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -33,7 +32,7 @@
                 android:layout_marginBottom="8dp">
 
                 <TextView
-                    android:text="今天幾個人來？"
+                    android:text="@string/survey_person"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp" />
@@ -73,21 +72,21 @@
                     android:paddingLeft="16dp">
 
                     <RadioButton
-                        android:text="1人"
+                        android:text="@string/survey_person_1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/rbtn_1_1"
                         android:layout_weight="1" />
 
                     <RadioButton
-                        android:text="2-3人"
+                        android:text="@string/survey_person_2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/rbtn_1_2"
                         android:layout_weight="1" />
 
                     <RadioButton
-                        android:text="多人"
+                        android:text="@string/survey_person_3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/rbtn_1_3"
@@ -103,7 +102,7 @@
                 android:layout_marginBottom="8dp">
 
                 <TextView
-                    android:text="體驗後心情如何？"
+                    android:text="@string/survey_feeling"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp" />
@@ -140,21 +139,21 @@
                     android:layout_marginLeft="16dp">
 
                     <RadioButton
-                        android:text="開心"
+                        android:text="@string/survey_happy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/rbtn_2_1"
                         android:layout_weight="1" />
 
                     <RadioButton
-                        android:text="難過"
+                        android:text="@string/survey_sad"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/rbtn_2_2"
                         android:layout_weight="1" />
 
                     <RadioButton
-                        android:text="生氣"
+                        android:text="@string/survey_mad"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/rbtn_2_3"
@@ -169,7 +168,7 @@
                 android:layout_marginTop="8dp">
 
                 <TextView
-                    android:text="為什麼會來這裡消費呢？"
+                    android:text="@string/survey_why"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -179,11 +178,11 @@
                     android:inputType="textPersonName"
                     android:ems="10"
                     android:id="@+id/survey_reason"
-                    android:hint="字數以十字為限" />
+                    android:hint="@string/survey_limit" />
             </LinearLayout>
 
             <Button
-                android:text="送出"
+                android:text="@string/survey_submit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/survey_submit" />

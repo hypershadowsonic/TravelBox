@@ -52,9 +52,9 @@ public class MainActivity extends FragmentActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result != null) {
             if(result.getContents() == null) {
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.award_cancelled), Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
                 ConnectionClass connectionClass = new ConnectionClass();
                 try {
                     Connection con = connectionClass.CONN();
@@ -85,7 +85,7 @@ public class MainActivity extends FragmentActivity {
                                 Log.d("QrScan", "Committed");
                             } else {
                                 //User doesn't have it, pass through directly
-                                Toast.makeText(this, "You already have level 4 Arch.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(this, getString(R.string.award_level4), Toast.LENGTH_LONG).show();
                             }
                         } else {
                             ft.replace(R.id.main_container, awardF)
@@ -95,11 +95,11 @@ public class MainActivity extends FragmentActivity {
                         }
 
                     } else {
-                        Toast.makeText(this, "Invalid QR Code", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, getString(R.string.award_invalid), Toast.LENGTH_LONG).show();
                     }
 
                 } catch (Exception ex){
-                    Toast.makeText(this, "Unable to connect to server: " + ex.toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.unable_connect) + ex.toString(), Toast.LENGTH_LONG).show();
                 }
             }
         } else {
@@ -109,19 +109,19 @@ public class MainActivity extends FragmentActivity {
 
     private String getPushQuery(String zone){
         String query="SELECT TOP 1 * FROM PlaceInfo WHERE";
-        if (zone.indexOf("A")!=-1){
+        if (zone.contains("A")){
             query += " zone='A'";
         }
-        if (zone.indexOf("B")!=-1){
+        if (zone.contains("B")){
             query += " OR zone='B'";
         }
-        if (zone.indexOf("C")!=-1){
+        if (zone.contains("C")){
             query += " OR zone='C'";
         }
-        if (zone.indexOf("D")!=-1){
+        if (zone.contains("D")){
             query += " OR zone='D'";
         }
-        if (zone.indexOf("E")!=-1){
+        if (zone.contains("E")){
             query += " OR zone='E'";
         }
         query += " ORDER BY NEWID();";
