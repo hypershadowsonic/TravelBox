@@ -38,6 +38,8 @@ public class MainFragment extends Fragment {
                 fm.beginTransaction()
                         .addToBackStack(null)
                         .replace(R.id.main_container, new ListAssemblyFragment())
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                         .commit();
             }
         });

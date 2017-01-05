@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,9 +37,6 @@ public class ListNewFragment extends Fragment {
         adapter = new CollectionTitleAdapter(getActivity(), CollectionTitleData.getData(getContext()),fm);
         collection.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
         collection.setAdapter(adapter);
-
-
-
         return rootview;
     }
 

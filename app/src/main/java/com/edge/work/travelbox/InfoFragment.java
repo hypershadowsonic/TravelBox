@@ -2,6 +2,8 @@ package com.edge.work.travelbox;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -29,6 +31,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Map;
 
+import static android.content.Context.MODE_PRIVATE;
+
 
 public class InfoFragment extends Fragment implements OnMapReadyCallback{
 
@@ -39,7 +43,7 @@ public class InfoFragment extends Fragment implements OnMapReadyCallback{
     private RelativeLayout art1,art2;
     private MapView mapView;
     private GoogleMap gMap;
-    private ConnectionClass connectionClass = new ConnectionClass();
+//    private ConnectionClass connectionClass = new ConnectionClass();
     private float lat,lng;
     private String name,url;
     private View rootview;
@@ -85,78 +89,68 @@ public class InfoFragment extends Fragment implements OnMapReadyCallback{
             articles = (CardView) rootview.findViewById(R.id.info_news);
 
             try {
-                Connection con = connectionClass.CONN();
-                if (con == null) {
-                    //Failed to connect to server
-                    Log.e("SQL", "Unable to connect to server");
-                } else {
-                    //Get arch data from server
-                    Statement stmt = con.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT * FROM ShopInfo WHERE shopid='" + shopid + "';");
-                    if (rs.next()) {
-                        lat = rs.getFloat("latitude");
-                        lng = rs.getFloat("longitude");
-                        name = rs.getString("name");
-                        url = rs.getString("facebookurl");
-                        shopname.setText(rs.getString("name"));
-                        address.setText(rs.getString("address"));
-                        description.setText(rs.getString("description").replace("\\n", "\n"));
-                        idea.setText(rs.getString("idea").replace("\\n", "\n"));
-                        time.setText(rs.getString("buisnesshour").replace("\\n", "\n"));
-                        phone.setText(rs.getString("phone"));
-                        price.setText(rs.getString("price"));
-                        popularity.setText("" + rs.getInt("popularity"));
+                SQLiteDatabase sqLiteDatabase = getContext().openOrCreateDatabase("Local_Data.db", MODE_PRIVATE, null);
+                Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM ShopInfo WHERE shopid='" + shopid + "';",null);
+                if(cursor.moveToNext()){
+                    lat = cursor.getFloat(cursor.getColumnIndex("latitude"));
+                    lng = cursor.getFloat(cursor.getColumnIndex("longitude"));
+                    name = cursor.getString(cursor.getColumnIndex("name"));
+                    url = cursor.getString(cursor.getColumnIndex("facebookurl"));
+                    shopname.setText(name);
+                    address.setText(cursor.getString(cursor.getColumnIndex("address")));
+                    description.setText(cursor.getString(cursor.getColumnIndex("description")).replace("\\n", "\n"));
+                    idea.setText(cursor.getString(cursor.getColumnIndex("idea")).replace("\\n", "\n"));
+                    time.setText(cursor.getString(cursor.getColumnIndex("businesshour")).replace("\\n", "\n"));
+                    phone.setText(cursor.getString(cursor.getColumnIndex("phone")));
+                    price.setText(cursor.getString(cursor.getColumnIndex("price")));
+                    popularity.setText("" + cursor.getInt(cursor.getColumnIndex("popularity")));
 
-                        title.setImageDrawable(null);
-                        ImageLoader.getInstance().displayImage(rs.getString("titleimg"), title);
-                        ImageLoader.getInstance().displayImage(rs.getString("gallery1"), gallery[0]);
-                        ImageLoader.getInstance().displayImage(rs.getString("gallery2"), gallery[1]);
-                        ImageLoader.getInstance().displayImage(rs.getString("gallery3"), gallery[2]);
-                        ImageLoader.getInstance().displayImage(rs.getString("gallery4"), gallery[3]);
-                        ImageLoader.getInstance().displayImage(rs.getString("gallery5"), gallery[4]);
-                        ImageLoader.getInstance().displayImage(rs.getString("gallery6"), gallery[5]);
-                    }
-
-                    Statement stmt2 = con.createStatement();
-                    String artQuery="SELECT * FROM Articles WHERE shopid='" + shopid + "';";
-                    ResultSet rs2 = stmt2.executeQuery(artQuery);
-                    Log.d("Articles", ""+artQuery);
-                    if (rs2.next()){
-                        ImageLoader.getInstance().displayImage(rs2.getString("thumb"),artthumb1);
-                        arttitle1.setText(rs2.getString("title"));
-                        final String arturl = rs2.getString("url");
-                        art1.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(arturl));
-                                startActivity(browserIntent);
-                            }
-                        });
-                    } else {
-                        articles.setVisibility(View.GONE);
-                        Log.d("Articles", "Set GONE");
-                    }
-                    if (rs2.next()){
-                        ImageLoader.getInstance().displayImage(rs2.getString("thumb"),artthumb2);
-                        arttitle2.setText(rs2.getString("title"));
-                        final String arturl = rs2.getString("url");
-                        art2.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(arturl));
-                                startActivity(browserIntent);
-                            }
-                        });
-                    } else {
-                        art2.setVisibility(View.GONE);
-                    }
+                    ImageLoader.getInstance().displayImage(cursor.getString(cursor.getColumnIndex("titleimg")), title);
+                    ImageLoader.getInstance().displayImage(cursor.getString(cursor.getColumnIndex("gallery1")), gallery[0]);
+                    ImageLoader.getInstance().displayImage(cursor.getString(cursor.getColumnIndex("gallery2")), gallery[1]);
+                    ImageLoader.getInstance().displayImage(cursor.getString(cursor.getColumnIndex("gallery3")), gallery[2]);
+                    ImageLoader.getInstance().displayImage(cursor.getString(cursor.getColumnIndex("gallery4")), gallery[3]);
+                    ImageLoader.getInstance().displayImage(cursor.getString(cursor.getColumnIndex("gallery5")), gallery[4]);
+                    ImageLoader.getInstance().displayImage(cursor.getString(cursor.getColumnIndex("gallery6")), gallery[5]);
                 }
+                cursor.close();
+                Cursor cursor2 = sqLiteDatabase.rawQuery("SELECT * FROM Articles WHERE shopid='" + shopid + "';", null);
+                if (cursor2.moveToNext()){
+                    ImageLoader.getInstance().displayImage(cursor2.getString(cursor2.getColumnIndex("thumb")),artthumb1);
+                    arttitle1.setText(cursor2.getString(cursor2.getColumnIndex("title")));
+                    final String arturl = cursor2.getString(cursor2.getColumnIndex("url"));
+                    art1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(arturl));
+                            startActivity(browserIntent);
+                        }
+                    });
+                } else {
+                    articles.setVisibility(View.GONE);
+                    Log.d("Articles", "Set GONE");
+                }
+                if (cursor2.moveToNext()){
+                    ImageLoader.getInstance().displayImage(cursor2.getString(cursor2.getColumnIndex("thumb")),artthumb2);
+                    arttitle2.setText(cursor2.getString(cursor2.getColumnIndex("title")));
+                    final String arturl = cursor2.getString(cursor2.getColumnIndex("url"));
+                    art2.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(arturl));
+                            startActivity(browserIntent);
+                        }
+                    });
+                } else {
+                    art2.setVisibility(View.GONE);
+                }
+                cursor2.close();
+                sqLiteDatabase.close();
             } catch (Exception ex) {
                 Log.e("SQL", ex.toString());
             }
 
             btn_fb = (ImageView) rootview.findViewById(R.id.info_btn_fb);
-
 
             mapView = (MapView) rootview.findViewById(R.id.info_mapView);
             mapView.onCreate(savedInstanceState);
@@ -171,32 +165,24 @@ public class InfoFragment extends Fragment implements OnMapReadyCallback{
             btn_fb = (ImageView) rootview.findViewById(R.id.place_facebook);
 
             try {
-                Connection con = connectionClass.CONN();
-                if (con == null) {
-                    //Failed to connect to server
-                    Log.e("SQL", "Unable to connect to server");
-                } else {
-                    //Get arch data from server
-                    Statement stmt = con.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT * FROM PlaceInfo WHERE placeid='" + shopid + "';");
-                    if (rs.next()) {
-                        name = rs.getString("name");
-                        url = rs.getString("facebookurl");
-                        shopname.setText(rs.getString("name"));
-                        address.setText(rs.getString("address"));
-                        description.setText(rs.getString("description").replace("\\n", "\n"));
-                        time.setText(rs.getString("buisnesshour").replace("\\n", "\n"));
+                SQLiteDatabase sqLiteDatabase = getContext().openOrCreateDatabase("Local_Data.db", MODE_PRIVATE, null);
+                Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM PlaceInfo WHERE placeid='" + shopid + "';",null);
+                if (cursor.moveToNext()){
+                    name = cursor.getString(cursor.getColumnIndex("name"));
+                    url = cursor.getString(cursor.getColumnIndex("facebookurl"));
+                    shopname.setText(cursor.getString(cursor.getColumnIndex("name")));
+                    address.setText(cursor.getString(cursor.getColumnIndex("address")));
+                    description.setText(cursor.getString(cursor.getColumnIndex("description")).replace("\\n", "\n"));
+                    time.setText(cursor.getString(cursor.getColumnIndex("businesshour")).replace("\\n", "\n"));
 
-                        ImageLoader.getInstance().displayImage(rs.getString("titleimg"), title);
-                    }
+                    ImageLoader.getInstance().displayImage(cursor.getString(cursor.getColumnIndex("titleimg")), title);
                 }
+                cursor.close();
+                sqLiteDatabase.close();
             } catch (Exception ex) {
                 Log.e("SQL", ex.toString());
             }
-
-
         }
-
         if(url!=null){
             btn_fb.setOnClickListener(new View.OnClickListener() {
                 @Override

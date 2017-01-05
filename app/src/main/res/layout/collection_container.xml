@@ -53,7 +53,7 @@
         android:layout_height="172dp" />
 
     <ImageView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:id="@+id/collection_title_btn_expand"
@@ -61,5 +61,6 @@
         android:layout_margin="4dp"
         android:clickable="true"
         android:src="@mipmap/expend"
-        android:rotation="180" />
+        android:rotation="180"
+        android:background="?android:attr/colorBackground" />
 </RelativeLayout>

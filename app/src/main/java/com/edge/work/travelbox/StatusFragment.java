@@ -74,8 +74,8 @@ public class StatusFragment extends Fragment{
         trophy.setText(""+TravelBox.trophy);
         integrator = new IntentIntegrator(getActivity());
 
-        SQLiteDatabase sqLiteDB = getActivity().getBaseContext().openOrCreateDatabase("local-user.db", Context.MODE_PRIVATE, null);
-        Cursor query = sqLiteDB.rawQuery("SELECT * FROM user WHERE id='"+TravelBox.userId+"';", null);
+        SQLiteDatabase sqLiteDB = getActivity().getBaseContext().openOrCreateDatabase("Local_Data.db", Context.MODE_PRIVATE, null);
+        Cursor query = sqLiteDB.rawQuery("SELECT * FROM Users WHERE id='"+TravelBox.userId+"';", null);
         if (query.moveToFirst()){
             //Set name and profile pic
             name.setText(query.getString(1));

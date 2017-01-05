@@ -3,6 +3,7 @@ package com.edge.work.travelbox;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -62,6 +63,7 @@ public class CollectionItemAdapter extends RecyclerView.Adapter<CollectionItemAd
                 fm.beginTransaction()
                         .addToBackStack(null)
                         .add(R.id.main_container, infoFragment)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                         .commit();
             }
         });
