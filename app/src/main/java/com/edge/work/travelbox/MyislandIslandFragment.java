@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
@@ -42,12 +44,13 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Date;
 
+import static android.content.Context.MODE_PRIVATE;
+
 
 public class MyislandIslandFragment extends Fragment {
 
     private static ImageView[][] land = new ImageView[6][6];
     private static Land landProp = new Land();
-//    private View.OnClickListener mListener;
     private ConnectionClass connectionClass = new ConnectionClass();
     private ImageView[] iv=new ImageView[66];
     private FrameLayout fl;
@@ -246,7 +249,7 @@ public class MyislandIslandFragment extends Fragment {
         archDetailName = (TextView) rootview.findViewById(R.id.myisland_detail_name);
 
         fl = (FrameLayout)rootview.findViewById(R.id.island_container);
-        Boolean[][] isHead = landProp.initLands(rootview);
+        Boolean[][] isHead = landProp.initLands(rootview,getContext());
         initShowAllArch(isHead);
 
         recyclerView = (RecyclerView)rootview.findViewById(R.id.arch_recyclerview);
@@ -285,20 +288,7 @@ public class MyislandIslandFragment extends Fragment {
                 return false;
             }
         };
-        /*mListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int x = Character.getNumericValue(view.getTag().toString().charAt(0));
-                int y = Character.getNumericValue(view.getTag().toString().charAt(1));
 
-                Log.d("Land", "onClick: "+x+","+y);
-                if(landProp.getIsOpen()) {
-                    if (landProp.getAvailableArray(x,y)){
-                        pickStatusClose(rootview,x,y);
-                    }
-                }
-            }
-        };*/
 
         for(int i=0;i<6;i++){
             for (int j=0;j<6;j++){
@@ -331,9 +321,6 @@ public class MyislandIslandFragment extends Fragment {
     }
 
     public void pickStatusClose(View rootview, int x, int y, Boolean placed){
-        int archcount=0;
-        int emptyslot=0;
-
         landProp.setIsOpen(false);
 
         for(int i=0; i<6; i++){
@@ -341,40 +328,29 @@ public class MyislandIslandFragment extends Fragment {
                     land[i][j].clearColorFilter();
             }
         }
+
         if(placed) {
-            //Sync with server
+            //Write table
             try {
+                SQLiteDatabase sqLiteDB = getContext().openOrCreateDatabase("Local_Data.db", MODE_PRIVATE, null);
+                sqLiteDB.execSQL("INSERT INTO Island(ownerid, arch, archposx, archposy) VALUES('"+TravelBox.userId+"', '"+currentShopId+"', "+x+", "+y+");");
+                sqLiteDB.close();
+
+                //Sync with server
                 Connection con = connectionClass.CONN();
                 if (con == null) {
                     //Failed to connect to server
                     Log.e("SQL", "Failed connecting to server");
                 } else {
-
                     Statement stmt = con.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT * FROM Island WHERE ownerid='" + TravelBox.userId + "';");
-                    if (rs.next()) {
-                        //Get archcount
-                        archcount = rs.getInt("archcount");
-
-                        //find a empty slot
-                        for (int i = 0; i < 9; i++) {
-                            if (rs.getString("arch" + i) == null) {
-                                emptyslot = i;
-                                i = 9;
-                            }
-                        }
-                        //Execute update
-                        String query = "UPDATE Island SET archcount=" + (archcount + 1) + ", arch" + emptyslot + "='" + currentShopId + "', archposx" + emptyslot + "=" + x + ", archposy" + emptyslot + "=" + y + " WHERE ownerid='" + TravelBox.userId + "';";
-                        Log.d("SQL", query);
-                        stmt.executeUpdate(query);
-                    }
+                    stmt.executeUpdate("INSERT INTO Island(ownerid, arch, archposx, archposy) VALUES('"+TravelBox.userId+"', '"+currentShopId+"', "+x+", "+y+");");
                 }
             } catch (Exception ex) {
                 Log.e("SQL", "pickStatusClose: " + ex.toString());
             }
 
             //Reload land status
-            Boolean[][] isHead = landProp.initLands(rootview);
+            Boolean[][] isHead = landProp.initLands(rootview,getContext());
             initShowAllArch(isHead);
             adapter.updateData(UserIslandListData.getData(getContext()));
         }
@@ -391,18 +367,12 @@ public class MyislandIslandFragment extends Fragment {
         }
         //Update Harvest Time
         try {
-            Connection con = connectionClass.CONN();
-            if (con == null) {
-                //Failed to connect to server
-                Log.e("SQL", "Unable to connect to server");
-            } else {
-                //Get arch data from server
-                Statement stmt = con.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT lastharvest FROM Island WHERE ownerid='" + TravelBox.userId + "';");
-                if (rs.next()) {
-                    lastHarvest = rs.getLong("lastharvest");
-                }
+            SQLiteDatabase sqLiteDB = getContext().openOrCreateDatabase("Local_Data.db", MODE_PRIVATE, null);
+            Cursor cursor = sqLiteDB.rawQuery("SELECT last_harvest FROM Users WHERE id='" + TravelBox.userId + "';",null);
+            if (cursor.moveToNext()){
+                lastHarvest = cursor.getLong(cursor.getColumnIndex("last_harvest"));
             }
+            sqLiteDB.close();
         }catch (Exception ex){
             Log.e("SQL", "Update harvest time: "+ex.toString());
         }
@@ -411,6 +381,18 @@ public class MyislandIslandFragment extends Fragment {
     }
 
     private void deleteArch(ArchBundle archBundle, View rootview){
+        //Write table
+        SQLiteDatabase sqLiteDB = getContext().openOrCreateDatabase("Local_Data.db", MODE_PRIVATE, null);
+        Cursor cursor = sqLiteDB.rawQuery("SELECT * FROM Island WHERE ownerid='"+TravelBox.userId+"' AND arch='"+archBundle.shopid+"';",null);
+        if (cursor.moveToNext()){
+            //Wipe arch drawable
+            Log.d("MyIsland", "WipeArch: "+((cursor.getInt(cursor.getColumnIndex("archposx")))*10+cursor.getInt(cursor.getColumnIndex("archposy"))));
+            iv[(cursor.getInt(cursor.getColumnIndex("archposx")))*10+cursor.getInt(cursor.getColumnIndex("archposy"))].setImageDrawable(null);
+            cursor.close();
+        }
+        //Wipe Arch data
+        sqLiteDB.execSQL("DELETE FROM Island WHERE ownerid='"+TravelBox.userId+"' AND arch='"+archBundle.shopid+"';");
+        sqLiteDB.close();
         try{
             Connection con = connectionClass.CONN();
             if (con == null){
@@ -419,28 +401,12 @@ public class MyislandIslandFragment extends Fragment {
             } else {
                 //Get arch data from server
                 Statement stmt = con.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT * FROM Island WHERE ownerid='" + TravelBox.userId + "';");
-                if (rs.next()) {
-                    for(int i=0; i<9; i++){
-                        if (rs.getString("arch" + i)!=null) {
-                            if (rs.getString("arch" + i).endsWith(archBundle.shopid)) {
-                                //Wipe arch drawable
-                                Log.d("MyIsland", "WipeArch: "+((rs.getInt("archposx"+i)+1)*10+rs.getInt("archposy"+i)+1));
-                                iv[(rs.getInt("archposx"+i)+1)*10+rs.getInt("archposy"+i)+1].setImageDrawable(null);
-                                //Wipe arch data
-                                String query = "UPDATE Island SET arch" + i + "=null, archposx" + i + "=null, archposy" + i + "=null, archcount=" + (rs.getInt("archcount") - 1) + " WHERE ownerid='" + TravelBox.userId + "';";
-                                stmt.executeUpdate(query);
-                                Log.d("MyIsland", "deleteArch: " + query);
-                                i = 9;
-                            }
-                        }
-                    }
-                }
+                stmt.executeUpdate("DELETE FROM Island WHERE ownerid='"+TravelBox.userId+"' AND arch='"+archBundle.shopid+"';");
             }
         } catch (Exception ex){
             Log.e("SQL", "deleteArch: "+ex.toString());
         }
-        Boolean[][] isHead= landProp.initLands(rootview);
+        Boolean[][] isHead= landProp.initLands(rootview,getContext());
         initShowAllArch(isHead);
         adapter.updateData(UserIslandListData.getData(getContext()));
     }
@@ -448,24 +414,24 @@ public class MyislandIslandFragment extends Fragment {
     private ArchBundle getArchBundle(String shopid) {
         ArchBundle archbundle = new ArchBundle();
         try {
-            //Get arch image url from server
-            Connection con = connectionClass.CONN();
-            Statement stmt = con.createStatement();
+            //Get arch image url
+            SQLiteDatabase sqLiteDB = getContext().openOrCreateDatabase("Local_Data.db", MODE_PRIVATE, null);
             //Determine what level does the user have
-            ResultSet rs = stmt.executeQuery("SELECT archlv FROM UserArch WHERE ownerid='"+ TravelBox.userId +"' AND arch='"+ shopid +"';");
-            if(rs.next()){
-            archbundle.level = rs.getInt("archlv");
+            Cursor cursor = sqLiteDB.rawQuery("SELECT archlv FROM UserArch WHERE ownerid='"+ TravelBox.userId +"' AND arch='"+ shopid +"';",null);
+            if(cursor.moveToNext()){
+                archbundle.level = cursor.getInt(cursor.getColumnIndex("archlv"));
+                cursor.close();
             }
             //Fetch the target level image url and name of arch
-            ResultSet rs2 = stmt.executeQuery("SELECT archlv"+archbundle.level+",name,archtype FROM ShopInfo WHERE shopid='"+ shopid +"';");
-            if(rs2.next()){
-                archbundle.url = rs2.getString("archlv"+archbundle.level);
-                archbundle.name = rs2.getString("name");
-                archbundle.type = rs2.getString("archtype");
+            Cursor cursor1 = sqLiteDB.rawQuery("SELECT archlv"+archbundle.level+",name,archtype FROM ShopInfo WHERE shopid='"+ shopid +"';",null);
+            if(cursor1.moveToNext()){
+                archbundle.url = cursor1.getString(cursor1.getColumnIndex("archlv"+archbundle.level));
+                archbundle.name = cursor1.getString(cursor1.getColumnIndex("name"));
+                archbundle.type = cursor1.getString(cursor1.getColumnIndex("archtype"));
             }
-
+            sqLiteDB.close();
         } catch (Exception ex){
-            Log.e("SQL", "getArchBundle: " + ex.toString());
+            Log.e("SQLite", "getArchBundle: " + ex.toString());
         }
         archbundle.shopid = shopid;
         return archbundle;
@@ -474,23 +440,20 @@ public class MyislandIslandFragment extends Fragment {
     private String getThumbURL(String shopid,int level) {
         String url="";
         try {
-            //Get arch image url from server
-            Connection con = connectionClass.CONN();
-            Statement stmt = con.createStatement();
-
+            //Get arch image url
+            SQLiteDatabase sqLiteDB = getContext().openOrCreateDatabase("Local_Data.db", MODE_PRIVATE, null);
             //Fetch the target level image url of arch
-            ResultSet rs2 = stmt.executeQuery("SELECT thumblv"+level+" FROM ShopInfo WHERE shopid='"+ shopid +"';");
-            if(rs2.next()){
-                url = rs2.getString("thumblv"+level);
+            Cursor cursor = sqLiteDB.rawQuery("SELECT thumblv"+level+" FROM ShopInfo WHERE shopid='"+ shopid +"';",null);
+            if(cursor.moveToNext()){
+                url = cursor.getString(cursor.getColumnIndex("thumblv"+level));
             }
         } catch (Exception ex){
-            Log.e("SQL", "getThumbURL: " + ex.toString());
+            Log.e("SQLite", "getThumbURL: " + ex.toString());
         }
         return url;
     }
 
     private void showThisArch(int x, int y, final ArchBundle arch) {
-        x++;y++;
         //New ImageView
         iv[x*10+y]=new ImageView(getContext());
         Log.d("MyIsland", "showThisArch: "+(x*10+y));
@@ -499,11 +462,11 @@ public class MyislandIslandFragment extends Fragment {
         double marginleft = 50;
         double marginbottom = 50;
         if (arch.type.endsWith("S")) {
-            marginleft = 28.5 * y - 28.5 * x - 28.5;
-            marginbottom = 16.5 * y + 16.5 * x + 16 - 16.5 * 3;
+            marginleft = 28.5 * y - 28.5 * x -28.5;
+            marginbottom = 16.5 * y + 16.5 * x + 16 - 16.5 * 1;
         } else if (arch.type.endsWith("B")) {
-            marginleft = 28.5 * y - 28.5 * x - 28.5-14;
-            marginbottom = 16.5 * y + 16.5 * x + 16 - 16.5 * 4;
+            marginleft = 28.5 * y - 28.5 * x-14 -28.5;
+            marginbottom = 16.5 * y + 16.5 * x + 16 - 16.5 * 2;
         }
 
         //convert dp to pixel
@@ -530,14 +493,7 @@ public class MyislandIslandFragment extends Fragment {
         iv[x*10+y].setScaleType(ImageView.ScaleType.FIT_END);
         iv[x*10+y].setDrawingCacheEnabled(true);
         ImageLoader.getInstance().displayImage(arch.url,iv[x*10+y]);
-        /*iv[x*10+y].setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                Log.d("MyislandIsland", "onLongClick: "+arch.shopid);
-                showArchDetail(arch, view);
-                return true;
-            }
-        });*/
+
         iv[x*10+y].setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -552,7 +508,6 @@ public class MyislandIslandFragment extends Fragment {
                             }
                         }
                         return true;
-
                 }
                 return false;
             }
@@ -690,6 +645,7 @@ public class MyislandIslandFragment extends Fragment {
 
         //Update lastHarvest
         try{
+            SQLiteDatabase sqLiteDB = getContext().openOrCreateDatabase("Local_Data.db", MODE_PRIVATE, null);
             Connection con = connectionClass.CONN();
             if (con == null) {
                 //Failed to connect to server
@@ -698,8 +654,10 @@ public class MyislandIslandFragment extends Fragment {
                 //TODO: Uncommand in release version
                 /*Statement stmt = con.createStatement();
                 lastHarvest = System.currentTimeMillis();
+                sqLiteDB.execSQL("UPDATE Island SET lastharvest="+lastHarvest+" WHERE ownerid='" + TravelBox.userId + "';");
                 stmt.executeUpdate("UPDATE Island SET lastharvest="+lastHarvest+" WHERE ownerid='" + TravelBox.userId + "';");*/
             }
+            sqLiteDB.close();
         } catch (Exception ex){
             Log.e("Myisland", "doHarvest: "+ex.toString());
         }
@@ -708,14 +666,17 @@ public class MyislandIslandFragment extends Fragment {
 
     private void unlockLvFive(String shopid){
         try{
+            SQLiteDatabase sqLiteDB = getContext().openOrCreateDatabase("Local_Data.db", MODE_PRIVATE, null);
             Connection con = connectionClass.CONN();
             if (con == null) {
                 //Failed to connect to server
                 Log.e("SQL", "Unable to connect to server");
             } else {
                 Statement stmt = con.createStatement();
+                sqLiteDB.execSQL("UPDATE UserArch SET archlv=5 WHERE ownerid='" + TravelBox.userId + "' AND arch='"+shopid+"';");
                 stmt.executeUpdate("UPDATE UserArch SET archlv=5 WHERE ownerid='" + TravelBox.userId + "' AND arch='"+shopid+"';");
             }
+            sqLiteDB.close();
         } catch (Exception ex){
             Log.e("Myisland", "unlockLvFive: "+ex.toString());
         }

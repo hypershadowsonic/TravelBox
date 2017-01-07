@@ -165,32 +165,35 @@ public class AwardFragment extends Fragment {
                 fm.popBackStack();
             } else {
                 Statement stmt = con.createStatement();
+                SQLiteDatabase sqLiteDB = getContext().openOrCreateDatabase("Local_Data.db", Context.MODE_PRIVATE, null);
                 //See if user already have this arch
-                ResultSet rs = stmt.executeQuery("SELECT * FROM UserArch WHERE ownerid='"+TravelBox.userId+"' AND arch='"+shopID+"';");
-                if (rs.next()){
+                Cursor cursor = sqLiteDB.rawQuery("SELECT * FROM UserArch WHERE ownerid='"+TravelBox.userId+"' AND arch='"+shopID+"';",null);
+                if (cursor.moveToNext()){
                     //User has it, upgrade and get arch url
-                    int lv = rs.getInt("archlv");
+                    int lv = cursor.getInt(cursor.getColumnIndex("archlv"));
+                    sqLiteDB.execSQL("UPDATE UserArch SET archlv="+(lv+1)+" WHERE ownerid='"+TravelBox.userId+"' AND arch='"+shopID+"';");
                     stmt.executeUpdate("UPDATE UserArch SET archlv="+(lv+1)+" WHERE ownerid='"+TravelBox.userId+"' AND arch='"+shopID+"';");
-                    String query1 = "SELECT thumblv"+(lv+1)+" FROM ShopInfo WHERE shopid='"+shopID+"';";
-                    ResultSet rs2 = stmt.executeQuery(query1);
-                    if(rs2.next()){
-                    String url=rs2.getString("thumblv"+(lv+1));
+
+                    Cursor cursor2 = sqLiteDB.rawQuery("SELECT thumblv"+(lv+1)+" FROM ShopInfo WHERE shopid='"+shopID+"';",null);
+                    if(cursor2.moveToNext()){
+                    String url=cursor2.getString(cursor2.getColumnIndex("thumblv"+(lv+1)));
                     ImageLoader.getInstance().displayImage(url,property);}
 
                     box.startAnimation(boxmove);
                 } else {
                     //User doesn't have it, create a record and set to lv1
+                    sqLiteDB.execSQL("INSERT INTO UserArch VALUES('"+TravelBox.userId+"','"+shopID+"',1);",null);
                     stmt.executeUpdate("INSERT INTO UserArch VALUES('"+TravelBox.userId+"','"+shopID+"',1);");
-                    //Get lv1 arch url
-                    String query1 = "SELECT thumblv1 FROM ShopInfo WHERE shopid='"+shopID+"';";
-                    ResultSet rs2 = stmt.executeQuery(query1);
-                    if(rs2.next()){
-                    String url=rs2.getString("thumblv1");
-                    ImageLoader.getInstance().displayImage(url,property);}
 
+                    //Get lv1 arch url
+                    Cursor cursor2 = sqLiteDB.rawQuery("SELECT thumblv1 FROM ShopInfo WHERE shopid='"+shopID+"';",null);
+                    if(cursor2.moveToNext()){
+                    String url=cursor2.getString(cursor2.getColumnIndex("thumblv1"));
+                    ImageLoader.getInstance().displayImage(url,property);}
 
                     box.startAnimation(boxmove);
                 }
+                sqLiteDB.close();
             }
         } catch (Exception ex){
             Toast.makeText(getContext(), "Exection: "+ex.toString(), Toast.LENGTH_LONG).show();
@@ -199,45 +202,37 @@ public class AwardFragment extends Fragment {
 
 
         try {
-            Connection con = connectionClass.CONN();
-            if (con == null) {
-                fm.popBackStack();
-            } else {
-                Statement stmt = con.createStatement();
-                //See if user already have this arch
-                ResultSet rs = stmt.executeQuery(findpush);
-                if (rs.next()) {
-                    //Build notification content
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity());
-                    builder.setContentTitle("Travel Box 旅行盒子");
-                    builder.setContentText("景點推薦："+rs.getString("name"));
-                    builder.setSmallIcon(R.mipmap.ic_launcher);
-                    builder.setTicker("你還可以看看這裡！");
-                    builder.setAutoCancel(true);
+            SQLiteDatabase sqLiteDB = getContext().openOrCreateDatabase("Local_Data.db", Context.MODE_PRIVATE, null);
+            Cursor cursor = sqLiteDB.rawQuery(findpush,null);
+            if (cursor.moveToNext()) {
+                //Build notification content
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity());
+                builder.setContentTitle("Travel Box 旅行盒子");
+                builder.setContentText("景點推薦："+cursor.getString(cursor.getColumnIndex("name")));
+                builder.setSmallIcon(R.mipmap.ic_launcher);
+                builder.setTicker("你還可以看看這裡！");
+                builder.setAutoCancel(true);
 
-                    //Intent
-                    Intent i = new Intent(getActivity(), DialogActivity.class);
-                    i.putExtra("name", rs.getString("name"))
-                            .putExtra("address", rs.getString("address"))
-                            .putExtra("description", rs.getString("description"))
-                            .putExtra("buisnesshour", rs.getString("buisnesshour"))
-                            .putExtra("titleimg", rs.getString("titleimg"))
-                            .putExtra("facebookurl", rs.getString("facebookurl"));
+                //Intent
+                Intent i = new Intent(getActivity(), DialogActivity.class);
+                i.putExtra("name", cursor.getString(cursor.getColumnIndex("name")))
+                        .putExtra("address", cursor.getString(cursor.getColumnIndex("address")))
+                        .putExtra("description", cursor.getString(cursor.getColumnIndex("description")))
+                        .putExtra("businesshour", cursor.getString(cursor.getColumnIndex("businesshour")))
+                        .putExtra("titleimg", cursor.getString(cursor.getColumnIndex("titleimg")))
+                        .putExtra("facebookurl", cursor.getString(cursor.getColumnIndex("facebookurl")));
 
+                //Back Stack
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(getActivity());
+                stackBuilder.addParentStack(DialogActivity.class);
+                stackBuilder.addNextIntent(i);
+                PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                builder.setContentIntent(pendingIntent);
 
-                    //Back Stack
-                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(getActivity());
-                    stackBuilder.addParentStack(DialogActivity.class);
-                    stackBuilder.addNextIntent(i);
-                    PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                    builder.setContentIntent(pendingIntent);
-
-                    //Notify
-                    Notification notification = builder.build();
-                    NotificationManager manager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-                    manager.notify(1, notification);
-                }
+                //Notify
+                Notification notification = builder.build();
+                NotificationManager manager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+                manager.notify(1, notification);
             }
         } catch (Exception ex){
             Log.e("SQL Push Notification", ex.toString() );

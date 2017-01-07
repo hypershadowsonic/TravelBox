@@ -54,29 +54,32 @@ public class MainActivity extends FragmentActivity {
             if(result.getContents() == null) {
                 Toast.makeText(this, getString(R.string.award_cancelled), Toast.LENGTH_LONG).show();
             } else {
-                //Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
-                ConnectionClass connectionClass = new ConnectionClass();
                 try {
-                    Connection con = connectionClass.CONN();
-                    Statement stmt = con.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT * FROM ShopInfo WHERE hash='"+ result.getContents()+"';");
-                    if(rs.next()){
-                        int pop = rs.getInt("popularity");
+                    SQLiteDatabase sqLiteDB = getBaseContext().openOrCreateDatabase("Local_Data.db", MODE_PRIVATE, null);
+                    Cursor cursor = sqLiteDB.rawQuery("SELECT * FROM ShopInfo WHERE hash='"+ result.getContents()+"';",null);
+                    if (cursor.moveToNext()){
+                        int pop = cursor.getInt(cursor.getColumnIndex("popularity"));
                         Bundle bundle = new Bundle();
-                        bundle.putString("id",rs.getString("shopid"));
-                        bundle.putString("query",getPushQuery(rs.getString("notificationzone")));
+                        bundle.putString("id",cursor.getString(cursor.getColumnIndex("shopid")));
+                        bundle.putString("query",getPushQuery(cursor.getString(cursor.getColumnIndex("notificationzone"))));
                         AwardFragment awardF = new AwardFragment();
                         awardF.setArguments(bundle);
                         FragmentManager fm = getSupportFragmentManager();
                         FragmentTransaction ft = fm.beginTransaction();
-                        String shopID = rs.getString("shopid");
+                        String shopID = cursor.getString(cursor.getColumnIndex("shopid"));
                         Log.d("QrScan", "In Rs Result"+shopID);
-                        ResultSet rs2 = stmt.executeQuery("SELECT archlv FROM UserArch WHERE ownerid='"+TravelBox.userId+"' AND arch='"+shopID+"';");
-                        if(rs2.next()){
+                        Cursor cursor2 = sqLiteDB.rawQuery("SELECT archlv FROM UserArch WHERE ownerid='"+TravelBox.userId+"' AND arch='"+shopID+"';",null);
+                        if(cursor2.moveToNext()){
                             //Popularity +1
-                            int lv = rs2.getInt("archlv");
-                            stmt.executeUpdate("UPDATE ShopInfo SET popularity="+(pop+1)+" WHERE shopid='"+shopID+"';");
-                            Log.d("QrScan", "In Rs2 Result");
+                            int lv = cursor2.getInt(cursor2.getColumnIndex("archlv"));
+                            sqLiteDB.execSQL("UPDATE ShopInfo SET popularity="+(pop+1)+" WHERE shopid='"+shopID+"';");
+
+                            //Update Server Data
+                            ConnectionClass connectionClass = new ConnectionClass();
+                            Connection connection = connectionClass.CONN();
+                            Statement statement = connection.createStatement();
+                            statement.executeUpdate("UPDATE ShopInfo SET popularity="+(pop+1)+" WHERE shopid='"+shopID+"';");
+
                             //User has it, check if it's under lv4
                             if(lv<4){
                                 ft.replace(R.id.main_container, awardF)
@@ -84,20 +87,19 @@ public class MainActivity extends FragmentActivity {
                                         .commitAllowingStateLoss();
                                 Log.d("QrScan", "Committed");
                             } else {
-                                //User doesn't have it, pass through directly
                                 Toast.makeText(this, getString(R.string.award_level4), Toast.LENGTH_LONG).show();
                             }
                         } else {
+                            //User doesn't have it, pass through directly
                             ft.replace(R.id.main_container, awardF)
                                     .addToBackStack(null)
                                     .commitAllowingStateLoss();
                             Log.d("QrScan", "Committed");
                         }
-
                     } else {
                         Toast.makeText(this, getString(R.string.award_invalid), Toast.LENGTH_LONG).show();
                     }
-
+                    sqLiteDB.close();
                 } catch (Exception ex){
                     Toast.makeText(this, getString(R.string.unable_connect) + ex.toString(), Toast.LENGTH_LONG).show();
                 }
@@ -108,7 +110,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private String getPushQuery(String zone){
-        String query="SELECT TOP 1 * FROM PlaceInfo WHERE";
+        String query="SELECT * FROM PlaceInfo WHERE";
         if (zone.contains("A")){
             query += " zone='A'";
         }
@@ -124,7 +126,7 @@ public class MainActivity extends FragmentActivity {
         if (zone.contains("E")){
             query += " OR zone='E'";
         }
-        query += " ORDER BY NEWID();";
+        query += " ORDER BY RANDOM() LIMIT 1;";
 
         Log.d("MainActivity", "getPushQuery: "+query);
 

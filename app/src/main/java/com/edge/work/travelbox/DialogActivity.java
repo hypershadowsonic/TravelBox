@@ -30,7 +30,7 @@ public class DialogActivity extends Activity {
         shopname.setText(getIntent().getExtras().getString("name"));
         address.setText(getIntent().getExtras().getString("address"));
         description.setText(getIntent().getExtras().getString("description").replace("\\n", "\n"));
-        time.setText(getIntent().getExtras().getString("buisnesshour").replace("\\n", "\n"));
+        time.setText(getIntent().getExtras().getString("businesshour").replace("\\n", "\n"));
         ImageLoader.getInstance().displayImage(getIntent().getExtras().getString("titleimg"),title);
         if(getIntent().getExtras().getString("facebookurl")!=null){
             btn_fb.setOnClickListener(new View.OnClickListener() {

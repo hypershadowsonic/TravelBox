@@ -268,12 +268,12 @@ public class LoadingActivity extends Activity {
                         //Re-Create Users Table
                         SQLiteDatabase sqLiteDB = getBaseContext().openOrCreateDatabase("Local_Data.db", MODE_PRIVATE, null);
                         sqLiteDB.execSQL("DROP TABLE IF EXISTS Users;");
-                        sqLiteDB.execSQL("CREATE TABLE Users(id TEXT, name TEXT, profileimg_url TEXT,amount_coin INTEGER, amount_trophy INTEGER);");
+                        sqLiteDB.execSQL("CREATE TABLE Users(id TEXT, name TEXT, profileimg_url TEXT,amount_coin INTEGER, amount_trophy INTEGER, last_harvest BIGINT);");
 
                         Statement stmt = con.createStatement();
                         ResultSet rs = stmt.executeQuery("SELECT * FROM Users;");
                         while(rs.next()){
-                            sqLiteDB.execSQL("INSERT INTO Users(id, name, profileimg_url, amount_coin, amount_trophy) VALUES('"+rs.getString("id")+"', '"+rs.getString("name")+"', '"+rs.getString("profileimg_url")+"', "+rs.getInt("amount_coin")+", "+rs.getInt("amount_trophy")+");");
+                            sqLiteDB.execSQL("INSERT INTO Users(id, name, profileimg_url, amount_coin, amount_trophy, last_harvest) VALUES('"+rs.getString("id")+"', '"+rs.getString("name")+"', '"+rs.getString("profileimg_url")+"', "+rs.getInt("amount_coin")+", "+rs.getInt("amount_trophy")+", "+rs.getLong("last_harvest")+");");
                         }
                         stmt.close();
                         rs.close();
@@ -296,7 +296,7 @@ public class LoadingActivity extends Activity {
 
 
 
-                        /*//Re-Create Island Table
+                        //Re-Create Island Table
                         sqLiteDB.execSQL("DROP TABLE IF EXISTS Island;");
                         sqLiteDB.execSQL("CREATE TABLE Island(ownerid TEXT, arch TEXT, archposx TINYINT, archposy TINYINT);");
 
@@ -307,7 +307,7 @@ public class LoadingActivity extends Activity {
                         }
                         stmt.close();
                         rs.close();
-                        Log.d("Syncing", "Island Done");*/
+                        Log.d("Syncing", "Island Done");
 
 
 

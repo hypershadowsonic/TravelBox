@@ -1,6 +1,8 @@
 package com.edge.work.travelbox;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.sql.Connection;
@@ -19,69 +21,34 @@ public class UserIslandListData {
 
     public static ArrayList<UserIslandListInfo> getData(Context context){
         ArrayList<UserIslandListInfo> data = new ArrayList<>();
-        String[] existArch = getExistArch();
 
         try {
-            Connection con = connectionClass.CONN();
-            if(con==null){
-                Log.e("UserIslandList", "Unable to connect to server");
-            } else{
-                //Check if user has any Arch from server
-                Statement stmt = con.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT * FROM UserArch WHERE ownerid='"+ TravelBox.userId +"';");
+            SQLiteDatabase sqLiteDB = context.openOrCreateDatabase("Local_Data.db", context.MODE_PRIVATE, null);
+            Cursor cursor = sqLiteDB.rawQuery("SELECT * FROM UserArch WHERE ownerid='"+ TravelBox.userId +"';",null);
+            while(cursor.moveToNext()){
+                Cursor cursor1 = sqLiteDB.rawQuery("SELECT * FROM Island WHERE ownerid='" + TravelBox.userId + "' AND arch='" + cursor.getString(cursor.getColumnIndex("arch")) + "';",null);
+                if (cursor1.moveToNext() == false){
+                    Cursor cursor2 = sqLiteDB.rawQuery("SELECT thumblv"+cursor.getString(cursor.getColumnIndex("archlv"))+",archtype FROM ShopInfo WHERE shopid='"+cursor.getString(cursor.getColumnIndex("arch"))+"';",null);
+                    if (cursor2.moveToNext()){
+                        UserIslandListInfo current = new UserIslandListInfo();
+                        current.type = cursor2.getString(cursor2.getColumnIndex("archtype"));
+                        current.url = cursor2.getString(cursor2.getColumnIndex("thumblv"+cursor.getString(cursor.getColumnIndex("archlv"))));
+                        current.arch = cursor.getString(cursor.getColumnIndex("arch"));
+                        Log.d("UserIslandList", "getData: 6");
+                        data.add(current);
 
-                while(rs.next()){
-                    String shopid = rs.getString("arch");
-                    Boolean notUsed = true;
-                    for(int i=0;i<existArch.length;i++){
-                        if(shopid.equals(existArch[i])){
-                            notUsed = false;
-                        }Log.d("UserIslandListData", shopid+","+existArch[i]+","+notUsed);
                     }
-                    if(notUsed){
-                        int lv = rs.getInt("archlv");
-                        String exe = "SELECT thumblv"+lv+",archtype FROM ShopInfo WHERE shopid='"+shopid+"';";
-                        Log.d("UserIslandList", exe);
-                        Statement stmt2 = con.createStatement();
-                        ResultSet cur = stmt2.executeQuery(exe);
-                        if (cur.next()) {
-                            UserIslandListInfo current = new UserIslandListInfo();
-                            current.type = cur.getString("archtype");
-                            current.url = cur.getString("thumblv" + lv);
-                            current.arch = shopid;
-                            data.add(current);
-                        }
-                    }
+                    cursor2.close();
                 }
+                cursor1.close();
             }
+            cursor.close();
+            sqLiteDB.close();
         } catch (Exception ex){
             Log.e("UserIslandList", ex.toString());
         }
 
 
         return data;
-    }
-
-    private static String[] getExistArch(){
-        String[] existArch=new String[9];
-        try {
-            Connection con = connectionClass.CONN();
-            if(con==null){
-                Log.e("getExistArch: ", "Unable to connect to server");
-            } else {
-                //Check if user has any Arch on Island from server
-                Statement stmt = con.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT archcount,arch0,arch1,arch2,arch3,arch4,arch5,arch6,arch7,arch8 FROM Island WHERE ownerid='" + TravelBox.userId + "';");
-                if (rs.next()) {
-                    for (int i=0;i<9;i++){
-                        existArch[i]=rs.getString("arch"+i);
-                        Log.d("UserIslandListDate", "getExistArch: "+existArch[i]);
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            Log.e("getExistArch: ", ex.toString());
-        }
-        return existArch;
     }
 }

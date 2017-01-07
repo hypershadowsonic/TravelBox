@@ -11,10 +11,4 @@ public class LandElement {
     public static void setContent(String value){
         content = value;
     }
-    public static Boolean getIsHead(){
-        return isHead;
-    }
-    public static void setIsHead(){
-        isHead=true;
-    }
 }
