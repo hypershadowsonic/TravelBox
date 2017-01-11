@@ -25,12 +25,14 @@ public class SurveyDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootview = inflater.inflate(R.layout.fragment_survey_dialog, container, false);
+        fm=getFragmentManager();
         submit = (Button) rootview.findViewById(R.id.survey_submit);
         getDialog().setTitle("Tell us something");
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fm.popBackStack();
                 getDialog().dismiss();
             }
         });

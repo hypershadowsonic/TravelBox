@@ -3,16 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="#ffffff">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -20,6 +20,19 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:id="@+id/place_title" />
+
+            <ImageView
+                app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/place_btn_close"
+                android:clickable="true"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:visibility="visible"
+                android:elevation="1dp"
+                android:layout_margin="8dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -117,10 +130,12 @@
                         android:layout_alignParentEnd="true"
                         android:layout_marginRight="6dp"
                         android:layout_marginEnd="6dp"
-                        android:src="@mipmap/info_facebook" />
+                        android:src="@mipmap/info_facebook"
+                        android:layout_marginBottom="12dp" />
                 </RelativeLayout>
 
             </RelativeLayout>
+
         </RelativeLayout>
     </ScrollView>
 

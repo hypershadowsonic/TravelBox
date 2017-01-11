@@ -45,14 +45,17 @@ public class AwardFragment extends Fragment {
     private FragmentManager fm;
     private String findpush;
 
+
     public AwardFragment() {
         // Required empty public constructor
     }
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d("Award", "onCreateView: ");
         View rootview = inflater.inflate(R.layout.fragment_award, container, false);
         box = (ImageView) rootview.findViewById(R.id.award_anim_box);
         property = (ImageView) rootview.findViewById(R.id.award_anim_property);
@@ -181,10 +184,11 @@ public class AwardFragment extends Fragment {
 
                     box.startAnimation(boxmove);
                 } else {
-                    //User doesn't have it, create a record and set to lv1
-                    sqLiteDB.execSQL("INSERT INTO UserArch VALUES('"+TravelBox.userId+"','"+shopID+"',1);",null);
-                    stmt.executeUpdate("INSERT INTO UserArch VALUES('"+TravelBox.userId+"','"+shopID+"',1);");
 
+                    //User doesn't have it, create a record and set to lv1
+                    String query1 = "INSERT INTO UserArch(ownerid, arch, archlv) VALUES('"+TravelBox.userId+"','"+shopID+"',1);";
+                    sqLiteDB.execSQL(query1);
+                    stmt.executeUpdate(query1);
                     //Get lv1 arch url
                     Cursor cursor2 = sqLiteDB.rawQuery("SELECT thumblv1 FROM ShopInfo WHERE shopid='"+shopID+"';",null);
                     if(cursor2.moveToNext()){
@@ -197,7 +201,7 @@ public class AwardFragment extends Fragment {
             }
         } catch (Exception ex){
             Toast.makeText(getContext(), "Exection: "+ex.toString(), Toast.LENGTH_LONG).show();
-            Log.e("SQL", ex.toString() );
+            Log.e("SQLUpdate", ex.toString() );
         }
 
 
@@ -237,7 +241,6 @@ public class AwardFragment extends Fragment {
         } catch (Exception ex){
             Log.e("SQL Push Notification", ex.toString() );
         }
-
         return rootview;
     }
 }

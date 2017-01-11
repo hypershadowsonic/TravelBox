@@ -2,9 +2,12 @@ package com.edge.work.travelbox;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 //import android.telecom.Connection;
@@ -15,6 +18,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.facebook.AccessToken;
@@ -49,137 +53,141 @@ public class LoadingActivity extends Activity {
     private AccessToken accessToken;
     private String userID, userEmail, userName, userBday, userPicurl, userGender;
 
-
     private Intent k;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FacebookSdk.sdkInitialize(getApplicationContext());
         super.onCreate(savedInstanceState);
-        //AppEventsLogger.activateApp(this);
-        setContentView(R.layout.activity_loading);
-        jumpingHead = (ImageView)findViewById(R.id.loading_img_jumpinghead);
-        loadingText = (TextView)findViewById(R.id.loading_text_loading);
-        loadingJumpAnim = AnimationUtils.loadAnimation(this, R.anim.loading_jump);
-        loadingJumpAnim.setFillAfter(true);
-        loadingJumpAnim.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
+        if (!isNetworkAvailable()){
+            Toast.makeText(this, R.string.unable_connect, Toast.LENGTH_LONG).show();
+            finish();
+            Log.d("network", "onCreate: "+isNetworkAvailable());
+        } else {
+            FacebookSdk.sdkInitialize(getApplicationContext());
+            //AppEventsLogger.activateApp(this);
+            setContentView(R.layout.activity_loading);
+            jumpingHead = (ImageView) findViewById(R.id.loading_img_jumpinghead);
+            loadingText = (TextView) findViewById(R.id.loading_text_loading);
+            loadingJumpAnim = AnimationUtils.loadAnimation(this, R.anim.loading_jump);
+            loadingJumpAnim.setFillAfter(true);
+            loadingJumpAnim.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
 
-            }
+                }
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                jumpingHead.startAnimation(loadingJumpAnim);
-            }
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    jumpingHead.startAnimation(loadingJumpAnim);
+                }
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
+                @Override
+                public void onAnimationRepeat(Animation animation) {
 
-            }
-        });
-        jumpingHead.startAnimation(loadingJumpAnim);
-        k = new Intent(this,MainActivity.class);
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET},0);
+                }
+            });
+            jumpingHead.startAnimation(loadingJumpAnim);
+            k = new Intent(this, MainActivity.class);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, 0);
 
-        callbackManager = CallbackManager.Factory.create();
-        loginButton = (LoginButton)findViewById(R.id.loading_btn_login);
-        loginButton.setReadPermissions(Arrays.asList("user_birthday","read_custom_friendlists"));
-        //loginButton.setReadPermissions("email");
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
 
-                jumpingHead.setVisibility(View.VISIBLE);
-                loadingText.setVisibility(View.VISIBLE);
+            callbackManager = CallbackManager.Factory.create();
+            loginButton = (LoginButton) findViewById(R.id.loading_btn_login);
+            loginButton.setReadPermissions(Arrays.asList("user_birthday", "read_custom_friendlists"));
+            //loginButton.setReadPermissions("email");
+            loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+                @Override
+                public void onSuccess(LoginResult loginResult) {
 
-                accessToken = loginResult.getAccessToken();
-                Log.d("Facebook","Access Token Got.");
+                    jumpingHead.setVisibility(View.VISIBLE);
+                    loadingText.setVisibility(View.VISIBLE);
 
+                    accessToken = loginResult.getAccessToken();
+                    Log.d("Facebook", "Access Token Got.");
+
+                    GraphRequest request = GraphRequest.newMeRequest(
+                            accessToken,
+                            new GraphRequest.GraphJSONObjectCallback() {
+                                @Override
+                                public void onCompleted(JSONObject object, GraphResponse response) {
+                                    userID = object.optString("id");
+                                    TravelBox.userId = userID;
+                                    Log.d("Facebook", "onCompleted: Got ID " + userID);
+                                    userEmail = object.optString("email");
+                                    Log.d("Facebook", "onCompleted: Got eMail " + userEmail);
+                                    userName = object.optString("name");
+                                    Log.d("Facebook", "onCompleted: Got Name " + userName);
+                                    userBday = object.optString("birthday");
+                                    Log.d("Facebook", "onCompleted: Got Birthday " + userBday);
+                                    userGender = object.optString("gender");
+                                    Log.d("Facebook", "onCompleted: Got Gender " + userGender);
+                                    userPicurl = object.optJSONObject("picture").optJSONObject("data").optString("url");
+                                    Log.d("Facebook", "onCompleted: Got Pic URL " + userPicurl);
+                                    DoSync doSync = new DoSync();
+                                    doSync.execute("");
+                                    loadingText.setText(R.string.loading_server_sync);
+                                }
+                            });
+                    Bundle parameters = new Bundle();
+                    parameters.putString("fields", "id,name,email,birthday,gender,picture{url}");
+                    request.setParameters(parameters);
+                    request.executeAsync();
+                    loadingText.setText(R.string.loading_facebook_fetching);
+                }
+
+                @Override
+                public void onCancel() {
+                    Log.i("Facebook", "Login Cancelled");
+                    loadingText.setText(R.string.loading_facebook_cancel);
+                }
+
+                @Override
+                public void onError(FacebookException error) {
+                    Log.i("Facebook", "Login Error");
+                    loadingText.setText(R.string.loading_error);
+                }
+            });
+
+
+            if (AccessToken.getCurrentAccessToken() != null) {
+                //Update Facebook Data
+                accessToken = AccessToken.getCurrentAccessToken();
                 GraphRequest request = GraphRequest.newMeRequest(
                         accessToken,
                         new GraphRequest.GraphJSONObjectCallback() {
                             @Override
                             public void onCompleted(JSONObject object, GraphResponse response) {
+                                // Insert your code here
                                 userID = object.optString("id");
-                                TravelBox.userId=userID;
-                                Log.d("Facebook", "onCompleted: Got ID "+ userID);
+                                TravelBox.userId = userID;
+                                Log.d("Facebook", "onCompleted: Got ID " + userID);
                                 userEmail = object.optString("email");
-                                Log.d("Facebook", "onCompleted: Got eMail "+ userEmail);
+                                Log.d("Facebook", "onCompleted: Got eMail " + userEmail);
                                 userName = object.optString("name");
-                                Log.d("Facebook", "onCompleted: Got Name "+ userName);
+                                Log.d("Facebook", "onCompleted: Got Name " + userName);
                                 userBday = object.optString("birthday");
-                                Log.d("Facebook", "onCompleted: Got Birthday "+ userBday);
+                                Log.d("Facebook", "onCompleted: Got Birthday " + userBday);
                                 userGender = object.optString("gender");
-                                Log.d("Facebook", "onCompleted: Got Gender "+ userGender);
+                                Log.d("Facebook", "onCompleted: Got Gender " + userGender);
                                 userPicurl = object.optJSONObject("picture").optJSONObject("data").optString("url");
-                                Log.d("Facebook", "onCompleted: Got Pic URL "+ userPicurl);
+                                Log.d("Facebook", "onCompleted: Got Pic URL " + userPicurl);
                                 DoSync doSync = new DoSync();
-                                doSync.execute("");
                                 loadingText.setText(R.string.loading_server_sync);
+                                doSync.execute("");
                             }
                         });
+
                 Bundle parameters = new Bundle();
                 parameters.putString("fields", "id,name,email,birthday,gender,picture{url}");
                 request.setParameters(parameters);
-                request.executeAsync();
                 loadingText.setText(R.string.loading_facebook_fetching);
+                request.executeAsync();
+            } else {
+                loginButton.setVisibility(View.VISIBLE);
+                jumpingHead.setVisibility(View.GONE);
+                loadingText.setVisibility(View.GONE);
             }
-
-            @Override
-            public void onCancel() {
-                Log.i("Facebook","Login Cancelled");
-                loadingText.setText(R.string.loading_facebook_cancel);
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                Log.i("Facebook","Login Error");
-                loadingText.setText(R.string.loading_error);
-            }
-        });
-
-
-        if(AccessToken.getCurrentAccessToken()!=null){
-            //Update Facebook Data
-            accessToken=AccessToken.getCurrentAccessToken();
-            GraphRequest request = GraphRequest.newMeRequest(
-                    accessToken,
-                    new GraphRequest.GraphJSONObjectCallback() {
-                        @Override
-                        public void onCompleted(JSONObject object, GraphResponse response) {
-                            // Insert your code here
-                            userID = object.optString("id");
-                            TravelBox.userId=userID;
-                            Log.d("Facebook", "onCompleted: Got ID "+ userID);
-                            userEmail = object.optString("email");
-                            Log.d("Facebook", "onCompleted: Got eMail "+ userEmail);
-                            userName = object.optString("name");
-                            Log.d("Facebook", "onCompleted: Got Name "+ userName);
-                            userBday = object.optString("birthday");
-                            Log.d("Facebook", "onCompleted: Got Birthday "+ userBday);
-                            userGender = object.optString("gender");
-                            Log.d("Facebook", "onCompleted: Got Gender "+ userGender);
-                            userPicurl = object.optJSONObject("picture").optJSONObject("data").optString("url");
-                            Log.d("Facebook", "onCompleted: Got Pic URL "+ userPicurl);
-                            DoSync doSync = new DoSync();
-                            loadingText.setText(R.string.loading_server_sync);
-                            doSync.execute("");
-                        }
-                    });
-
-            Bundle parameters = new Bundle();
-            parameters.putString("fields", "id,name,email,birthday,gender,picture{url}");
-            request.setParameters(parameters);
-            loadingText.setText(R.string.loading_facebook_fetching);
-            request.executeAsync();
-        } else {
-            loginButton.setVisibility(View.VISIBLE);
-            jumpingHead.setVisibility(View.GONE);
-            loadingText.setVisibility(View.GONE);
-            }
-
-
+        }
     }
 
     @Override
@@ -398,6 +406,13 @@ public class LoadingActivity extends Activity {
             Log.d("DoSync", z);
             return z;
         }
+    }
+
+    private Boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
 

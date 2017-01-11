@@ -12,7 +12,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class DialogActivity extends Activity {
 
-    ImageView title, btn_fb;
+    ImageView title, btn_fb, btn_close;
     TextView shopname, address, description, time;
 
     @Override
@@ -26,6 +26,7 @@ public class DialogActivity extends Activity {
         time = (TextView) findViewById(R.id.place_time);
         title = (ImageView) findViewById(R.id.place_title);
         btn_fb = (ImageView) findViewById(R.id.place_facebook);
+        btn_close = (ImageView) findViewById(R.id.place_btn_close);
 
         shopname.setText(getIntent().getExtras().getString("name"));
         address.setText(getIntent().getExtras().getString("address"));
@@ -43,5 +44,12 @@ public class DialogActivity extends Activity {
         } else {
             btn_fb.setVisibility(View.GONE);
         }
+
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 }

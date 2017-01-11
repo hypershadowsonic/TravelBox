@@ -21,14 +21,14 @@ import java.sql.Statement;
 
 
 public class MainActivity extends FragmentActivity {
-
+    private FragmentManager fm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FragmentManager fm = getSupportFragmentManager();
+        fm = getSupportFragmentManager();
         StatusFragment statusF=(StatusFragment) fm.findFragmentById(R.id.status_bar);
         if(statusF==null || ! statusF.isInLayout()){
             statusF = new StatusFragment();
@@ -131,5 +131,9 @@ public class MainActivity extends FragmentActivity {
         Log.d("MainActivity", "getPushQuery: "+query);
 
         return query;
+    }
+
+    public void popBack(){
+        fm.popBackStack();
     }
 }

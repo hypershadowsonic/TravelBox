@@ -55,7 +55,7 @@ public class CollectionTitleAdapter extends RecyclerView.Adapter<CollectionTitle
 
 
         final float scale = context.getResources().getDisplayMetrics().density;
-        holder.expand.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener onExpand = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (isExpand[position]){
@@ -70,7 +70,9 @@ public class CollectionTitleAdapter extends RecyclerView.Adapter<CollectionTitle
                     isExpand[position]=true;
                 }
             }
-        });
+        };
+        holder.expand.setOnClickListener(onExpand);
+        holder.expandBG.setOnClickListener(onExpand);
 
         CollectionItemAdapter shopadapter = new CollectionItemAdapter(context,CollectionItemData.getData(context,"x",data.get(position).collectionID),fm);
         CollectionItemAdapter placeadapter = new CollectionItemAdapter(context,CollectionItemData.getData(context,"y",data.get(position).collectionID),fm);
@@ -93,6 +95,7 @@ public class CollectionTitleAdapter extends RecyclerView.Adapter<CollectionTitle
         ImageView title, expand;
         TextView name;
         RelativeLayout colContainer;
+        View expandBG;
 
 
         public MyViewHolder(View itemView) {
@@ -103,6 +106,7 @@ public class CollectionTitleAdapter extends RecyclerView.Adapter<CollectionTitle
             shoplist = (RecyclerView) itemView.findViewById(R.id.collection_title_shop);
             placelist = (RecyclerView) itemView.findViewById(R.id.collection_title_place);
             colContainer = (RelativeLayout) itemView.findViewById(R.id.collection_container);
+            expandBG = itemView.findViewById(R.id.collection_title_btn_expand_bg);
         }
     }
 

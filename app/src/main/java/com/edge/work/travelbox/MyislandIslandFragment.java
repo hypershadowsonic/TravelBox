@@ -351,7 +351,8 @@ public class MyislandIslandFragment extends Fragment {
 
             //Reload land status
             Boolean[][] isHead = landProp.initLands(rootview,getContext());
-            initShowAllArch(isHead);
+            showThisArch(x,y,getArchBundle(currentShopId));
+            //initShowAllArch(isHead);
             adapter.updateData(UserIslandListData.getData(getContext()));
         }
     }
@@ -407,7 +408,7 @@ public class MyislandIslandFragment extends Fragment {
             Log.e("SQL", "deleteArch: "+ex.toString());
         }
         Boolean[][] isHead= landProp.initLands(rootview,getContext());
-        initShowAllArch(isHead);
+        //initShowAllArch(isHead);
         adapter.updateData(UserIslandListData.getData(getContext()));
     }
 
@@ -454,7 +455,7 @@ public class MyislandIslandFragment extends Fragment {
     }
 
     private void showThisArch(int x, int y, final ArchBundle arch) {
-        //New ImageView
+                //New ImageView
         iv[x*10+y]=new ImageView(getContext());
         Log.d("MyIsland", "showThisArch: "+(x*10+y));
 
