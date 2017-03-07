@@ -611,9 +611,7 @@ public class MyislandIslandFragment extends Fragment {
         intent.setAction(Intent.ACTION_SEND);
         Uri uri = Uri.fromFile(imageFile);
         intent.putExtra(Intent.EXTRA_STREAM,uri);
-        //intent.setDataAndType(uri, "image/*");
         intent.setType("image/*");
-        //startActivity(intent);
         startActivity(Intent.createChooser(intent, "Share Image to:"));
     }
 
