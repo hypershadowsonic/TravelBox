@@ -298,7 +298,7 @@ public class LoadingActivity extends Activity {
 
 
 
-                        /*//Re-Create Island Table
+                        //Re-Create Island Table
                         sqLiteDB.execSQL("DROP TABLE IF EXISTS Island;");
                         sqLiteDB.execSQL("CREATE TABLE Island(ownerid TEXT, arch TEXT, archposx TINYINT, archposy TINYINT);");
 
@@ -309,7 +309,7 @@ public class LoadingActivity extends Activity {
                         }
                         stmt.close();
                         rs.close();
-                        Log.d("Syncing", "Island Done");*/
+                        Log.d("Syncing", "Island Done");
 
 
 
