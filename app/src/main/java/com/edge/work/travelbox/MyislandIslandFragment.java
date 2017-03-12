@@ -482,7 +482,6 @@ public class MyislandIslandFragment extends Fragment {
         }
 
         //Add layout roles
-
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(wh, wh);
         lp.gravity=0x01|0x50; //Gravity= Center Horizontal + Bottom
         lp.leftMargin= mleftpixels;

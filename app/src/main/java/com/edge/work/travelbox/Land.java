@@ -19,7 +19,6 @@ import bolts.Bolts;
 
 public class Land{
 
-    //public LandElement[][] landElements = new LandElement[6][6];
     private Boolean[][] availableArray = new Boolean[6][6];
     private Boolean[][] isHead = new Boolean[6][6];
     private Boolean[] fillfalse = new Boolean[]{false,false,false,false,false,false};

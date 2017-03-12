@@ -54,7 +54,7 @@ public class MyislandAssemblyFragment extends Fragment {
         PagerAdapter adapter = new PagerAdapter(getChildFragmentManager());
         adapter.addFragment(new MyislandIslandFragment());
         adapter.addFragment(new MyislandFriendFragment());
-        adapter.addFragment(new ComingSoonFragment());
+        adapter.addFragment(new MyislandShopFragment());
 
         mViewPager.setAdapter(adapter);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
@@ -105,7 +105,7 @@ public class MyislandAssemblyFragment extends Fragment {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFragment(new MyislandIslandFragment(), "MyIsland");
         adapter.addFragment(new MyislandFriendFragment(), "Friends");
-        adapter.addFragment(new ComingSoonFragment(), "Shop");
+        adapter.addFragment(new MyislandShopFragment(), "Shop");
 
         viewPager.setAdapter(adapter);
     }

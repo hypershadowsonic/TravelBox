@@ -48,7 +48,8 @@ public class LoadingActivity extends Activity {
     private AccessToken accessToken;
     private String userID, userEmail, userName, userBday, userPicurl, userGender;
 
-    private Boolean article,collectiontitle,collectionitem,placeinfo,shopinfo;
+    private Boolean article,collectiontitle,collectionitem,placeinfo,shopinfo,decoration;
+
 
 
     private Intent k;
@@ -269,12 +270,12 @@ public class LoadingActivity extends Activity {
                         //Re-Create Users Table
                         SQLiteDatabase sqLiteDB = getBaseContext().openOrCreateDatabase("Local_Data.db", MODE_PRIVATE, null);
                         sqLiteDB.execSQL("DROP TABLE IF EXISTS Users;");
-                        sqLiteDB.execSQL("CREATE TABLE Users(id TEXT, name TEXT, profileimg_url TEXT,amount_coin INTEGER, amount_trophy INTEGER);");
+                        sqLiteDB.execSQL("CREATE TABLE Users(id TEXT, name TEXT, profileimg_url TEXT,amount_coin INTEGER, amount_trophy INTEGER, last_harvest LONG);");
 
                         Statement stmt = con.createStatement();
                         ResultSet rs = stmt.executeQuery("SELECT * FROM Users;");
                         while(rs.next()){
-                            sqLiteDB.execSQL("INSERT INTO Users(id, name, profileimg_url, amount_coin, amount_trophy) VALUES('"+rs.getString("id")+"', '"+rs.getString("name")+"', '"+rs.getString("profileimg_url")+"', "+rs.getInt("amount_coin")+", "+rs.getInt("amount_trophy")+");");
+                            sqLiteDB.execSQL("INSERT INTO Users(id, name, profileimg_url, amount_coin, amount_trophy, last_harvest) VALUES('"+rs.getString("id")+"', '"+rs.getString("name")+"', '"+rs.getString("profileimg_url")+"', "+rs.getInt("amount_coin")+", "+rs.getInt("amount_trophy")+", "+rs.getLong("last_harvest")+");");
                         }
                         stmt.close();
                         rs.close();
@@ -313,28 +314,40 @@ public class LoadingActivity extends Activity {
 
 
                         //Update VersionInfo Table, Check version
-                        sqLiteDB.execSQL("CREATE TABLE IF NOT EXISTS VersionInfo(article INTEGER, collectiontitle INTEGER, collectionitem INTEGER, placeinfo INTEGER, shopinfo INTEGER);");
+                        sqLiteDB.execSQL("CREATE TABLE IF NOT EXISTS VersionInfo(article INTEGER, collectiontitle INTEGER, collectionitem INTEGER, placeinfo INTEGER, shopinfo INTEGER, decoration INTEGER);");
                         Cursor cursor = sqLiteDB.rawQuery("SELECT * FROM VersionInfo;",null);
                         stmt = con.createStatement();
                         rs = stmt.executeQuery("SELECT * FROM VersionInfo;");
                         if (rs.next()){
                             if (cursor.moveToNext()) {
+                                Log.d("Syncing", "VersionInfo Initialized");
                                 if (cursor.getInt(cursor.getColumnIndex("article")) != rs.getInt("article")){
                                     article = true;
-                                }
+                                } else { article=false; }
                                 if (cursor.getInt(cursor.getColumnIndex("collectiontitle")) != rs.getInt("collectiontitle")){
                                     collectiontitle = true;
-                                }
+                                } else { collectiontitle = false; }
                                 if (cursor.getInt(cursor.getColumnIndex("collectionitem")) != rs.getInt("collectionitem")){
                                     collectionitem = true;
-                                }
+                                } else { collectionitem = false; }
                                 if (cursor.getInt(cursor.getColumnIndex("placeinfo")) != rs.getInt("placeinfo")){
                                     placeinfo = true;
-                                }
+                                } else { placeinfo = false; }
                                 if (cursor.getInt(cursor.getColumnIndex("shopinfo")) != rs.getInt("shopinfo")){
                                     shopinfo = true;
-                                }
-                                sqLiteDB.execSQL("UPDATE VersionInfo SET article='" + rs.getInt("article") + "', collectiontitle='" + rs.getInt("collectiontitle") + "', collectionitem='" + rs.getInt("collectionitem") + "', placeinfo='" + rs.getInt("placeinfo") + "', shopinfo='" + rs.getInt("shopinfo") + "';");
+                                } else { shopinfo = false; }
+                                if (cursor.getInt(cursor.getColumnIndex("decoration")) != rs.getInt("decoration")){
+                                    decoration = true;
+                                } else { decoration = false; }
+                                sqLiteDB.execSQL("UPDATE VersionInfo SET article='" + rs.getInt("article") + "', collectiontitle='" + rs.getInt("collectiontitle") + "', collectionitem='" + rs.getInt("collectionitem") + "', placeinfo='" + rs.getInt("placeinfo") + "', shopinfo='" + rs.getInt("shopinfo") + "', decoration='" + rs.getInt("decoration") + "';");
+                            } else {
+                                sqLiteDB.execSQL("INSERT INTO VersionInfo(article, collectiontitle, collectionitem, placeinfo, shopinfo, decoration) VALUES ('" + rs.getInt("article") + "', '" + rs.getInt("collectiontitle") + "', '" + rs.getInt("collectionitem") + "', '" + rs.getInt("placeinfo") + "', '" + rs.getInt("shopinfo") + "', '" + rs.getInt("decoration") + "');");
+                                article = true;
+                                collectiontitle = true;
+                                collectionitem = true;
+                                placeinfo = true;
+                                shopinfo = true;
+                                decoration = true;
                             }
                         }
                         stmt.close();
@@ -432,6 +445,25 @@ public class LoadingActivity extends Activity {
                             rs.close();
                             Log.d("Syncing", "Articles Done");
                         }
+
+
+
+                        if (decoration) {
+                            Log.d("Syncing", "Update Decoration");
+                            //Re-Create Articles Table
+                            sqLiteDB.execSQL("DROP TABLE IF EXISTS Decoration;");
+                            sqLiteDB.execSQL("CREATE TABLE Decoration(decid TEXT, name TEXT, price INTEGER, type TEXT, thumb TEXT, arch TEXT);");
+
+                            stmt = con.createStatement();
+                            rs = stmt.executeQuery("SELECT * FROM decoration;");
+                            while (rs.next()) {
+                                sqLiteDB.execSQL("INSERT INTO Decoration(decid, name, price, type, thumb, arch) VALUES('" + rs.getString("decid") + "', '" + rs.getString("name") + "', '" + rs.getInt("price") + "', '" + rs.getString("type") + "', '" + rs.getString("thumb") + "', '" + rs.getString("arch") + "');");
+                            }
+                            stmt.close();
+                            rs.close();
+                            Log.d("Syncing", "Decoration Done");
+                        }
+
                         sqLiteDB.close();
                         Log.d("Syncing", "All Done");
                     }
