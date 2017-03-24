@@ -57,6 +57,7 @@
                             android:layout_height="96dp"
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="8dp"
+                            android:scaleType="center"
                             app:srcCompat="@mipmap/list_box_01" />
 
                         <TextView
@@ -98,6 +99,7 @@
                             android:layout_height="96dp"
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="8dp"
+                            android:scaleType="center"
                             app:srcCompat="@mipmap/list_box_01" />
 
                         <TextView
@@ -139,6 +141,7 @@
                             android:layout_height="96dp"
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="8dp"
+                            android:scaleType="center"
                             app:srcCompat="@mipmap/list_box_01" />
 
                         <TextView

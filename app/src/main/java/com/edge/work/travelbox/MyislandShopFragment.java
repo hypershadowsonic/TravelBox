@@ -30,7 +30,9 @@ public class MyislandShopFragment extends Fragment {
     ImageView thumb1, thumb2, thumb3;
     CardView dec1,dec2,dec3;
     ProgressBar progressBar;
-    CountDownTimer countDownTimer;
+    CountDownTimer countDownTimer, halfTimer;
+    Boolean fullt=false;
+    Boolean halft=false;
 
     public MyislandShopFragment() {
         // Required empty public constructor
@@ -64,6 +66,7 @@ public class MyislandShopFragment extends Fragment {
                 time.setText(""+String.format(FORMAT, TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),  TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
                 progressBar.setProgress((int) millisUntilFinished/1000);
                 Log.d("full timer", "tick");
+                fullt=true;
             }
 
             @Override
@@ -92,12 +95,13 @@ public class MyislandShopFragment extends Fragment {
             } else {
                 Log.d("Shop", "Last Update was in 6 mins");
                 showDeconScreen(name1,name2,name3,price1,price2,price3,thumb1,thumb2,thumb3,dec1,dec2,dec3);
-                new CountDownTimer(System.currentTimeMillis()-cursor.getLong(cursor.getColumnIndex("lastupdate")),1000){
+                halfTimer = new CountDownTimer(360000-(System.currentTimeMillis()-cursor.getLong(cursor.getColumnIndex("lastupdate"))),1000){
                     @Override
                     public void onTick(long millisUntilFinished) {
                         time.setText(""+String.format(FORMAT, TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),  TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
                         progressBar.setProgress((int) millisUntilFinished/1000);
                         Log.d("half timer", "tick");
+                        halft=true;
                     }
 
                     @Override
@@ -107,6 +111,7 @@ public class MyislandShopFragment extends Fragment {
                         ContentValues args = new ContentValues();
                         args.put("lastupdate",""+System.currentTimeMillis());
                         sqLiteDatabase.update("DecTemp",args,null,null);
+                        halft=false;
                         countDownTimer.start();
                     }
                 }.start();
@@ -166,4 +171,12 @@ public class MyislandShopFragment extends Fragment {
     }
 
 
+    @Override
+    public void onPause() {
+        if (fullt){
+            countDownTimer.cancel();}
+        if (halft){
+            halfTimer.cancel();}
+        super.onPause();
+    }
 }
