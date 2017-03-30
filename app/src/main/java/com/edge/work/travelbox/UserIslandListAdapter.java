@@ -46,6 +46,8 @@ public class UserIslandListAdapter extends RecyclerView.Adapter<UserIslandListAd
             holder.textView.setText("2X2");
         } else if(data.get(position).type.endsWith("B")||data.get(position).type.endsWith("b")){
             holder.textView.setText("2X3");
+        } else if(data.get(position).type.endsWith("D")||data.get(position).type.endsWith("d")){
+            holder.textView.setText("1X1");
         }
         ImageLoader.getInstance().displayImage(data.get(position).url,holder.imageView);
         holder.imageView.setOnClickListener(new View.OnClickListener() {
@@ -55,11 +57,7 @@ public class UserIslandListAdapter extends RecyclerView.Adapter<UserIslandListAd
 
                 } else {
                     MyislandIslandFragment.setCurrentShopID(data.get(position).arch);
-                    if (data.get(position).type.endsWith("S")) {
-                        MyislandIslandFragment.pickStatusOpen(false);
-                    } else {
-                        MyislandIslandFragment.pickStatusOpen(true);
-                    }
+                    MyislandIslandFragment.pickStatusOpen(data.get(position).type);
                 }
             }
         });

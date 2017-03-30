@@ -305,9 +305,9 @@ public class MyislandIslandFragment extends Fragment {
     public static void setCurrentShopID(String value){
         currentShopId = value;
     }
-    public static void pickStatusOpen(Boolean isBig){
+    public static void pickStatusOpen(String type){
 
-        Boolean[][] table = landProp.scanAvailableLand(isBig);
+        Boolean[][] table = landProp.scanAvailableLand(type);
         landProp.setIsOpen(true);
 
         //Highlight pickable blocks
@@ -423,12 +423,22 @@ public class MyislandIslandFragment extends Fragment {
                 archbundle.level = cursor.getInt(cursor.getColumnIndex("archlv"));
                 cursor.close();
             }
-            //Fetch the target level image url and name of arch
-            Cursor cursor1 = sqLiteDB.rawQuery("SELECT archlv"+archbundle.level+",name,archtype FROM ShopInfo WHERE shopid='"+ shopid +"';",null);
-            if(cursor1.moveToNext()){
-                archbundle.url = cursor1.getString(cursor1.getColumnIndex("archlv"+archbundle.level));
-                archbundle.name = cursor1.getString(cursor1.getColumnIndex("name"));
-                archbundle.type = cursor1.getString(cursor1.getColumnIndex("archtype"));
+            if (archbundle.level == 0){
+                //Fetch image url and name of dec
+                Cursor cursor1 = sqLiteDB.rawQuery("SELECT arch,name,type FROM Decoration WHERE decid='" + shopid + "';", null);
+                if (cursor1.moveToNext()) {
+                    archbundle.url = cursor1.getString(cursor1.getColumnIndex("arch"));
+                    archbundle.name = cursor1.getString(cursor1.getColumnIndex("name"));
+                    archbundle.type = cursor1.getString(cursor1.getColumnIndex("type"));
+                }
+            } else {
+                //Fetch the target level image url and name of arch
+                Cursor cursor1 = sqLiteDB.rawQuery("SELECT archlv" + archbundle.level + ",name,archtype FROM ShopInfo WHERE shopid='" + shopid + "';", null);
+                if (cursor1.moveToNext()) {
+                    archbundle.url = cursor1.getString(cursor1.getColumnIndex("archlv" + archbundle.level));
+                    archbundle.name = cursor1.getString(cursor1.getColumnIndex("name"));
+                    archbundle.type = cursor1.getString(cursor1.getColumnIndex("archtype"));
+                }
             }
             sqLiteDB.close();
         } catch (Exception ex){
@@ -440,16 +450,30 @@ public class MyislandIslandFragment extends Fragment {
 
     private String getThumbURL(String shopid,int level) {
         String url="";
-        try {
-            //Get arch image url
-            SQLiteDatabase sqLiteDB = getContext().openOrCreateDatabase("Local_Data.db", MODE_PRIVATE, null);
-            //Fetch the target level image url of arch
-            Cursor cursor = sqLiteDB.rawQuery("SELECT thumblv"+level+" FROM ShopInfo WHERE shopid='"+ shopid +"';",null);
-            if(cursor.moveToNext()){
-                url = cursor.getString(cursor.getColumnIndex("thumblv"+level));
+        if (level == 0) {
+            try {
+                //Get dec image url
+                SQLiteDatabase sqLiteDB = getContext().openOrCreateDatabase("Local_Data.db", MODE_PRIVATE, null);
+                //Fetch the target level image url of arch
+                Cursor cursor = sqLiteDB.rawQuery("SELECT thumb FROM Decoration WHERE decid='" + shopid + "';", null);
+                if (cursor.moveToNext()) {
+                    url = cursor.getString(cursor.getColumnIndex("thumb"));
+                }
+            } catch (Exception ex) {
+                Log.e("SQLite", "getThumbURL: " + ex.toString());
             }
-        } catch (Exception ex){
-            Log.e("SQLite", "getThumbURL: " + ex.toString());
+        } else {
+            try {
+                //Get arch image url
+                SQLiteDatabase sqLiteDB = getContext().openOrCreateDatabase("Local_Data.db", MODE_PRIVATE, null);
+                //Fetch the target level image url of arch
+                Cursor cursor = sqLiteDB.rawQuery("SELECT thumblv" + level + " FROM ShopInfo WHERE shopid='" + shopid + "';", null);
+                if (cursor.moveToNext()) {
+                    url = cursor.getString(cursor.getColumnIndex("thumblv" + level));
+                }
+            } catch (Exception ex) {
+                Log.e("SQLite", "getThumbURL: " + ex.toString());
+            }
         }
         return url;
     }
@@ -468,6 +492,9 @@ public class MyislandIslandFragment extends Fragment {
         } else if (arch.type.endsWith("B")) {
             marginleft = 28.5 * y - 28.5 * x-14 -28.5;
             marginbottom = 16.5 * y + 16.5 * x + 16 - 16.5 * 2;
+        } else if (arch.type.endsWith("D")) {
+            marginleft = 28.5 * y - 28.5 * x;
+            marginbottom = 16.5 * y + 16.5 * x + 16;
         }
 
         //convert dp to pixel
@@ -479,10 +506,12 @@ public class MyislandIslandFragment extends Fragment {
             wh = (int) (115 * scale + 0.5f);
         } else if (arch.type.endsWith("B")) {
             wh = (int) (144 * scale + 0.5f);
+        } else if (arch.type.endsWith("D")) {
+            wh = (int) (57 * scale + 0.5f);
         }
 
         //Add layout roles
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(wh, wh);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(wh, (int)(wh*1.5));
         lp.gravity=0x01|0x50; //Gravity= Center Horizontal + Bottom
         lp.leftMargin= mleftpixels;
         lp.bottomMargin= mbottompixels;
@@ -525,24 +554,36 @@ public class MyislandIslandFragment extends Fragment {
     private void showArchDetail(ArchBundle arch,View view){
         archDetail.setVisibility(View.VISIBLE);
         activeDetailArch = (ImageView)view;
-        for(int i=1;i<5;i++){
-            ImageLoader.getInstance().displayImage(getThumbURL(arch.shopid,i), archDetailImg[i-1]);
-            archDetailImg[i-1].clearColorFilter();
-            if(i>arch.level){
-                archDetailImg[i-1].setColorFilter(brightIt(255));
-            }
-        }
-        if (arch.level==5){
-            final float scale = getContext().getResources().getDisplayMetrics().density;
-            btnLock.getLayoutParams().height = (int) (86 * scale + 0.5f);
-            btnLock.getLayoutParams().width = (int) (86 * scale + 0.5f);
-            ImageLoader.getInstance().displayImage(getThumbURL(arch.shopid,5),btnLock);
+        if (arch.shopid.startsWith("DEC")){
+            ImageLoader.getInstance().displayImage(getThumbURL(arch.shopid, 0), archDetailImg[0]);
+            archDetailImg[1].setVisibility(View.GONE);
+            archDetailImg[2].setVisibility(View.GONE);
+            archDetailImg[3].setVisibility(View.GONE);
+            archDetailInfo.setVisibility(View.GONE);
         } else {
-            btnLock.setImageResource(R.mipmap.houseinfo_locked);
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-            lp.addRule(RelativeLayout.BELOW,R.id.myisland_detail_lv4);
-            btnLock.setLayoutParams(lp);
+            archDetailImg[1].setVisibility(View.VISIBLE);
+            archDetailImg[2].setVisibility(View.VISIBLE);
+            archDetailImg[3].setVisibility(View.VISIBLE);
+            archDetailInfo.setVisibility(View.VISIBLE);
+            for (int i = 1; i < 5; i++) {
+                ImageLoader.getInstance().displayImage(getThumbURL(arch.shopid, i), archDetailImg[i - 1]);
+                archDetailImg[i - 1].clearColorFilter();
+                if (i > arch.level) {
+                    archDetailImg[i - 1].setColorFilter(brightIt(255));
+                }
+            }
+            if (arch.level == 5) {
+                final float scale = getContext().getResources().getDisplayMetrics().density;
+                btnLock.getLayoutParams().height = (int) (86 * scale + 0.5f);
+                btnLock.getLayoutParams().width = (int) (86 * scale + 0.5f);
+                ImageLoader.getInstance().displayImage(getThumbURL(arch.shopid, 5), btnLock);
+            } else {
+                btnLock.setImageResource(R.mipmap.houseinfo_locked);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                lp.addRule(RelativeLayout.BELOW, R.id.myisland_detail_lv4);
+                btnLock.setLayoutParams(lp);
+            }
         }
         archDetailName.setText(arch.name);
         activebundle = arch;

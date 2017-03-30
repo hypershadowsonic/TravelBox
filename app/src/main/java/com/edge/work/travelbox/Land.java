@@ -92,7 +92,7 @@ public class Land{
         return availableArray[x][y];
     }
 
-    public Boolean[][] scanAvailableLand(Boolean isBig){
+    public Boolean[][] scanAvailableLand(String type){
         Boolean[][] temp = new Boolean[6][6];
 
         for(int i=0;i<6;i++){
@@ -110,7 +110,7 @@ public class Land{
         }
 
         //Search for available lands.
-        if(isBig){
+        if(type.endsWith("B") || type.endsWith("b")){
             //Search for 2*3 area
             for(int i=0; i<5; i++){
                 for(int j=2; j<6; j++){
@@ -123,11 +123,20 @@ public class Land{
             for(int i=0; i<6; i++){
                 availableArray[i][1] = false;
             }
-        } else {
+        } else if(type.endsWith("S") || type.endsWith("s")) {
             //Search for 2*2 area
             for(int i=0; i<5; i++){
                 for(int j=1; j<6; j++){
                     if(temp[i][j] == false || temp[i+1][j] == false || temp[i+1][j-1] == false || temp[i][j-1] == false){
+                        availableArray[i][j] = false;
+                    }
+                }
+            }
+        } else if(type.endsWith("D") || type.endsWith("d")) {
+            //Search for 1*1 area
+            for(int i=0; i<6; i++){
+                for(int j=0; j<6; j++){
+                    if(temp[i][j] == false){
                         availableArray[i][j] = false;
                     }
                 }

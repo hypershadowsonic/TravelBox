@@ -1,8 +1,11 @@
 package com.edge.work.travelbox;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
@@ -14,14 +17,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.w3c.dom.Text;
 
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.concurrent.TimeUnit;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.google.android.gms.internal.zzs.TAG;
 
 
 public class MyislandShopFragment extends Fragment {
@@ -33,6 +40,7 @@ public class MyislandShopFragment extends Fragment {
     CountDownTimer countDownTimer, halfTimer;
     Boolean fullt=false;
     Boolean halft=false;
+    private ConnectionClass connectionClass = new ConnectionClass();
 
     public MyislandShopFragment() {
         // Required empty public constructor
@@ -141,8 +149,8 @@ public class MyislandShopFragment extends Fragment {
         sqLiteDatabase.close();
     }
 
-    public void showDeconScreen(TextView name1,TextView name2,TextView name3,TextView price1,TextView price2,TextView price3,ImageView thumb1,ImageView thumb2,ImageView thumb3,CardView dec1,CardView dec2,CardView dec3){
-        SQLiteDatabase sqLiteDatabase = getActivity().openOrCreateDatabase("Local_Data.db", MODE_PRIVATE, null);
+    public void showDeconScreen(TextView name1, TextView name2, TextView name3, TextView price1, TextView price2, TextView price3, ImageView thumb1, ImageView thumb2, ImageView thumb3, final CardView dec1, final CardView dec2, final CardView dec3){
+        final SQLiteDatabase sqLiteDatabase = getActivity().openOrCreateDatabase("Local_Data.db", MODE_PRIVATE, null);
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM DecTemp",null);
         while (cursor.moveToNext()){
             Cursor cursor1 = sqLiteDatabase.rawQuery("SELECT * FROM Decoration WHERE decid='"+cursor.getString(cursor.getColumnIndex("slot1"))+"';",null);
@@ -150,6 +158,27 @@ public class MyislandShopFragment extends Fragment {
             name1.setText(cursor1.getString(cursor1.getColumnIndex("name")));
             price1.setText(""+cursor1.getInt(cursor1.getColumnIndex("price")));
             ImageLoader.getInstance().displayImage(cursor1.getString(cursor1.getColumnIndex("thumb")),thumb1);
+            dec1.setTag(cursor.getString(cursor.getColumnIndex("slot1")));
+            final int p1 = cursor1.getInt(cursor1.getColumnIndex("price"));
+            dec1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new AlertDialog.Builder(getContext())
+                            //.setTitle("Title")
+                            .setMessage(getString(R.string.buy_dec))
+                            //.setIcon(android.R.drawable.ic_dialog_alert)
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    Toast.makeText(getActivity(), getString(R.string.unlock), Toast.LENGTH_SHORT).show();
+                                    StatusFragment.coinPaySave(false,p1);
+                                    SQLiteDatabase sqLite = getActivity().openOrCreateDatabase("Local_Data.db", MODE_PRIVATE, null);
+                                    sqLite.execSQL("INSERT INTO UserArch(ownerid, arch, archlv) VALUES('"+TravelBox.userId+"', '"+dec1.getTag()+"', 0);");
+                                    updateServer((String)dec1.getTag());
+                                    dec1.setVisibility(View.GONE);
+                                }})
+                            .setNegativeButton(android.R.string.no, null).show();
+                }
+            });
             cursor1.close();
 
             cursor1 = sqLiteDatabase.rawQuery("SELECT * FROM Decoration WHERE decid='"+cursor.getString(cursor.getColumnIndex("slot2"))+"';",null);
@@ -157,6 +186,27 @@ public class MyislandShopFragment extends Fragment {
             name2.setText(cursor1.getString(cursor1.getColumnIndex("name")));
             price2.setText(""+cursor1.getInt(cursor1.getColumnIndex("price")));
             ImageLoader.getInstance().displayImage(cursor1.getString(cursor1.getColumnIndex("thumb")),thumb2);
+            dec2.setTag(cursor.getString(cursor.getColumnIndex("slot2")));
+            final int p2 = cursor1.getInt(cursor1.getColumnIndex("price"));
+            dec2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new AlertDialog.Builder(getContext())
+                            //.setTitle("Title")
+                            .setMessage(getString(R.string.buy_dec))
+                            //.setIcon(android.R.drawable.ic_dialog_alert)
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    Toast.makeText(getActivity(), getString(R.string.unlock), Toast.LENGTH_SHORT).show();
+                                    StatusFragment.coinPaySave(false,p2);
+                                    SQLiteDatabase sqLite = getActivity().openOrCreateDatabase("Local_Data.db", MODE_PRIVATE, null);
+                                    sqLite.execSQL("INSERT INTO UserArch(ownerid, arch, archlv) VALUES('"+TravelBox.userId+"', '"+dec2.getTag()+"', 0);");
+                                    updateServer((String)dec2.getTag());
+                                    dec1.setVisibility(View.GONE);
+                                }})
+                            .setNegativeButton(android.R.string.no, null).show();
+                }
+            });
             cursor1.close();
 
             cursor1 = sqLiteDatabase.rawQuery("SELECT * FROM Decoration WHERE decid='"+cursor.getString(cursor.getColumnIndex("slot3"))+"';",null);
@@ -164,6 +214,27 @@ public class MyislandShopFragment extends Fragment {
             name3.setText(cursor1.getString(cursor1.getColumnIndex("name")));
             price3.setText(""+cursor1.getInt(cursor1.getColumnIndex("price")));
             ImageLoader.getInstance().displayImage(cursor1.getString(cursor1.getColumnIndex("thumb")),thumb3);
+            dec3.setTag(cursor.getString(cursor.getColumnIndex("slot3")));
+            final int p3 = cursor1.getInt(cursor1.getColumnIndex("price"));
+            dec3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new AlertDialog.Builder(getContext())
+                            //.setTitle("Title")
+                            .setMessage(getString(R.string.buy_dec))
+                            //.setIcon(android.R.drawable.ic_dialog_alert)
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    Toast.makeText(getActivity(), getString(R.string.unlock), Toast.LENGTH_SHORT).show();
+                                    StatusFragment.coinPaySave(false,p3);
+                                    SQLiteDatabase sqLite = getActivity().openOrCreateDatabase("Local_Data.db", MODE_PRIVATE, null);
+                                    sqLite.execSQL("INSERT INTO UserArch(ownerid, arch, archlv) VALUES('"+TravelBox.userId+"', '"+dec3.getTag()+"', 0);");
+                                    updateServer((String)dec3.getTag());
+                                    dec1.setVisibility(View.GONE);
+                                }})
+                            .setNegativeButton(android.R.string.no, null).show();
+                }
+            });
             cursor1.close();
         }
         cursor.close();
@@ -178,5 +249,21 @@ public class MyislandShopFragment extends Fragment {
         if (halft){
             halfTimer.cancel();}
         super.onPause();
+    }
+
+    private void updateServer(String decid){
+        try {
+            Connection con = connectionClass.CONN();
+            if (con == null) {
+                Log.e("SQL", "Unable to connect to server");
+            } else {
+                String query = "INSERT INTO UserArch(ownerid, arch, archlv) VALUES('"+TravelBox.userId+"', '"+decid+"', 0);";
+                Log.d(TAG, "updateServer: "+query);
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate(query);
+            }
+        } catch (Exception ex){
+            Log.e(TAG, "doInBackground: "+ex.toString());
+        }
     }
 }

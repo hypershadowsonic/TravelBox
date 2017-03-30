@@ -28,17 +28,32 @@ public class UserIslandListData {
             while(cursor.moveToNext()){
                 Cursor cursor1 = sqLiteDB.rawQuery("SELECT * FROM Island WHERE ownerid='" + TravelBox.userId + "' AND arch='" + cursor.getString(cursor.getColumnIndex("arch")) + "';",null);
                 if (cursor1.moveToNext() == false){
-                    Cursor cursor2 = sqLiteDB.rawQuery("SELECT thumblv"+cursor.getString(cursor.getColumnIndex("archlv"))+",archtype FROM ShopInfo WHERE shopid='"+cursor.getString(cursor.getColumnIndex("arch"))+"';",null);
-                    if (cursor2.moveToNext()){
-                        UserIslandListInfo current = new UserIslandListInfo();
-                        current.type = cursor2.getString(cursor2.getColumnIndex("archtype"));
-                        current.url = cursor2.getString(cursor2.getColumnIndex("thumblv"+cursor.getString(cursor.getColumnIndex("archlv"))));
-                        current.arch = cursor.getString(cursor.getColumnIndex("arch"));
-                        Log.d("UserIslandList", "getData: 6");
-                        data.add(current);
+                    if (cursor.getString(cursor.getColumnIndex("arch")).startsWith("DEC")) {
+                        Cursor cursor2 = sqLiteDB.rawQuery("SELECT thumb,type FROM Decoration WHERE decid='" + cursor.getString(cursor.getColumnIndex("arch")) + "';", null);
+                        if (cursor2.moveToNext()) {
+                            UserIslandListInfo current = new UserIslandListInfo();
+                            current.type = cursor2.getString(cursor2.getColumnIndex("type"));
+                            current.url = cursor2.getString(cursor2.getColumnIndex("thumb"));
+                            current.arch = cursor.getString(cursor.getColumnIndex("arch"));
+                            Log.d("UserIslandList", "getData: Dec");
+                            data.add(current);
 
+                        }
+                        cursor2.close();
                     }
-                    cursor2.close();
+                    else {
+                        Cursor cursor2 = sqLiteDB.rawQuery("SELECT thumblv" + cursor.getString(cursor.getColumnIndex("archlv")) + ",archtype FROM ShopInfo WHERE shopid='" + cursor.getString(cursor.getColumnIndex("arch")) + "';", null);
+                        if (cursor2.moveToNext()) {
+                            UserIslandListInfo current = new UserIslandListInfo();
+                            current.type = cursor2.getString(cursor2.getColumnIndex("archtype"));
+                            current.url = cursor2.getString(cursor2.getColumnIndex("thumblv" + cursor.getString(cursor.getColumnIndex("archlv"))));
+                            current.arch = cursor.getString(cursor.getColumnIndex("arch"));
+                            Log.d("UserIslandList", "getData: Arch");
+                            data.add(current);
+
+                        }
+                        cursor2.close();
+                    }
                 }
                 cursor1.close();
             }
