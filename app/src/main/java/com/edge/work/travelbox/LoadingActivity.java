@@ -43,9 +43,9 @@ public class LoadingActivity extends Activity {
 
     private ConnectionClass connectionClass = new ConnectionClass();
 
-    private LoginButton loginButton;
+/*    private LoginButton loginButton;
     private CallbackManager callbackManager;
-    private AccessToken accessToken;
+    private AccessToken accessToken;*/
     private String userID, userEmail, userName, userBday, userPicurl, userGender;
 
     private Boolean article,collectiontitle,collectionitem,placeinfo,shopinfo,decoration;
@@ -56,7 +56,13 @@ public class LoadingActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FacebookSdk.sdkInitialize(getApplicationContext());
+        userID = "10211724100723081";
+        userEmail = "hypershadowsonic@gmail.com";
+        userName = "Evan Lin";
+        userBday = "1993-10-16";
+        userPicurl = "https://scontent.xx.fbcdn.net/v/t1.0-1/c0.0.50.50/p50x50/17021456_10212512277307003_8499798256930082863_n.jpg?oh=58180b9fa852ae7832f6c33ac8b4328c&oe=5B20FA85";
+        userGender = "male";
+        //FacebookSdk.sdkInitialize(getApplicationContext());
         super.onCreate(savedInstanceState);
         //AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_loading);
@@ -84,7 +90,7 @@ public class LoadingActivity extends Activity {
         k = new Intent(this,MainActivity.class);
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET},0);
 
-        callbackManager = CallbackManager.Factory.create();
+        /*callbackManager = CallbackManager.Factory.create();
         loginButton = (LoginButton)findViewById(R.id.loading_btn_login);
         loginButton.setReadPermissions(Arrays.asList("user_birthday","read_custom_friendlists"));
         //loginButton.setReadPermissions("email");
@@ -164,9 +170,9 @@ public class LoadingActivity extends Activity {
                             Log.d("Facebook", "onCompleted: Got Gender "+ userGender);
                             userPicurl = object.optJSONObject("picture").optJSONObject("data").optString("url");
                             Log.d("Facebook", "onCompleted: Got Pic URL "+ userPicurl);
-                            DoSync doSync = new DoSync();
+                            */DoSync doSync = new DoSync();
                             loadingText.setText(R.string.loading_server_sync);
-                            doSync.execute("");
+                            doSync.execute("");/*
                         }
                     });
 
@@ -179,7 +185,7 @@ public class LoadingActivity extends Activity {
             loginButton.setVisibility(View.VISIBLE);
             jumpingHead.setVisibility(View.GONE);
             loadingText.setVisibility(View.GONE);
-            }
+            }*/
 
 
     }
@@ -187,13 +193,13 @@ public class LoadingActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode,data);
+        //callbackManager.onActivityResult(requestCode, resultCode,data);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        AppEventsLogger.activateApp(this);
+        //AppEventsLogger.activateApp(this);
     }
 
 
